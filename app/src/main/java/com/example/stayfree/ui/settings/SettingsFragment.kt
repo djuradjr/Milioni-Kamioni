@@ -40,34 +40,10 @@ class SettingsFragment : Fragment() {
             findNavController().navigate(R.id.action_settings_to_resetTime)
         }
 
-        binding.btnSignIn.setOnClickListener {
-            findNavController().navigate(R.id.action_settings_to_auth)
-        }
-
-        binding.btnSignOut.setOnClickListener {
-            viewModel.signOut()
-        }
-
-        binding.switchSync.setOnCheckedChangeListener { _, checked ->
-            viewModel.setSyncEnabled(checked)
-        }
-
         viewLifecycleOwner.lifecycleScope.launch {
             launch {
                 viewModel.pinEnabled.collectLatest { enabled ->
                     binding.btnSetPin.text = if (enabled) "Change PIN" else "Set PIN"
-                }
-            }
-            launch {
-                viewModel.syncEnabled.collectLatest { enabled ->
-                    binding.switchSync.isChecked = enabled
-                }
-            }
-            launch {
-                viewModel.userId.collectLatest { uid ->
-                    binding.tvAccount.text = if (uid != null) "Signed in" else "Not signed in"
-                    binding.btnSignIn.visibility = if (uid == null) View.VISIBLE else View.GONE
-                    binding.btnSignOut.visibility = if (uid != null) View.VISIBLE else View.GONE
                 }
             }
             launch {

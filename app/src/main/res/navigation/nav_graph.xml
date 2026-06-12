@@ -88,15 +88,7 @@
         <action
             android:id="@+id/action_settings_to_resetTime"
             app:destination="@id/resetTimeFragment" />
-        <action
-            android:id="@+id/action_settings_to_auth"
-            app:destination="@id/authFragment" />
     </fragment>
-
-    <fragment
-        android:id="@+id/authFragment"
-        android:name="com.example.stayfree.ui.auth.AuthFragment"
-        android:label="Sign In" />
 
     <fragment
         android:id="@+id/pinSetupFragment"
