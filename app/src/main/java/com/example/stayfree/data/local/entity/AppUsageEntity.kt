@@ -17,4 +17,9 @@ data class AppUsageEntity(
     val unlockCount: Int = 0,
     val screenOnCount: Int = 0,
     val lastUpdated: Long = System.currentTimeMillis()
-)
+) {
+    companion object {
+        /** Synthetic row that stores device-level counters (unlocks, screen-ons) per day. */
+        const val DEVICE_ROW = "__device__"
+    }
+}

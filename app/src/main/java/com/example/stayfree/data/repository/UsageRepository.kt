@@ -11,6 +11,6 @@ interface UsageRepository {
     fun getScreenTimeForPackageOnDate(packageName: String, date: String): Flow<Long>
     fun getUnlocksForPackageOnDate(packageName: String, date: String): Flow<Int>
     suspend fun syncFromUsageStats(date: String, resetTimeMinutes: Int)
-    suspend fun incrementUnlock(packageName: String, date: String)
+    suspend fun incrementUnlock(date: String)
     suspend fun incrementScreenOn(date: String)
 }

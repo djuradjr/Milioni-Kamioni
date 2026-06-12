@@ -23,7 +23,7 @@ class ScreenStateReceiver(
             val resetTime = prefs.dailyResetTimeMinutes.first()
             val date = TimeUtils.getEffectiveDate(resetTime)
             when (intent.action) {
-                Intent.ACTION_USER_PRESENT -> usageRepository.incrementUnlock("", date)
+                Intent.ACTION_USER_PRESENT -> usageRepository.incrementUnlock(date)
                 Intent.ACTION_SCREEN_ON -> usageRepository.incrementScreenOn(date)
             }
         }

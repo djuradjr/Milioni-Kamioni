@@ -1,12 +1,12 @@
 package com.example.stayfree.data.repository
 
+import android.app.usage.UsageEvents
 import android.app.usage.UsageStatsManager
 import android.content.Context
 import com.example.stayfree.data.local.db.dao.AppUsageDao
 import com.example.stayfree.data.local.entity.AppUsageEntity
 import com.example.stayfree.domain.model.AppUsage
 import com.example.stayfree.util.AppInfoUtils
-import com.example.stayfree.util.TimeUtils
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -39,49 +39,92 @@ class UsageRepositoryImpl @Inject constructor(
     override fun getUnlocksForPackageOnDate(packageName: String, date: String): Flow<Int> =
         dao.getUsageForPackageOnDate(packageName, date).map { it?.unlockCount ?: 0 }
 
+    /**
+     * Recomputes per-app foreground time for the effective day by iterating
+     * raw UsageEvents (RESUMED = session start, PAUSED = session end). Unlike
+     * queryUsageStats(INTERVAL_DAILY) — which is aligned to the system day —
+     * this respects a custom daily reset time.
+     */
     override suspend fun syncFromUsageStats(date: String, resetTimeMinutes: Int) {
-        val cal = Calendar.getInstance()
-        // Compute start of the effective day
-        val resetHour = resetTimeMinutes / 60
-        val resetMin = resetTimeMinutes % 60
-        val startCal = Calendar.getInstance().apply {
-            set(Calendar.HOUR_OF_DAY, resetHour)
-            set(Calendar.MINUTE, resetMin)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-        }
-        if (cal.timeInMillis < startCal.timeInMillis) {
-            startCal.add(Calendar.DAY_OF_YEAR, -1)
-        }
-        val startMs = startCal.timeInMillis
+        val startMs = effectiveDayStartMs(resetTimeMinutes)
         val endMs = System.currentTimeMillis()
+        if (endMs <= startMs) return
 
-        val stats = usageStatsManager.queryUsageStats(
-            UsageStatsManager.INTERVAL_DAILY, startMs, endMs
-        ) ?: return
+        val events = usageStatsManager.queryEvents(startMs, endMs) ?: return
+        val totals = mutableMapOf<String, Long>()
+        val foregroundSince = mutableMapOf<String, Long>()
+        val event = UsageEvents.Event()
 
-        stats.filter { it.totalTimeInForeground > 0 }.forEach { stat ->
-            val existing = dao.getUsageForPackageAndDate(stat.packageName, date)
-            val appName = AppInfoUtils.getAppName(context, stat.packageName)
-            val entity = AppUsageEntity(
-                id = existing?.id ?: 0,
-                packageName = stat.packageName,
-                appName = appName,
-                date = date,
-                totalTimeMs = stat.totalTimeInForeground,
-                unlockCount = existing?.unlockCount ?: 0,
-                screenOnCount = existing?.screenOnCount ?: 0
+        while (events.hasNextEvent()) {
+            events.getNextEvent(event)
+            val pkg = event.packageName ?: continue
+            when (event.eventType) {
+                // ACTIVITY_RESUMED/PAUSED (API 29+) share int values with the
+                // older MOVE_TO_FOREGROUND/BACKGROUND, so this matches both.
+                UsageEvents.Event.ACTIVITY_RESUMED ->
+                    if (pkg !in foregroundSince) foregroundSince[pkg] = event.timeStamp
+                UsageEvents.Event.ACTIVITY_PAUSED -> {
+                    // PAUSE without a seen RESUME: session started before the window.
+                    val sessionStart = foregroundSince.remove(pkg) ?: startMs
+                    val elapsed = event.timeStamp - sessionStart
+                    if (elapsed > 0) totals[pkg] = (totals[pkg] ?: 0L) + elapsed
+                }
+            }
+        }
+        // Apps still in the foreground count up to the end of the window.
+        for ((pkg, since) in foregroundSince) {
+            val elapsed = endMs - since
+            if (elapsed > 0) totals[pkg] = (totals[pkg] ?: 0L) + elapsed
+        }
+
+        for ((pkg, totalMs) in totals) {
+            if (totalMs <= 0 || pkg == AppUsageEntity.DEVICE_ROW) continue
+            val existing = dao.getUsageForPackageAndDate(pkg, date)
+            dao.upsert(
+                AppUsageEntity(
+                    id = existing?.id ?: 0,
+                    packageName = pkg,
+                    appName = AppInfoUtils.getAppName(context, pkg),
+                    date = date,
+                    totalTimeMs = totalMs,
+                    unlockCount = existing?.unlockCount ?: 0,
+                    screenOnCount = existing?.screenOnCount ?: 0
+                )
             )
-            dao.upsert(entity)
         }
     }
 
-    override suspend fun incrementUnlock(packageName: String, date: String) {
-        dao.incrementUnlockCount(packageName, date)
+    override suspend fun incrementUnlock(date: String) {
+        ensureDeviceRow(date)
+        dao.incrementUnlockCount(AppUsageEntity.DEVICE_ROW, date)
     }
 
     override suspend fun incrementScreenOn(date: String) {
-        dao.incrementScreenOnCount(date)
+        ensureDeviceRow(date)
+        dao.incrementScreenOnCount(AppUsageEntity.DEVICE_ROW, date)
+    }
+
+    private suspend fun ensureDeviceRow(date: String) {
+        dao.insertIgnore(
+            AppUsageEntity(
+                packageName = AppUsageEntity.DEVICE_ROW,
+                appName = "Device",
+                date = date
+            )
+        )
+    }
+
+    private fun effectiveDayStartMs(resetTimeMinutes: Int): Long {
+        val cal = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, resetTimeMinutes / 60)
+            set(Calendar.MINUTE, resetTimeMinutes % 60)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+            if (timeInMillis > System.currentTimeMillis()) {
+                add(Calendar.DAY_OF_YEAR, -1)
+            }
+        }
+        return cal.timeInMillis
     }
 
     private fun AppUsageEntity.toDomain() = AppUsage(
