@@ -1,41 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:padding="32dp"
-    android:background="@color/overlay_background">
-
-    <ImageView
-        android:id="@+id/iv_app_icon"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
-        android:layout_marginBottom="16dp" />
-
-    <TextView
-        android:id="@+id/tv_app_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="8dp" />
+    android:padding="@dimen/spacing_xl">
 
     <TextView
         android:id="@+id/tv_block_reason"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
+        android:textAppearance="?attr/textAppearanceHeadlineMedium"
+        android:textColor="@color/on_primary"
+        android:textStyle="bold"
         android:textAlignment="center"
-        android:layout_marginBottom="48dp"
-        android:lineSpacingMultiplier="1.4" />
+        android:layout_marginBottom="@dimen/spacing_lg" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_xl"
+        app:cardBackgroundColor="@color/surface"
+        app:cardCornerRadius="@dimen/radius_lg"
+        app:cardElevation="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="@dimen/spacing_lg">
+
+            <ImageView
+                android:id="@+id/iv_app_icon"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_marginBottom="@dimen/spacing_md"
+                android:importantForAccessibility="no" />
+
+            <TextView
+                android:id="@+id/tv_app_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
+                android:textColor="@color/on_surface" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_go_back"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/btn_go_back"
-        android:layout_marginBottom="12dp" />
+        android:textColor="@color/primary"
+        app:backgroundTint="@color/surface"
+        android:layout_marginBottom="@dimen/spacing_sm" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_override"
@@ -43,6 +63,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/btn_override"
+        android:textColor="@color/on_primary"
+        app:strokeColor="@color/on_primary"
         android:visibility="gone" />
 
     <TextView
@@ -50,8 +72,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="13sp"
+        android:textColor="@color/primary_container"
         android:textAlignment="center"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/spacing_sm"
         android:text="@string/overlay_set_pin_hint"
         android:visibility="gone" />
 

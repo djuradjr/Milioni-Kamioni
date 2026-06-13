@@ -1,6 +1,7 @@
 package com.example.stayfree
 
 import android.app.Application
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import com.example.stayfree.data.local.preferences.AppPreferences
@@ -26,6 +27,8 @@ class StayFreeApp : Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
+        // Orange/white light-only design — ignore the system dark mode.
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         NotificationUtils.createChannels(this)
         applicationScope.launch {
             val resetTime = prefs.dailyResetTimeMinutes.first()

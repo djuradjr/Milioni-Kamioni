@@ -7,32 +7,32 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="@dimen/spacing_md">
 
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sleep days" android:textStyle="bold" android:layout_marginBottom="8dp" />
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/sleep_days" android:textStyle="bold" android:layout_marginBottom="@dimen/spacing_sm" />
 
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginBottom="16dp">
-            <CheckBox android:id="@+id/cb_mon" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="M" />
-            <CheckBox android:id="@+id/cb_tue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="T" />
-            <CheckBox android:id="@+id/cb_wed" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="W" />
-            <CheckBox android:id="@+id/cb_thu" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="T" />
-            <CheckBox android:id="@+id/cb_fri" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="F" />
-            <CheckBox android:id="@+id/cb_sat" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="S" android:checked="true" />
-            <CheckBox android:id="@+id/cb_sun" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="S" android:checked="true" />
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginBottom="@dimen/spacing_md">
+            <CheckBox android:id="@+id/cb_mon" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/day_m" />
+            <CheckBox android:id="@+id/cb_tue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/day_t" />
+            <CheckBox android:id="@+id/cb_wed" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/day_w" />
+            <CheckBox android:id="@+id/cb_thu" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/day_t" />
+            <CheckBox android:id="@+id/cb_fri" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/day_f" />
+            <CheckBox android:id="@+id/cb_sat" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/day_s" android:checked="true" />
+            <CheckBox android:id="@+id/cb_sun" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/day_s" android:checked="true" />
         </LinearLayout>
 
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sleep start time" android:textStyle="bold" android:layout_marginBottom="8dp" />
-        <TimePicker android:id="@+id/tp_start" android:layout_width="wrap_content" android:layout_height="wrap_content" android:timePickerMode="spinner" android:layout_marginBottom="16dp" />
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/sleep_start_time" android:textStyle="bold" android:layout_marginBottom="@dimen/spacing_sm" />
+        <TimePicker android:id="@+id/tp_start" android:layout_width="wrap_content" android:layout_height="wrap_content" android:timePickerMode="spinner" android:layout_marginBottom="@dimen/spacing_md" />
 
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Wake time" android:textStyle="bold" android:layout_marginBottom="8dp" />
-        <TimePicker android:id="@+id/tp_end" android:layout_width="wrap_content" android:layout_height="wrap_content" android:timePickerMode="spinner" android:layout_marginBottom="24dp" />
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/sleep_wake_time" android:textStyle="bold" android:layout_marginBottom="@dimen/spacing_sm" />
+        <TimePicker android:id="@+id/tp_end" android:layout_width="wrap_content" android:layout_height="wrap_content" android:timePickerMode="spinner" android:layout_marginBottom="@dimen/spacing_lg" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_save"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/btn_save"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="@dimen/spacing_sm" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_cancel"

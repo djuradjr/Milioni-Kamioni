@@ -7,28 +7,28 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="@dimen/spacing_md">
 
         <!-- Security -->
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/settings_security" android:textStyle="bold" android:textSize="16sp" android:layout_marginBottom="8dp" />
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/settings_security" android:textStyle="bold" android:textSize="16sp" android:layout_marginBottom="@dimen/spacing_sm" />
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_set_pin"
             style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/settings_set_pin"
-            android:layout_marginBottom="24dp" />
+            android:layout_marginBottom="@dimen/spacing_lg" />
 
         <!-- Daily Reset -->
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/settings_daily_reset" android:textStyle="bold" android:textSize="16sp" android:layout_marginBottom="8dp" />
-        <TextView android:id="@+id/tv_reset_time" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="14sp" android:layout_marginBottom="8dp" />
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/settings_daily_reset" android:textStyle="bold" android:textSize="16sp" android:layout_marginBottom="@dimen/spacing_sm" />
+        <TextView android:id="@+id/tv_reset_time" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="14sp" android:layout_marginBottom="@dimen/spacing_sm" />
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_reset_time"
             style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Change Reset Time"
-            android:layout_marginBottom="24dp" />
+            android:text="@string/settings_change_reset_time"
+            android:layout_marginBottom="@dimen/spacing_lg" />
 
     </LinearLayout>
 </ScrollView>

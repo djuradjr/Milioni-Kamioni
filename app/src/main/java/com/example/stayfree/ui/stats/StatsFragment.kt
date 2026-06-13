@@ -12,9 +12,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.stayfree.R
 import com.example.stayfree.databinding.FragmentStatsBinding
+import com.example.stayfree.ui.common.ChartStyler
 import com.example.stayfree.util.TimeUtils
-import com.github.mikephil.charting.data.BarData
-import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -92,15 +91,7 @@ class StatsFragment : Fragment() {
         val entries = usageList.mapIndexed { i, usage ->
             BarEntry(i.toFloat(), usage.totalTimeMs.toFloat() / 60_000f)
         }
-        val dataSet = BarDataSet(entries, "Usage (minutes)").apply {
-            color = requireContext().getColor(com.example.stayfree.R.color.primary)
-        }
-        binding.barChart.apply {
-            data = BarData(dataSet)
-            description.isEnabled = false
-            legend.isEnabled = false
-            invalidate()
-        }
+        ChartStyler.applyBarData(binding.barChart, requireContext(), entries, "Usage (minutes)")
     }
 
     override fun onDestroyView() {

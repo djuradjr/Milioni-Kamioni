@@ -2,15 +2,14 @@ package com.example.stayfree.ui.overlay
 
 import android.content.Intent
 import android.os.Bundle
-import android.text.InputType
-import android.widget.EditText
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.stayfree.R
 import com.example.stayfree.data.local.preferences.AppPreferences
 import com.example.stayfree.databinding.ActivityBlockOverlayBinding
+import com.example.stayfree.databinding.DialogPinEntryBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.example.stayfree.util.AppInfoUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
@@ -100,18 +99,15 @@ class BlockOverlayActivity : AppCompatActivity() {
     }
 
     private fun showPinDialog() {
-        val pinInput = EditText(this).apply {
-            inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD
-            hint = "Enter PIN"
-        }
-        AlertDialog.Builder(this)
-            .setTitle("Override Block")
-            .setMessage("Enter your PIN to access this app.")
-            .setView(pinInput)
-            .setPositiveButton("Confirm") { _, _ ->
-                val entered = pinInput.text.toString()
+        val dialogBinding = DialogPinEntryBinding.inflate(layoutInflater)
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.pin_override_title)
+            .setMessage(R.string.pin_override_message)
+            .setView(dialogBinding.root)
+            .setPositiveButton(R.string.btn_confirm) { _, _ ->
+                val entered = dialogBinding.etPin.text?.toString().orEmpty()
                 if (entered.isEmpty()) {
-                    Toast.makeText(this, "PIN cannot be empty", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, R.string.pin_empty, Toast.LENGTH_SHORT).show()
                     return@setPositiveButton
                 }
                 lifecycleScope.launch {
@@ -119,11 +115,11 @@ class BlockOverlayActivity : AppCompatActivity() {
                     if (storedHash != null && sha256(entered) == storedHash) {
                         finish()
                     } else {
-                        Toast.makeText(this@BlockOverlayActivity, "Incorrect PIN", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@BlockOverlayActivity, R.string.pin_incorrect, Toast.LENGTH_SHORT).show()
                     }
                 }
             }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton(R.string.btn_cancel, null)
             .show()
     }
 

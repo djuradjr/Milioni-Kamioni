@@ -7,33 +7,33 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="@dimen/spacing_md">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Select App"
+            android:text="@string/add_rule_select_app"
             android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="@dimen/spacing_sm" />
 
         <Spinner
             android:id="@+id/spinner_app"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginBottom="@dimen/spacing_md" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Block Type"
+            android:text="@string/add_rule_block_type"
             android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="@dimen/spacing_sm" />
 
         <RadioGroup
             android:id="@+id/rg_block_type"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="@dimen/spacing_md">
 
             <RadioButton android:id="@+id/rb_block_now" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/block_type_now" android:checked="true" />
             <RadioButton android:id="@+id/rb_daily_limit" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/block_type_daily_limit" />
@@ -48,12 +48,12 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:visibility="gone"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="@dimen/spacing_md">
 
             <NumberPicker android:id="@+id/np_limit_hours" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="h" android:layout_gravity="center" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/unit_hours_short" android:layout_gravity="center" />
             <NumberPicker android:id="@+id/np_limit_minutes" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="m" android:layout_gravity="center" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/unit_minutes_short" android:layout_gravity="center" />
         </LinearLayout>
 
         <!-- Session options -->
@@ -63,16 +63,16 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:visibility="gone"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="@dimen/spacing_md">
 
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Session duration" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/add_rule_session_duration" />
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
                 <NumberPicker android:id="@+id/np_session_hours" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="h" android:layout_gravity="center" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/unit_hours_short" android:layout_gravity="center" />
                 <NumberPicker android:id="@+id/np_session_minutes" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="m" android:layout_gravity="center" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/unit_minutes_short" android:layout_gravity="center" />
             </LinearLayout>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Break duration (minutes)" android:layout_marginTop="8dp" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/add_rule_break_duration" android:layout_marginTop="@dimen/spacing_sm" />
             <NumberPicker android:id="@+id/np_break_minutes" android:layout_width="wrap_content" android:layout_height="wrap_content" />
         </LinearLayout>
 
@@ -83,16 +83,16 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:visibility="gone"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="@dimen/spacing_md">
 
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
-                <CheckBox android:id="@+id/cb_mon" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="M" />
-                <CheckBox android:id="@+id/cb_tue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="T" />
-                <CheckBox android:id="@+id/cb_wed" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="W" />
-                <CheckBox android:id="@+id/cb_thu" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="T" />
-                <CheckBox android:id="@+id/cb_fri" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="F" />
-                <CheckBox android:id="@+id/cb_sat" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="S" />
-                <CheckBox android:id="@+id/cb_sun" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="S" />
+                <CheckBox android:id="@+id/cb_mon" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/day_m" />
+                <CheckBox android:id="@+id/cb_tue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/day_t" />
+                <CheckBox android:id="@+id/cb_wed" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/day_w" />
+                <CheckBox android:id="@+id/cb_thu" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/day_t" />
+                <CheckBox android:id="@+id/cb_fri" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/day_f" />
+                <CheckBox android:id="@+id/cb_sat" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/day_s" />
+                <CheckBox android:id="@+id/cb_sun" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/day_s" />
             </LinearLayout>
             <TimePicker android:id="@+id/tp_start" android:layout_width="wrap_content" android:layout_height="wrap_content" android:timePickerMode="spinner" />
             <TimePicker android:id="@+id/tp_end" android:layout_width="wrap_content" android:layout_height="wrap_content" android:timePickerMode="spinner" />
@@ -104,9 +104,9 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginBottom="24dp">
+            android:layout_marginBottom="@dimen/spacing_lg">
 
-            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Require PIN to modify" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/add_rule_require_pin" />
             <androidx.appcompat.widget.SwitchCompat android:id="@+id/switch_pin_lock" android:layout_width="wrap_content" android:layout_height="wrap_content" />
         </LinearLayout>
 
@@ -115,7 +115,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/btn_save"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="@dimen/spacing_sm" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_cancel"

@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="8dp">
+            android:padding="@dimen/spacing_sm">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_focus_mode"
@@ -22,8 +22,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Focus Mode"
-                android:layout_marginEnd="4dp" />
+                android:text="@string/blocking_focus_mode"
+                android:layout_marginEnd="@dimen/spacing_xs" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_sleep_mode"
@@ -31,15 +31,15 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Sleep Mode"
-                android:layout_marginStart="4dp" />
+                android:text="@string/blocking_sleep_mode"
+                android:layout_marginStart="@dimen/spacing_xs" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="8dp">
+            android:padding="@dimen/spacing_sm">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_website_blocking"
@@ -47,8 +47,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Websites"
-                android:layout_marginEnd="4dp" />
+                android:text="@string/blocking_websites"
+                android:layout_marginEnd="@dimen/spacing_xs" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_in_app_blocking"
@@ -56,24 +56,24 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="In-App"
-                android:layout_marginStart="4dp" />
+                android:text="@string/blocking_in_app"
+                android:layout_marginStart="@dimen/spacing_xs" />
         </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="App Block Rules"
+            android:text="@string/blocking_app_rules"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:padding="8dp" />
+            android:padding="@dimen/spacing_sm" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_block_rules"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:padding="8dp" />
+            android:padding="@dimen/spacing_sm" />
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -81,7 +81,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
+        android:layout_margin="@dimen/spacing_md"
         android:contentDescription="Add block rule"
         app:srcCompat="@android:drawable/ic_input_add" />
 

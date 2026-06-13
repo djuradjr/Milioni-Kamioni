@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.textfield.TextInputLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/til_pin"
+    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/spacing_lg"
+    android:layout_marginTop="@dimen/spacing_sm"
+    android:hint="@string/pin_enter_hint"
+    app:endIconMode="password_toggle">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/et_pin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberPassword"
+        android:maxLength="8" />
+
+</com.google.android.material.textfield.TextInputLayout>

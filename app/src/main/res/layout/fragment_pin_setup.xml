@@ -3,22 +3,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="32dp"
+    android:padding="@dimen/spacing_xl"
     android:gravity="center">
 
     <TextView
         android:id="@+id/tv_instruction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Set your PIN"
+        android:text="@string/pin_set_title"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:layout_marginBottom="24dp" />
+        android:layout_marginBottom="@dimen/spacing_lg" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="@dimen/spacing_lg"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_pin"
@@ -33,6 +33,6 @@
         android:id="@+id/btn_confirm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Confirm" />
+        android:text="@string/btn_confirm" />
 
 </LinearLayout>

@@ -1,9 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#1976D2</color>
+    <!-- Orange/white light-only Material3 palette -->
+    <color name="primary">#F4511E</color>
     <color name="on_primary">#FFFFFF</color>
-    <color name="secondary">#03A9F4</color>
+    <color name="primary_container">#FFDBCF</color>
+    <color name="on_primary_container">#67200A</color>
+    <color name="secondary">#FB8C00</color>
     <color name="on_secondary">#FFFFFF</color>
-    <color name="overlay_background">#F5F5F5</color>
-    <color name="error">#B00020</color>
+    <color name="secondary_container">#FFE0B2</color>
+    <color name="on_secondary_container">#5C3600</color>
+    <color name="background">#FFFFFF</color>
+    <color name="on_background">#221A15</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="on_surface">#221A15</color>
+    <color name="surface_variant">#F6EDE7</color>
+    <color name="on_surface_variant">#52443C</color>
+    <color name="surface_container">#FCF1EB</color>
+    <color name="surface_container_low">#FDF6F2</color>
+    <color name="surface_container_high">#F9EAE2</color>
+    <color name="outline">#85736B</color>
+    <color name="error">#BA1A1A</color>
+    <color name="on_error">#FFFFFF</color>
+
+    <!-- Block overlay gradient -->
+    <color name="overlay_gradient_start">#F4511E</color>
+    <color name="overlay_gradient_end">#E64A19</color>
 </resources>

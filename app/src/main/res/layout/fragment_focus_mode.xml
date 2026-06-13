@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp"
+        android:padding="@dimen/spacing_md"
         android:gravity="center_horizontal">
 
         <TextView
@@ -17,7 +17,7 @@
             android:textSize="48sp"
             android:textStyle="bold"
             android:visibility="gone"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginBottom="@dimen/spacing_md" />
 
         <!-- Mode switch: whitelist/blacklist -->
         <LinearLayout
@@ -25,8 +25,8 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginBottom="16dp">
-            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Whitelist mode (allow selected apps only)" />
+            android:layout_marginBottom="@dimen/spacing_md">
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/focus_whitelist_mode" />
             <androidx.appcompat.widget.SwitchCompat android:id="@+id/switch_mode" android:layout_width="wrap_content" android:layout_height="wrap_content" android:checked="true" />
         </LinearLayout>
 
@@ -35,13 +35,13 @@
             android:id="@+id/chip_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="@dimen/spacing_md"
             app:singleSelection="true"
             xmlns:app="http://schemas.android.com/apk/res-auto">
 
-            <com.google.android.material.chip.Chip android:id="@+id/chip_25min" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="25 min" />
-            <com.google.android.material.chip.Chip android:id="@+id/chip_45min" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="45 min" />
-            <com.google.android.material.chip.Chip android:id="@+id/chip_60min" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="60 min" />
+            <com.google.android.material.chip.Chip android:id="@+id/chip_25min" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/focus_25_min" />
+            <com.google.android.material.chip.Chip android:id="@+id/chip_45min" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/focus_45_min" />
+            <com.google.android.material.chip.Chip android:id="@+id/chip_60min" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/focus_60_min" />
         </com.google.android.material.chip.ChipGroup>
 
         <LinearLayout
@@ -49,8 +49,8 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginBottom="24dp">
-            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Custom (minutes):" />
+            android:layout_marginBottom="@dimen/spacing_lg">
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/focus_custom_minutes" />
             <NumberPicker android:id="@+id/np_custom_minutes" android:layout_width="wrap_content" android:layout_height="wrap_content" />
         </LinearLayout>
 
@@ -58,15 +58,15 @@
             android:id="@+id/btn_start_focus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Start Focus"
-            android:layout_marginBottom="8dp" />
+            android:text="@string/focus_start"
+            android:layout_marginBottom="@dimen/spacing_sm" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_stop_focus"
             style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="End Focus Early"
+            android:text="@string/focus_end_early"
             android:visibility="gone" />
 
     </LinearLayout>

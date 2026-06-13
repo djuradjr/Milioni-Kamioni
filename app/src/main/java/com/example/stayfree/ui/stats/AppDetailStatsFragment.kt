@@ -11,10 +11,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.stayfree.R
 import com.example.stayfree.databinding.FragmentAppDetailStatsBinding
+import com.example.stayfree.ui.common.ChartStyler
 import com.example.stayfree.util.AppInfoUtils
 import com.example.stayfree.util.TimeUtils
-import com.github.mikephil.charting.data.BarData
-import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -64,14 +63,9 @@ class AppDetailStatsFragment : Fragment() {
                     val entries = list.mapIndexed { i, usage ->
                         BarEntry(i.toFloat(), usage.totalTimeMs.toFloat() / 60_000f)
                     }
-                    val dataSet = BarDataSet(entries, "Weekly Usage (min)").apply {
-                        color = requireContext().getColor(R.color.primary)
-                    }
-                    binding.barChart.apply {
-                        data = BarData(dataSet)
-                        description.isEnabled = false
-                        invalidate()
-                    }
+                    ChartStyler.applyBarData(
+                        binding.barChart, requireContext(), entries, "Weekly Usage (min)"
+                    )
                 }
             }
         }

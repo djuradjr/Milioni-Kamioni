@@ -24,6 +24,10 @@
     <string name="onboarding_battery_title">Battery Optimization</string>
     <string name="onboarding_battery_desc">Exclude StayFree from battery optimization so it keeps tracking even when your screen is off.</string>
 
+    <!-- Content descriptions -->
+    <string name="cd_delete_rule">Delete rule</string>
+    <string name="cd_delete_website">Delete website block</string>
+
     <!-- Buttons -->
     <string name="btn_grant_permission">Grant Permission</string>
     <string name="btn_next">Next</string>
@@ -37,6 +41,9 @@
     <string name="dashboard_total_screen_time">Total Screen Time</string>
     <string name="dashboard_unlocks">Unlocks</string>
     <string name="dashboard_active_blocks">Active Blocks</string>
+    <string name="dashboard_today">Today</string>
+    <string name="dashboard_yesterday">Yesterday</string>
+    <string name="dashboard_top_apps">Top Apps</string>
 
     <!-- Stats -->
     <string name="stats_daily">Daily</string>
@@ -48,6 +55,56 @@
     <string name="block_type_schedule">Schedule</string>
     <string name="block_type_daily_limit">Daily Limit</string>
     <string name="block_type_session">Session Limit</string>
+    <string name="blocking_focus_mode">Focus Mode</string>
+    <string name="blocking_sleep_mode">Sleep Mode</string>
+    <string name="blocking_websites">Websites</string>
+    <string name="blocking_in_app">In-App</string>
+    <string name="blocking_app_rules">App Block Rules</string>
+    <string name="app_detail_block_this_app">Block This App</string>
+
+    <!-- Add rule -->
+    <string name="add_rule_select_app">Select App</string>
+    <string name="add_rule_block_type">Block Type</string>
+    <string name="add_rule_session_duration">Session duration</string>
+    <string name="add_rule_break_duration">Break duration (minutes)</string>
+    <string name="add_rule_require_pin">Require PIN to modify</string>
+    <string name="unit_hours_short">h</string>
+    <string name="unit_minutes_short">m</string>
+    <string name="day_m">M</string>
+    <string name="day_t">T</string>
+    <string name="day_w">W</string>
+    <string name="day_f">F</string>
+    <string name="day_s">S</string>
+
+    <!-- Focus mode -->
+    <string name="focus_whitelist_mode">Whitelist mode (allow selected apps only)</string>
+    <string name="focus_25_min">25 min</string>
+    <string name="focus_45_min">45 min</string>
+    <string name="focus_60_min">60 min</string>
+    <string name="focus_custom_minutes">Custom (minutes):</string>
+    <string name="focus_start">Start Focus</string>
+    <string name="focus_end_early">End Focus Early</string>
+
+    <!-- Sleep mode -->
+    <string name="sleep_days">Sleep days</string>
+    <string name="sleep_start_time">Sleep start time</string>
+    <string name="sleep_wake_time">Wake time</string>
+
+    <!-- In-app blocking -->
+    <string name="inapp_description">Block specific features within apps (e.g. Shorts, Reels). Requires Accessibility Service.</string>
+
+    <!-- PIN -->
+    <string name="pin_set_title">Set your PIN</string>
+    <string name="btn_confirm">Confirm</string>
+    <string name="pin_enter_hint">Enter PIN</string>
+    <string name="pin_override_title">Override Block</string>
+    <string name="pin_override_message">Enter your PIN to access this app.</string>
+    <string name="pin_incorrect">Incorrect PIN</string>
+    <string name="pin_empty">PIN cannot be empty</string>
+
+    <!-- Reset time -->
+    <string name="reset_time_title">Set Daily Reset Time</string>
+    <string name="settings_change_reset_time">Change Reset Time</string>
 
     <!-- Block Overlay -->
     <string name="overlay_title">This app is blocked</string>

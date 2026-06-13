@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stayfree.data.local.entity.BlockRuleEntity
 import com.example.stayfree.databinding.ItemBlockRuleBinding
+import com.example.stayfree.domain.BlockRuleEvaluator
 import com.example.stayfree.util.AppInfoUtils
 import com.example.stayfree.util.TimeUtils
 
@@ -26,7 +27,12 @@ class BlockRulesAdapter(
 
     inner class ViewHolder(private val binding: ItemBlockRuleBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(rule: BlockRuleEntity) {
-            val appName = AppInfoUtils.getAppName(binding.root.context, rule.packageName)
+            // The sleep-mode sentinel rule is not a real package.
+            val appName = if (rule.packageName == BlockRuleEvaluator.SLEEP_MODE_PACKAGE) {
+                "Sleep mode"
+            } else {
+                AppInfoUtils.getAppName(binding.root.context, rule.packageName)
+            }
             val icon = AppInfoUtils.getAppIcon(binding.root.context, rule.packageName)
             binding.tvAppName.text = appName
             binding.tvBlockType.text = rule.blockType.replace("_", " ")
