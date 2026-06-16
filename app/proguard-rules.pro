@@ -7,9 +7,6 @@
 -keepclasseswithmembernames class * { @dagger.* <fields>; }
 -keep class dagger.hilt.** { *; }
 
-# Keep MPAndroidChart
--keep class com.github.mikephil.charting.** { *; }
-
 # Strip android.util.Log calls from release builds
 -assumenosideeffects class android.util.Log {
     public static int v(...);

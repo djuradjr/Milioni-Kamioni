@@ -9,7 +9,6 @@ lifecycle = "2.7.0"
 coroutines = "1.8.0"
 datastore = "1.1.1"
 workmanager = "2.9.0"
-mpandroidchart = "v3.1.0"
 core-ktx = "1.13.1"
 appcompat = "1.7.0"
 material = "1.12.0"
@@ -65,9 +64,6 @@ workmanager-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.
 # Coroutines
 coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
 coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
-
-# Charts
-mpandroidchart = { group = "com.github.PhilJay", name = "MPAndroidChart", version.ref = "mpandroidchart" }
 
 # Testing
 junit = { group = "junit", name = "junit", version.ref = "junit" }

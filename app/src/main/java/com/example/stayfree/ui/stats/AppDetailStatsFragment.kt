@@ -11,10 +11,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.stayfree.R
 import com.example.stayfree.databinding.FragmentAppDetailStatsBinding
-import com.example.stayfree.ui.common.ChartStyler
 import com.example.stayfree.util.AppInfoUtils
 import com.example.stayfree.util.TimeUtils
-import com.github.mikephil.charting.data.BarEntry
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -60,12 +58,7 @@ class AppDetailStatsFragment : Fragment() {
             }
             launch {
                 viewModel.weeklyUsage.collectLatest { list ->
-                    val entries = list.mapIndexed { i, usage ->
-                        BarEntry(i.toFloat(), usage.totalTimeMs.toFloat() / 60_000f)
-                    }
-                    ChartStyler.applyBarData(
-                        binding.barChart, requireContext(), entries, "Weekly Usage (min)"
-                    )
+                    binding.barChart.setData(list.map { it.totalTimeMs.toFloat() / 60_000f })
                 }
             }
         }

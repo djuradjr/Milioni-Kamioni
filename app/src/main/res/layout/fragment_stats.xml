@@ -32,7 +32,7 @@
             android:textSize="14sp" />
     </LinearLayout>
 
-    <com.github.mikephil.charting.charts.BarChart
+    <com.example.stayfree.ui.common.BarChartView
         android:id="@+id/bar_chart"
         android:layout_width="match_parent"
         android:layout_height="180dp"
