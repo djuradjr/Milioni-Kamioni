@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -9,112 +11,119 @@
         android:orientation="vertical"
         android:padding="@dimen/spacing_md">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/add_rule_select_app"
-            android:textStyle="bold"
-            android:layout_marginBottom="@dimen/spacing_sm" />
+        <!-- Select app -->
+        <TextView style="@style/Settings.SectionHeader" android:text="@string/add_rule_select_app" />
 
-        <Spinner
-            android:id="@+id/spinner_app"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_md" />
+        <com.google.android.material.card.MaterialCardView style="@style/Settings.Card">
+            <Spinner
+                android:id="@+id/spinner_app"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/spacing_md" />
+        </com.google.android.material.card.MaterialCardView>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/add_rule_block_type"
-            android:textStyle="bold"
-            android:layout_marginBottom="@dimen/spacing_sm" />
+        <!-- Block type -->
+        <TextView style="@style/Settings.SectionHeader" android:text="@string/add_rule_block_type" />
 
-        <RadioGroup
-            android:id="@+id/rg_block_type"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_md">
+        <com.google.android.material.card.MaterialCardView style="@style/Settings.Card">
+            <RadioGroup
+                android:id="@+id/rg_block_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/spacing_sm">
 
-            <RadioButton android:id="@+id/rb_block_now" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/block_type_now" android:checked="true" />
-            <RadioButton android:id="@+id/rb_daily_limit" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/block_type_daily_limit" />
-            <RadioButton android:id="@+id/rb_session" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/block_type_session" />
-            <RadioButton android:id="@+id/rb_schedule" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/block_type_schedule" />
-        </RadioGroup>
+                <RadioButton android:id="@+id/rb_block_now" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:text="@string/block_type_now" android:checked="true" />
+                <RadioButton android:id="@+id/rb_daily_limit" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:text="@string/block_type_daily_limit" />
+                <RadioButton android:id="@+id/rb_session" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:text="@string/block_type_session" />
+                <RadioButton android:id="@+id/rb_schedule" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:text="@string/block_type_schedule" />
+            </RadioGroup>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Daily Limit options -->
-        <LinearLayout
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/layout_daily_limit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            android:layout_marginBottom="@dimen/spacing_md">
-
-            <NumberPicker android:id="@+id/np_limit_hours" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/unit_hours_short" android:layout_gravity="center" />
-            <NumberPicker android:id="@+id/np_limit_minutes" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/unit_minutes_short" android:layout_gravity="center" />
-        </LinearLayout>
-
-        <!-- Session options -->
-        <LinearLayout
-            android:id="@+id/layout_session"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone"
-            android:layout_marginBottom="@dimen/spacing_md">
-
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/add_rule_session_duration" />
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
-                <NumberPicker android:id="@+id/np_session_hours" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" />
+            style="@style/Settings.Card"
+            android:visibility="gone">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="@dimen/spacing_md">
+                <NumberPicker android:id="@+id/np_limit_hours" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" />
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/unit_hours_short" android:layout_gravity="center" />
-                <NumberPicker android:id="@+id/np_session_minutes" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" />
+                <NumberPicker android:id="@+id/np_limit_minutes" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" />
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/unit_minutes_short" android:layout_gravity="center" />
             </LinearLayout>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/add_rule_break_duration" android:layout_marginTop="@dimen/spacing_sm" />
-            <NumberPicker android:id="@+id/np_break_minutes" android:layout_width="wrap_content" android:layout_height="wrap_content" />
-        </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Session options -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/layout_session"
+            style="@style/Settings.Card"
+            android:visibility="gone">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_md">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/add_rule_session_duration" android:textColor="?attr/colorOnSurfaceVariant" />
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
+                    <NumberPicker android:id="@+id/np_session_hours" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/unit_hours_short" android:layout_gravity="center" />
+                    <NumberPicker android:id="@+id/np_session_minutes" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/unit_minutes_short" android:layout_gravity="center" />
+                </LinearLayout>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/add_rule_break_duration" android:textColor="?attr/colorOnSurfaceVariant" android:layout_marginTop="@dimen/spacing_sm" />
+                <NumberPicker android:id="@+id/np_break_minutes" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Schedule options -->
-        <LinearLayout
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/layout_schedule"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone"
-            android:layout_marginBottom="@dimen/spacing_md">
-
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
-                <CheckBox android:id="@+id/cb_mon" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/day_m" />
-                <CheckBox android:id="@+id/cb_tue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/day_t" />
-                <CheckBox android:id="@+id/cb_wed" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/day_w" />
-                <CheckBox android:id="@+id/cb_thu" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/day_t" />
-                <CheckBox android:id="@+id/cb_fri" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/day_f" />
-                <CheckBox android:id="@+id/cb_sat" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/day_s" />
-                <CheckBox android:id="@+id/cb_sun" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/day_s" />
+            style="@style/Settings.Card"
+            android:visibility="gone">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_md">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+                    <CheckBox android:id="@+id/cb_mon" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="@string/day_m" android:textAlignment="center" android:buttonTint="?attr/colorPrimary" />
+                    <CheckBox android:id="@+id/cb_tue" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="@string/day_t" android:textAlignment="center" android:buttonTint="?attr/colorPrimary" />
+                    <CheckBox android:id="@+id/cb_wed" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="@string/day_w" android:textAlignment="center" android:buttonTint="?attr/colorPrimary" />
+                    <CheckBox android:id="@+id/cb_thu" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="@string/day_t" android:textAlignment="center" android:buttonTint="?attr/colorPrimary" />
+                    <CheckBox android:id="@+id/cb_fri" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="@string/day_f" android:textAlignment="center" android:buttonTint="?attr/colorPrimary" />
+                    <CheckBox android:id="@+id/cb_sat" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="@string/day_s" android:textAlignment="center" android:buttonTint="?attr/colorPrimary" />
+                    <CheckBox android:id="@+id/cb_sun" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="@string/day_s" android:textAlignment="center" android:buttonTint="?attr/colorPrimary" />
+                </LinearLayout>
+                <TimePicker android:id="@+id/tp_start" android:layout_width="match_parent" android:layout_height="wrap_content" android:timePickerMode="spinner" />
+                <TimePicker android:id="@+id/tp_end" android:layout_width="match_parent" android:layout_height="wrap_content" android:timePickerMode="spinner" />
             </LinearLayout>
-            <TimePicker android:id="@+id/tp_start" android:layout_width="wrap_content" android:layout_height="wrap_content" android:timePickerMode="spinner" />
-            <TimePicker android:id="@+id/tp_end" android:layout_width="wrap_content" android:layout_height="wrap_content" android:timePickerMode="spinner" />
-        </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
-        <!-- PIN Lock -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="@dimen/spacing_lg">
-
-            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/add_rule_require_pin" />
-            <androidx.appcompat.widget.SwitchCompat android:id="@+id/switch_pin_lock" android:layout_width="wrap_content" android:layout_height="wrap_content" />
-        </LinearLayout>
+        <!-- PIN lock -->
+        <com.google.android.material.card.MaterialCardView style="@style/Settings.Card">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:minHeight="56dp"
+                android:padding="@dimen/spacing_md">
+                <ImageView style="@style/Settings.RowIcon" android:src="@drawable/ic_lock" app:tint="?attr/colorPrimary" />
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/add_rule_require_pin" android:textAppearance="?attr/textAppearanceBodyLarge" />
+                <com.google.android.material.materialswitch.MaterialSwitch android:id="@+id/switch_pin_lock" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_save"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/btn_save"
+            android:layout_marginTop="@dimen/spacing_sm"
             android:layout_marginBottom="@dimen/spacing_sm" />
 
         <com.google.android.material.button.MaterialButton
@@ -125,4 +134,4 @@
             android:text="@string/btn_cancel" />
 
     </LinearLayout>
-</ScrollView>
+</androidx.core.widget.NestedScrollView>

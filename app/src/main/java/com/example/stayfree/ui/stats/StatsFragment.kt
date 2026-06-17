@@ -73,13 +73,16 @@ class StatsFragment : Fragment() {
             }
             launch {
                 viewModel.totalUnlocks.collectLatest { count ->
-                    binding.tvTotalUnlocks.text = "$count unlocks"
+                    binding.tvTotalUnlocks.text = getString(R.string.stats_unlocks_count, count)
                 }
             }
             launch {
                 viewModel.appUsageList.collectLatest { list ->
                     appsAdapter.submitList(list)
                     updateChart(list.take(7))
+                    val empty = list.isEmpty()
+                    binding.emptyState.visibility = if (empty) View.VISIBLE else View.GONE
+                    binding.rvApps.visibility = if (empty) View.GONE else View.VISIBLE
                 }
             }
         }

@@ -55,6 +55,11 @@
     <string name="stats_daily">Daily</string>
     <string name="stats_weekly">Weekly</string>
     <string name="stats_monthly">Monthly</string>
+    <string name="stats_activity">Activity</string>
+    <string name="stats_most_used">Most used</string>
+    <string name="stats_unlocks_count">%1$d unlocks</string>
+    <string name="stats_empty">No usage yet</string>
+    <string name="stats_empty_desc">Once you start using your phone, your screen time will show up here.</string>
 
     <!-- Blocking -->
     <string name="block_type_now">Block Now</string>
@@ -121,6 +126,15 @@
 
     <!-- In-app blocking -->
     <string name="inapp_description">Block specific features within apps (e.g. Shorts, Reels). Requires Accessibility Service.</string>
+
+    <!-- Website blocking -->
+    <string name="website_empty">No blocked websites</string>
+    <string name="website_empty_desc">Tap + to block a site or set a daily time cap for it.</string>
+    <string name="website_add_title">Block a website</string>
+    <string name="website_domain_hint">Domain (e.g. youtube.com)</string>
+    <string name="website_cap_hint">Daily cap in minutes (empty = always block)</string>
+    <string name="website_add">Add website</string>
+    <string name="btn_add">Add</string>
 
     <!-- Content blocking (Reels/Shorts overlay) -->
     <string name="content_block_group_title">Block content (beta)</string>
