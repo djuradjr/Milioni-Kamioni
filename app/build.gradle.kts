@@ -49,6 +49,14 @@ android {
                 "proguard-rules.pro"
             )
             signingConfig = signingConfigs.findByName("release")
+            // Production identity + name.
+            resValue("string", "app_name", "MoreMoney")
+        }
+        debug {
+            // Separate package + name so a debug build installs ALONGSIDE the
+            // release one (two independent copies on the same phone).
+            applicationIdSuffix = ".debug"
+            resValue("string", "app_name", "MoreMoney Dev")
         }
     }
 
