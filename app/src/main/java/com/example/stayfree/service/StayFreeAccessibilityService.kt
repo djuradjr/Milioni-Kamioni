@@ -3,6 +3,7 @@ package com.example.stayfree.service
 import android.accessibilityservice.AccessibilityService
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Rect
 import android.provider.Settings
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
@@ -50,6 +51,11 @@ class StayFreeAccessibilityService : AccessibilityService() {
     // Per-content blocking (Reels/Shorts): exit host app + show interstitial
     @Volatile private var enabledContentIds: Set<String> = emptySet()
     private var lastContentBlockAt: Long = 0L
+    // Becomes true once we've seen the host app in a NON-short-form state during
+    // this foreground session. We only block after that — so opening an app that
+    // restores directly into Shorts/Reels does NOT block on launch; only actively
+    // navigating into the short-form surface does. Reset on every app switch.
+    private var contentSurfaceArmed = false
     // Website time tracking
     private var currentBrowserDomain: String? = null
     private var domainStartTime: Long = 0L
@@ -113,6 +119,9 @@ class StayFreeAccessibilityService : AccessibilityService() {
             if (currentForegroundPackage != pkg) {
                 currentForegroundPackage = pkg
                 foregroundSince = now
+                // Fresh app session — require seeing a non-short-form screen before
+                // we'll block (so launching straight into Shorts won't block).
+                contentSurfaceArmed = false
             }
         } else if (eventType == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED) {
             val last = lastContentCheckTime[pkg] ?: 0L
@@ -177,16 +186,37 @@ class StayFreeAccessibilityService : AccessibilityService() {
         if (now - lastContentBlockAt < CONTENT_BLOCK_COOLDOWN_MS) return
 
         val root = rootInActiveWindow ?: return
+        val screenH = resources.displayMetrics.heightPixels
+        val bounds = Rect()
         val onContentSurface = try {
             anyNodeMatches(root) { node ->
                 val id = node.viewIdResourceName ?: return@anyNodeMatches false
-                target.viewIdSignatures.any { id.contains(it, ignoreCase = true) }
+                if (target.viewIdSignatures.none { id.contains(it, ignoreCase = true) }) {
+                    return@anyNodeMatches false
+                }
+                // The player view is pre-inflated in the host's view hierarchy, so
+                // id presence alone fires on app open. Require it to be actually
+                // presented: visible to the user AND covering most of the screen
+                // (the Shorts/Reels player is full-screen).
+                if (!node.isVisibleToUser) return@anyNodeMatches false
+                node.getBoundsInScreen(bounds)
+                bounds.height() >= screenH * 0.6
             }
         } finally {
             root.recycle()
         }
 
-        if (!onContentSurface) return
+        if (!onContentSurface) {
+            // Saw the host app NOT in short-form — arm blocking for when the user
+            // navigates into Shorts/Reels from here.
+            contentSurfaceArmed = true
+            return
+        }
+        // Short-form surface is up. Only block if we previously saw a non-short
+        // screen this session (active navigation), not on a launch that restores
+        // straight into Shorts/Reels.
+        if (!contentSurfaceArmed) return
+
         lastContentBlockAt = now
         Log.d(TAG, "Content detected: ${target.displayName} in $pkg -> interstitial")
 
