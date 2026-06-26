@@ -14,6 +14,7 @@ object ContentSignatures {
     const val INSTAGRAM_REELS = "instagram_reels"
     const val INSTAGRAM_STORIES = "instagram_stories"
     const val YOUTUBE_SHORTS = "youtube_shorts"
+    const val TIKTOK = "tiktok"
 
     val ALL: List<ContentBlockTarget> = listOf(
         ContentBlockTarget(
@@ -60,6 +61,19 @@ object ContentSignatures {
                 "shorts"
             ),
             blockMode = ContentBlockMode.REWARD_UNLOCK
+        ),
+        ContentBlockTarget(
+            id = TIKTOK,
+            displayName = "TikTok",
+            packageName = "com.zhiliaoapp.musically",
+            // TikTok is entirely short-form and its resource-ids are obfuscated +
+            // version-unstable (e.g. the For You video is just "hni"), so id-matching
+            // is useless. Treat the whole app as the surface, and don't press Back
+            // (TikTok has no safe screen behind the feed — Back just exits the app).
+            viewIdSignatures = emptyList(),
+            blockMode = ContentBlockMode.REWARD_UNLOCK,
+            matchWholeApp = true,
+            pressBackBeforeBlock = false
         )
     )
 

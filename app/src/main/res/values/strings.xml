@@ -142,6 +142,7 @@
     <string name="content_block_instagram_reels">Instagram Reels</string>
     <string name="content_block_instagram_stories">Instagram Stories</string>
     <string name="content_block_youtube_shorts">YouTube Shorts</string>
+    <string name="content_block_tiktok">TikTok</string>
     <string name="content_block_title">%1$s are blocked</string>
     <string name="content_block_subtitle">Take a breath — this is a limit you set for yourself.</string>
     <string name="content_block_back">Back</string>

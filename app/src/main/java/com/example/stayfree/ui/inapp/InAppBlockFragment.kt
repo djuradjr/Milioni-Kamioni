@@ -47,6 +47,9 @@ class InAppBlockFragment : Fragment() {
         binding.switchYtShorts.setOnCheckedChangeListener { btn, checked ->
             if (btn.isPressed) viewModel.setContentEnabled(ContentSignatures.YOUTUBE_SHORTS, checked)
         }
+        binding.switchTiktok.setOnCheckedChangeListener { btn, checked ->
+            if (btn.isPressed) viewModel.setContentEnabled(ContentSignatures.TIKTOK, checked)
+        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             launch {
@@ -59,6 +62,7 @@ class InAppBlockFragment : Fragment() {
                     binding.switchIgReels.isChecked = ContentSignatures.INSTAGRAM_REELS in enabled
                     binding.switchIgStories.isChecked = ContentSignatures.INSTAGRAM_STORIES in enabled
                     binding.switchYtShorts.isChecked = ContentSignatures.YOUTUBE_SHORTS in enabled
+                    binding.switchTiktok.isChecked = ContentSignatures.TIKTOK in enabled
                 }
             }
         }

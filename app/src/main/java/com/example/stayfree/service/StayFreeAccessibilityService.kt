@@ -193,27 +193,32 @@ class StayFreeAccessibilityService : AccessibilityService() {
         val now = System.currentTimeMillis()
         if (now - lastContentBlockAt < CONTENT_BLOCK_COOLDOWN_MS) return
 
-        val root = rootInActiveWindow ?: return
-        val screenH = resources.displayMetrics.heightPixels
-        val bounds = Rect()
-        val matched = try {
-            targets.firstOrNull { target ->
-                anyNodeMatches(root) { node ->
-                    val id = node.viewIdResourceName ?: return@anyNodeMatches false
-                    if (target.viewIdSignatures.none { id.contains(it, ignoreCase = true) }) {
-                        return@anyNodeMatches false
+        // Whole-app targets (TikTok) match whenever the app is foreground — no tree
+        // walk, since every screen is short-form and ids are obfuscated/unstable.
+        var matched = targets.firstOrNull { it.matchWholeApp }
+        if (matched == null) {
+            val root = rootInActiveWindow ?: return
+            val screenH = resources.displayMetrics.heightPixels
+            val bounds = Rect()
+            matched = try {
+                targets.firstOrNull { target ->
+                    anyNodeMatches(root) { node ->
+                        val id = node.viewIdResourceName ?: return@anyNodeMatches false
+                        if (target.viewIdSignatures.none { id.contains(it, ignoreCase = true) }) {
+                            return@anyNodeMatches false
+                        }
+                        // The player view is pre-inflated in the host's view hierarchy,
+                        // so id presence alone fires on app open. Require it to be
+                        // actually presented: visible AND covering most of the screen
+                        // (the Shorts/Reels/Stories player is full-screen).
+                        if (!node.isVisibleToUser) return@anyNodeMatches false
+                        node.getBoundsInScreen(bounds)
+                        bounds.height() >= screenH * 0.6
                     }
-                    // The player view is pre-inflated in the host's view hierarchy,
-                    // so id presence alone fires on app open. Require it to be
-                    // actually presented: visible AND covering most of the screen
-                    // (the Shorts/Reels/Stories player is full-screen).
-                    if (!node.isVisibleToUser) return@anyNodeMatches false
-                    node.getBoundsInScreen(bounds)
-                    bounds.height() >= screenH * 0.6
                 }
+            } finally {
+                root.recycle()
             }
-        } finally {
-            root.recycle()
         }
 
         // Not on any blocked surface (incl. the feed, where the player view is
@@ -238,12 +243,16 @@ class StayFreeAccessibilityService : AccessibilityService() {
         // Press Back — while the host is still foreground — to leave the
         // player/viewer. The host then saves a NON-blocked screen as its last
         // state (so clearing recents + reopening doesn't restore straight back in)
-        // and the user lands on the feed behind our screen. Once Back settles, show
-        // the right screen. (We avoid GLOBAL_ACTION_HOME: it races the launcher on
-        // top of us and triggers YouTube's auto-PiP floating player.)
-        performGlobalAction(GLOBAL_ACTION_BACK)
+        // and the user lands on the feed behind our screen. (We avoid
+        // GLOBAL_ACTION_HOME: it races the launcher on top of us and triggers
+        // YouTube's auto-PiP floating player.) Skipped for whole-app targets
+        // (TikTok) which have no safe screen behind the feed — there our full-screen
+        // gate simply covers the app instead.
         serviceScope.launch(Dispatchers.Main) {
-            delay(BACK_SETTLE_MS)
+            if (matched.pressBackBeforeBlock) {
+                performGlobalAction(GLOBAL_ACTION_BACK)
+                delay(BACK_SETTLE_MS)
+            }
             try {
                 val intent = when (matched.blockMode) {
                     ContentBlockMode.REWARD_UNLOCK ->

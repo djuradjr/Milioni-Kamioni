@@ -45,8 +45,6 @@ class InAppBlockViewModel @Inject constructor(
             val defaults = listOf(
                 "com.snapchat.android" to ("Snapchat Spotlight" to
                     """{"type":"anyOf","strategies":[{"type":"viewIdContains","value":"spotlight"},{"type":"viewIdContains","value":"discover_feed"}]}"""),
-                "com.zhiliaoapp.musically" to ("TikTok For You" to
-                    """{"type":"anyOf","strategies":[{"type":"viewIdContains","value":"feed_recycler"},{"type":"viewIdContains","value":"video_feed"}]}"""),
                 "com.facebook.katana" to ("Facebook Reels" to
                     """{"type":"viewIdContains","value":"reels"}"""),
                 "com.twitter.android" to ("Twitter Trending" to
