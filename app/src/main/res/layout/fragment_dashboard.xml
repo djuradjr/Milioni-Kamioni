@@ -2,7 +2,9 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_dashboard_gradient"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,7 +26,7 @@
                 android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_chevron_left"
-                app:tint="?attr/colorOnSurfaceVariant"
+                app:tint="@color/on_primary"
                 android:contentDescription="@string/dashboard_prev_day" />
 
             <TextView
@@ -34,7 +36,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:textAppearance="?attr/textAppearanceTitleMedium"
-                android:textColor="?attr/colorPrimary"
+                android:textColor="@color/on_primary"
                 android:textStyle="bold"
                 android:textAllCaps="true"
                 android:letterSpacing="0.08" />
@@ -45,7 +47,7 @@
                 android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_chevron_right"
-                app:tint="?attr/colorOnSurfaceVariant"
+                app:tint="@color/on_primary"
                 android:contentDescription="@string/dashboard_next_day" />
         </LinearLayout>
 
@@ -56,7 +58,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textAppearance="?attr/textAppearanceDisplayLarge"
-            android:textColor="?attr/colorOnSurface"
+            android:textColor="@color/on_primary"
             android:textStyle="bold" />
 
         <TextView
@@ -65,7 +67,7 @@
             android:gravity="center"
             android:text="@string/dashboard_screen_time_label"
             android:textAppearance="?attr/textAppearanceLabelLarge"
-            android:textColor="?attr/colorOnSurfaceVariant"
+            android:textColor="@color/dash_text_secondary"
             android:textAllCaps="true"
             android:letterSpacing="0.15"
             android:layout_marginBottom="@dimen/spacing_lg" />
@@ -75,11 +77,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_md"
-            app:cardBackgroundColor="?attr/colorSurface"
+            app:cardBackgroundColor="@color/dash_card"
             app:cardCornerRadius="@dimen/radius_lg"
             app:cardElevation="0dp"
             app:strokeWidth="1dp"
-            app:strokeColor="?attr/colorSurfaceContainerHigh">
+            app:strokeColor="@color/dash_card_stroke">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -101,7 +103,7 @@
                         android:text="@string/dashboard_peak_time"
                         android:textAppearance="?attr/textAppearanceTitleMedium"
                         android:textStyle="bold"
-                        android:textColor="?attr/colorOnSurface" />
+                        android:textColor="@color/on_primary" />
 
                     <TextView
                         android:id="@+id/tv_peak_time"
@@ -109,14 +111,18 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="?attr/textAppearanceTitleMedium"
                         android:textStyle="bold"
-                        android:textColor="?attr/colorPrimary" />
+                        android:textColor="@color/dash_value_accent" />
                 </LinearLayout>
 
                 <com.example.stayfree.ui.common.BarChartView
                     android:id="@+id/chart_hourly"
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
-                    app:showHourLabels="true" />
+                    app:showHourLabels="true"
+                    app:barColor="@color/dash_chart_bar"
+                    app:barTrackColor="@color/dash_chart_track"
+                    app:barHighlightColor="@color/dash_chart_peak"
+                    app:barLabelColor="@color/dash_text_secondary" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -132,11 +138,11 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginEnd="@dimen/spacing_sm"
-                app:cardBackgroundColor="?attr/colorSurface"
+                app:cardBackgroundColor="@color/dash_card"
                 app:cardCornerRadius="@dimen/radius_lg"
                 app:cardElevation="0dp"
                 app:strokeWidth="1dp"
-                app:strokeColor="?attr/colorSurfaceContainerHigh">
+                app:strokeColor="@color/dash_card_stroke">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -149,7 +155,7 @@
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:src="@drawable/ic_lock"
-                        app:tint="?attr/colorPrimary"
+                        app:tint="@color/on_primary"
                         android:layout_marginBottom="@dimen/spacing_sm"
                         android:importantForAccessibility="no" />
 
@@ -158,7 +164,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/dashboard_unlocks"
                         android:textAppearance="?attr/textAppearanceLabelMedium"
-                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:textColor="@color/dash_text_secondary"
                         android:textAllCaps="true"
                         android:letterSpacing="0.1" />
 
@@ -168,7 +174,7 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="?attr/textAppearanceHeadlineMedium"
                         android:textStyle="bold"
-                        android:textColor="?attr/colorOnSurface" />
+                        android:textColor="@color/on_primary" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -177,11 +183,11 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="@dimen/spacing_sm"
-                app:cardBackgroundColor="?attr/colorSurface"
+                app:cardBackgroundColor="@color/dash_card"
                 app:cardCornerRadius="@dimen/radius_lg"
                 app:cardElevation="0dp"
                 app:strokeWidth="1dp"
-                app:strokeColor="?attr/colorSurfaceContainerHigh">
+                app:strokeColor="@color/dash_card_stroke">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -194,7 +200,7 @@
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:src="@drawable/ic_shield"
-                        app:tint="?attr/colorPrimary"
+                        app:tint="@color/on_primary"
                         android:layout_marginBottom="@dimen/spacing_sm"
                         android:importantForAccessibility="no" />
 
@@ -203,7 +209,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/dashboard_active_blocks"
                         android:textAppearance="?attr/textAppearanceLabelMedium"
-                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:textColor="@color/dash_text_secondary"
                         android:textAllCaps="true"
                         android:letterSpacing="0.1" />
 
@@ -213,7 +219,7 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="?attr/textAppearanceHeadlineMedium"
                         android:textStyle="bold"
-                        android:textColor="?attr/colorOnSurface" />
+                        android:textColor="@color/on_primary" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
@@ -225,6 +231,7 @@
             android:text="@string/dashboard_most_used_apps"
             android:textAppearance="?attr/textAppearanceTitleLarge"
             android:textStyle="bold"
+            android:textColor="@color/on_primary"
             android:layout_marginBottom="@dimen/spacing_sm" />
 
         <androidx.recyclerview.widget.RecyclerView

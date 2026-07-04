@@ -26,17 +26,10 @@ class BarChartView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
-    private val barPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = ContextCompat.getColor(context, R.color.primary)
-    }
-    private val highlightPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = ContextCompat.getColor(context, R.color.on_primary_container)
-    }
-    private val trackPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = ContextCompat.getColor(context, R.color.surface_variant)
-    }
+    private val barPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val highlightPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val trackPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val labelPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = ContextCompat.getColor(context, R.color.on_surface_variant)
         textSize = dp(11f)
         textAlign = Paint.Align.CENTER
     }
@@ -55,6 +48,22 @@ class BarChartView @JvmOverloads constructor(
     init {
         val a = context.obtainStyledAttributes(attrs, R.styleable.BarChartView)
         showHourLabels = a.getBoolean(R.styleable.BarChartView_showHourLabels, false)
+        barPaint.color = a.getColor(
+            R.styleable.BarChartView_barColor,
+            ContextCompat.getColor(context, R.color.primary)
+        )
+        highlightPaint.color = a.getColor(
+            R.styleable.BarChartView_barHighlightColor,
+            ContextCompat.getColor(context, R.color.on_primary_container)
+        )
+        trackPaint.color = a.getColor(
+            R.styleable.BarChartView_barTrackColor,
+            ContextCompat.getColor(context, R.color.surface_variant)
+        )
+        labelPaint.color = a.getColor(
+            R.styleable.BarChartView_barLabelColor,
+            ContextCompat.getColor(context, R.color.on_surface_variant)
+        )
         a.recycle()
         labelSpace = if (showHourLabels) dp(18f) else 0f
     }

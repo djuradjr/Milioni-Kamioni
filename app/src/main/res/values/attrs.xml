@@ -2,5 +2,9 @@
 <resources>
     <declare-styleable name="BarChartView">
         <attr name="showHourLabels" format="boolean" />
+        <attr name="barColor" format="color" />
+        <attr name="barTrackColor" format="color" />
+        <attr name="barHighlightColor" format="color" />
+        <attr name="barLabelColor" format="color" />
     </declare-styleable>
 </resources>

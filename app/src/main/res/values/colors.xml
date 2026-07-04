@@ -30,4 +30,15 @@
     <!-- Block overlay gradient -->
     <color name="overlay_gradient_start">#F4511E</color>
     <color name="overlay_gradient_end">#E64A19</color>
+
+    <!-- Orange-immersive dashboard (AppBlock-style full-bleed) -->
+    <color name="dash_bg_top">#F4511E</color>
+    <color name="dash_bg_bottom">#C63D10</color>
+    <color name="dash_card">#22FFFFFF</color>
+    <color name="dash_card_stroke">#2EFFFFFF</color>
+    <color name="dash_text_secondary">#E6FFE9DF</color>
+    <color name="dash_chart_track">#26FFFFFF</color>
+    <color name="dash_chart_bar">#FFFFFF</color>
+    <color name="dash_chart_peak">#FFD180</color>
+    <color name="dash_value_accent">#FFE0B2</color>
 </resources>

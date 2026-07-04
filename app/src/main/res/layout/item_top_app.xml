@@ -5,11 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginVertical="@dimen/spacing_xs"
-    app:cardBackgroundColor="?attr/colorSurface"
+    app:cardBackgroundColor="@color/dash_card"
     app:cardCornerRadius="@dimen/radius_md"
     app:cardElevation="0dp"
     app:strokeWidth="1dp"
-    app:strokeColor="?attr/colorSurfaceContainerHigh">
+    app:strokeColor="@color/dash_card_stroke">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -37,6 +37,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?attr/textAppearanceTitleSmall"
+                android:textColor="@color/on_primary"
                 android:maxLines="1"
                 android:ellipsize="end" />
 
@@ -48,8 +49,8 @@
                 app:trackThickness="5dp"
                 app:trackCornerRadius="3dp"
                 app:trackStopIndicatorSize="0dp"
-                app:indicatorColor="?attr/colorPrimary"
-                app:trackColor="?attr/colorSurfaceVariant"
+                app:indicatorColor="@color/dash_chart_bar"
+                app:trackColor="@color/dash_chart_track"
                 android:max="100" />
         </LinearLayout>
 
@@ -60,14 +61,14 @@
             android:layout_marginStart="@dimen/spacing_md"
             android:textAppearance="?attr/textAppearanceTitleSmall"
             android:textStyle="bold"
-            android:textColor="?attr/colorPrimary" />
+            android:textColor="@color/dash_value_accent" />
 
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_marginStart="@dimen/spacing_sm"
             android:src="@drawable/ic_chevron_right"
-            app:tint="?attr/colorOnSurfaceVariant"
+            app:tint="@color/dash_text_secondary"
             android:importantForAccessibility="no" />
 
     </LinearLayout>
