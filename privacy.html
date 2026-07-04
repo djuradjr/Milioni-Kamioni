@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MoreMoney — Privacy Policy</title>
+<style>
+  body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+         max-width: 760px; margin: 0 auto; padding: 24px 20px 64px; color: #1d1d1f; line-height: 1.6; }
+  h1 { color: #F4511E; border-bottom: 3px solid #F4511E; padding-bottom: 8px; }
+  h2 { margin-top: 32px; color: #333; }
+  table { border-collapse: collapse; width: 100%; margin: 16px 0; }
+  th, td { border: 1px solid #ddd; padding: 10px 12px; text-align: left; vertical-align: top; }
+  th { background: #FFF3EF; }
+  code { background: #f5f5f5; padding: 2px 5px; border-radius: 4px; font-size: 0.9em; }
+  .updated { color: #777; font-size: 0.95em; }
+  ul { padding-left: 22px; }
+</style>
+</head>
+<body>
+
+<h1>MoreMoney — Privacy Policy</h1>
+<p class="updated">Last updated: 2026-07-05</p>
+
+<p>MoreMoney is a screen-time tracking and app-blocking application. This policy
+explains what data the app handles and where it goes.</p>
+
+<h2>The short version</h2>
+<p><strong>All data stays on your device.</strong> MoreMoney has <strong>no internet
+access</strong> — the app does not declare the INTERNET permission, so it is
+technically incapable of sending any data anywhere. There are no accounts, no
+analytics, no ads, and no third-party SDKs that collect data.</p>
+
+<h2>Data the app processes on your device</h2>
+<table>
+  <tr><th>Data</th><th>Why</th><th>Where it is stored</th></tr>
+  <tr>
+    <td>App usage statistics (which apps you use and for how long)</td>
+    <td>To show your screen-time dashboard and enforce daily limits</td>
+    <td>Local database on your device</td>
+  </tr>
+  <tr>
+    <td>Device unlock / screen-on counts</td>
+    <td>Shown on your dashboard</td>
+    <td>Local database on your device</td>
+  </tr>
+  <tr>
+    <td>Your blocking rules, schedules, focus/sleep settings</td>
+    <td>To enforce the limits you configure</td>
+    <td>Local database on your device</td>
+  </tr>
+  <tr>
+    <td>Optional PIN (stored only as a salted PBKDF2 hash, never in plain text)</td>
+    <td>To protect your blocking rules from being bypassed</td>
+    <td>Local app storage on your device</td>
+  </tr>
+  <tr>
+    <td>Name of the app currently on screen, and (only if you block specific
+        websites) the browser address bar text</td>
+    <td>Read via Android's Accessibility Service, solely to decide whether to
+        show the block screen</td>
+    <td>Processed in memory; only aggregate usage time is stored</td>
+  </tr>
+</table>
+
+<h2>Accessibility Service disclosure</h2>
+<p>MoreMoney uses Android's Accessibility Service to detect which app is in the
+foreground and, when you have configured website blocking, to read the browser
+address bar. This is the only mechanism Android provides to block an app or
+website at the moment it is opened. The information read this way is:</p>
+<ul>
+  <li>used <strong>only</strong> to enforce the rules you created;</li>
+  <li><strong>never</strong> stored beyond aggregate usage time;</li>
+  <li><strong>never</strong> transmitted off the device (the app cannot access the internet).</li>
+</ul>
+
+<h2>Backups</h2>
+<p>Backups are disabled (<code>allowBackup=false</code>). Your usage history,
+rules, and PIN hash are excluded from Google cloud backup and device-to-device
+transfer.</p>
+
+<h2>Data retention and deletion</h2>
+<p>Usage history older than 90 days is deleted automatically. You can delete all
+data at any time by clearing the app's storage in Android Settings or
+uninstalling the app — there is no server-side copy to delete.</p>
+
+<h2>Children</h2>
+<p>MoreMoney does not collect personal data from anyone, including children.</p>
+
+<h2>Changes</h2>
+<p>If this policy changes, the updated version will be published at the same URL
+and the "Last updated" date will change.</p>
+
+<h2>Contact</h2>
+<p>Questions about this policy: <a href="mailto:djukids028@gmail.com">djukids028@gmail.com</a></p>
+
+</body>
+</html>
