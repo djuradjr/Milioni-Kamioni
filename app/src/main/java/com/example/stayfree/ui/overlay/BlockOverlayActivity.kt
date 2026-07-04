@@ -66,6 +66,16 @@ class BlockOverlayActivity : AppCompatActivity() {
         }
     }
 
+    // Launched with CLEAR_TOP|SINGLE_TOP, so blocking a second app reuses this same
+    // instance — refresh the app name/icon/reason instead of showing the stale one.
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        packageName_ = intent.getStringExtra(EXTRA_PACKAGE_NAME) ?: ""
+        blockReason = intent.getStringExtra(EXTRA_BLOCK_REASON) ?: "BLOCK_NOW"
+        setupUI()
+    }
+
     private fun setupUI() {
         val appName = AppInfoUtils.getAppName(this, packageName_)
         val appIcon = AppInfoUtils.getAppIcon(this, packageName_)
@@ -79,6 +89,7 @@ class BlockOverlayActivity : AppCompatActivity() {
             "FOCUS" -> getString(R.string.overlay_focus_mode)
             "SLEEP" -> getString(R.string.overlay_sleep_mode)
             "WEBSITE_BLOCKED", "WEBSITE_CAP_REACHED" -> getString(R.string.overlay_website_blocked)
+            "APP_BLOCKED" -> getString(R.string.overlay_app_blocked)
             else -> getString(R.string.overlay_title)
         }
 

@@ -32,6 +32,9 @@ class AppPreferences @Inject constructor(
         val FOCUS_IS_WHITELIST = booleanPreferencesKey("focus_is_whitelist")
         val ACCESSIBILITY_DISCLOSURE_ACCEPTED = booleanPreferencesKey("accessibility_disclosure_accepted")
         val CONTENT_BLOCK_ENABLED = stringSetPreferencesKey("content_block_enabled_ids")
+        // Whole-app block toggles (Block Apps screen). Stores package names whose
+        // slider is ON. Enforcement is added later; for now this only persists UI state.
+        val BLOCK_APPS_ENABLED = stringSetPreferencesKey("block_apps_enabled_pkgs")
         // Rewarded unlock (reward-mode content like Instagram Stories)
         val CONTENT_UNLOCK_UNTIL = longPreferencesKey("content_unlock_until")
         val CONTENT_UNLOCKS_USED = intPreferencesKey("content_unlocks_used_today")
@@ -52,6 +55,9 @@ class AppPreferences @Inject constructor(
         dataStore.data.map { it[ACCESSIBILITY_DISCLOSURE_ACCEPTED] ?: false }
     val contentBlockEnabledIds: Flow<Set<String>> =
         dataStore.data.map { it[CONTENT_BLOCK_ENABLED] ?: emptySet() }
+    /** Package names whose whole-app block slider is ON (Block Apps screen). */
+    val blockAppsEnabledPkgs: Flow<Set<String>> =
+        dataStore.data.map { it[BLOCK_APPS_ENABLED] ?: emptySet() }
     /** Epoch ms until which reward-mode content is unlocked (0 = locked). */
     val contentUnlockUntil: Flow<Long> = dataStore.data.map { it[CONTENT_UNLOCK_UNTIL] ?: 0L }
 
@@ -103,6 +109,13 @@ class AppPreferences @Inject constructor(
         dataStore.edit { prefs ->
             val current = prefs[CONTENT_BLOCK_ENABLED] ?: emptySet()
             prefs[CONTENT_BLOCK_ENABLED] = if (enabled) current + id else current - id
+        }
+    }
+
+    suspend fun setBlockAppEnabled(packageName: String, enabled: Boolean) {
+        dataStore.edit { prefs ->
+            val current = prefs[BLOCK_APPS_ENABLED] ?: emptySet()
+            prefs[BLOCK_APPS_ENABLED] = if (enabled) current + packageName else current - packageName
         }
     }
 

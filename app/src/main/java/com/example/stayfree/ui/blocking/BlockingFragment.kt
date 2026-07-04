@@ -57,7 +57,7 @@ class BlockingFragment : Fragment() {
         }
 
         binding.btnInAppBlocking.setOnClickListener {
-            findNavController().navigate(R.id.action_blocking_to_inapp)
+            findNavController().navigate(R.id.action_blocking_to_blockApps)
         }
 
         viewLifecycleOwner.lifecycleScope.launch {

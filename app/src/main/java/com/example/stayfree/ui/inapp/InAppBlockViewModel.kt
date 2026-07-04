@@ -38,17 +38,19 @@ class InAppBlockViewModel @Inject constructor(
             // several historical candidates via "anyOf".
             // Instagram Reels + YouTube Shorts moved to the overlay-based content
             // blocker (Phase F); remove any leftover rows so they aren't double-blocked.
+            // Also drop deprecated back-kick targets whose signatures were too broad:
+            // Twitter/X "explore" matched the always-present Explore/Search nav, so it
+            // kicked the user out of the WHOLE app the moment X finished loading.
+            val deprecatedPackages = setOf("com.twitter.android")
             repository.getAllOnce()
-                .filter { it.targetApp in ContentSignatures.targetPackages }
+                .filter { it.targetApp in ContentSignatures.targetPackages || it.targetApp in deprecatedPackages }
                 .forEach { repository.deleteById(it.id) }
 
             val defaults = listOf(
                 "com.snapchat.android" to ("Snapchat Spotlight" to
                     """{"type":"anyOf","strategies":[{"type":"viewIdContains","value":"spotlight"},{"type":"viewIdContains","value":"discover_feed"}]}"""),
                 "com.facebook.katana" to ("Facebook Reels" to
-                    """{"type":"viewIdContains","value":"reels"}"""),
-                "com.twitter.android" to ("Twitter Trending" to
-                    """{"type":"anyOf","strategies":[{"type":"viewIdContains","value":"explore"},{"type":"contentDescription","value":"Trending"}]}""")
+                    """{"type":"viewIdContains","value":"reels"}""")
             )
 
             val existing = repository.getAllOnce()

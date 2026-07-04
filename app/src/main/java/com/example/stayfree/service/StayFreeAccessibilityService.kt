@@ -54,6 +54,9 @@ class StayFreeAccessibilityService : AccessibilityService() {
     @Volatile private var enabledContentIds: Set<String> = emptySet()
     // Epoch ms until which reward-mode content (e.g. Stories) is unlocked.
     @Volatile private var contentUnlockUntil: Long = 0L
+    // Whole-app block: packages whose slider is ON (Block Apps screen). Any
+    // foreground screen of these gets covered by the block overlay.
+    @Volatile private var blockAppsEnabledPkgs: Set<String> = emptySet()
     private var lastContentBlockAt: Long = 0L
     // Website time tracking
     private var currentBrowserDomain: String? = null
@@ -113,6 +116,9 @@ class StayFreeAccessibilityService : AccessibilityService() {
         serviceScope.launch {
             prefs.contentUnlockUntil.collect { contentUnlockUntil = it }
         }
+        serviceScope.launch {
+            prefs.blockAppsEnabledPkgs.collect { blockAppsEnabledPkgs = it }
+        }
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
@@ -139,6 +145,13 @@ class StayFreeAccessibilityService : AccessibilityService() {
             eventType == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED && pkg in BROWSER_URL_VIEW_IDS
 
         serviceScope.launch(Dispatchers.Main) {
+            // 0) Whole-app block (Block Apps screen) — explicit per-app choice.
+            // Exempt launcher/systemui/dialer so the phone can't be soft-bricked.
+            if (pkg in blockAppsEnabledPkgs && pkg !in exemptPackages) {
+                showBlockOverlay(pkg, "APP_BLOCKED")
+                return@launch
+            }
+
             // 1) Focus mode — global, with exemptions
             if (focusModeActive && now < focusModeEndTime && pkg !in exemptPackages) {
                 val shouldBlock = if (focusModeIsWhitelist) {
