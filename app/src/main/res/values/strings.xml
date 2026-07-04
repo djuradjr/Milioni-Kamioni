@@ -157,7 +157,7 @@
     <string name="content_block_need_more">I need 5 more minutes</string>
 
     <!-- Content interstitial (shown after the host app is sent to background) -->
-    <string name="interstitial_placeholder">AD</string>
+    <string name="interstitial_placeholder">MoreMoney</string>
     <string name="interstitial_close">Close</string>
 
     <!-- Reward-unlock gate (reward-mode content like Instagram Stories) -->

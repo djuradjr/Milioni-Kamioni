@@ -21,9 +21,10 @@ import kotlinx.coroutines.launch
 class SettingsFragment : Fragment() {
 
     companion object {
-        // TODO: replace with the hosted privacy policy URL before Play submission
-        // (see docs/PLAY_RELEASE_CHECKLIST.md).
-        private const val PRIVACY_POLICY_URL = "https://example.com/moremoney-privacy"
+        // Hosted on GitHub Pages (gh-pages branch of the app repo); the same URL
+        // goes into Play Console -> App content -> Privacy policy.
+        private const val PRIVACY_POLICY_URL =
+            "https://mentalyill.github.io/Milioni-Kamioni/privacy.html"
     }
 
     private var _binding: FragmentSettingsBinding? = null

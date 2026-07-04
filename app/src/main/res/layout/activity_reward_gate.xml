@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
     Reward-unlock gate shown over the host app's feed after the user enters a
-    reward-mode surface (Instagram Stories). Test-phase UI: a title, a short
-    message, an "AD" placeholder slot (where a real AdMob Rewarded ad shows
-    later), and two actions — watch ad (unlock 3 min) or exit. NO countdown.
+    reward-mode surface (Instagram Stories). UI: a title, a short message, a
+    branded placeholder slot, and two actions — "PRVI MILION" (unlock 3 min)
+    or exit. NO countdown. No ads are shown or promised anywhere in the UI.
 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
