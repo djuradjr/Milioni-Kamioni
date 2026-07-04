@@ -15,6 +15,10 @@ import com.example.stayfree.R
  * Lightweight orange bar chart drawn directly on a Canvas — replaces the
  * MPAndroidChart dependency. Call [setData] with the per-bar values; bars are
  * scaled to the max value and animate up on change.
+ *
+ * Optional extras (used by the dashboard hourly chart):
+ *  - [setData]'s `highlightIndex` paints one bar in a deeper shade (peak hour).
+ *  - `app:showHourLabels` draws 0/6/12/18 clock labels under a 24-bar chart.
  */
 class BarChartView @JvmOverloads constructor(
     context: Context,
@@ -25,21 +29,40 @@ class BarChartView @JvmOverloads constructor(
     private val barPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = ContextCompat.getColor(context, R.color.primary)
     }
+    private val highlightPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = ContextCompat.getColor(context, R.color.on_primary_container)
+    }
     private val trackPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = ContextCompat.getColor(context, R.color.surface_variant)
     }
+    private val labelPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = ContextCompat.getColor(context, R.color.on_surface_variant)
+        textSize = dp(11f)
+        textAlign = Paint.Align.CENTER
+    }
 
     private var values: List<Float> = emptyList()
+    private var highlightIndex: Int = -1
     private var maxValue: Float = 1f
     private var animProgress: Float = 1f
     private var animator: ValueAnimator? = null
 
-    private val barRect = RectF()
-    private val cornerRadius = dp(6f)
-    private val barGap = dp(8f)
+    private val showHourLabels: Boolean
 
-    fun setData(newValues: List<Float>) {
+    private val barRect = RectF()
+    private val labelSpace: Float
+
+    init {
+        val a = context.obtainStyledAttributes(attrs, R.styleable.BarChartView)
+        showHourLabels = a.getBoolean(R.styleable.BarChartView_showHourLabels, false)
+        a.recycle()
+        labelSpace = if (showHourLabels) dp(18f) else 0f
+    }
+
+    @JvmOverloads
+    fun setData(newValues: List<Float>, highlightIndex: Int = -1) {
         values = newValues
+        this.highlightIndex = highlightIndex
         maxValue = (newValues.maxOrNull() ?: 0f).coerceAtLeast(1f)
         animator?.cancel()
         animator = ValueAnimator.ofFloat(0f, 1f).apply {
@@ -58,12 +81,15 @@ class BarChartView @JvmOverloads constructor(
         if (values.isEmpty()) return
 
         val count = values.size
+        // Tighter gap for dense charts (24 hourly bars) so bars stay visible.
+        val barGap = if (count > 12) dp(3f) else dp(8f)
         val totalGap = barGap * (count + 1)
         val barWidth = ((width - totalGap) / count).coerceAtLeast(1f)
-        val usableHeight = height.toFloat()
+        val cornerRadius = minOf(dp(6f), barWidth / 2f)
+        val usableHeight = height - labelSpace
 
         var x = barGap
-        for (value in values) {
+        for ((index, value) in values.withIndex()) {
             val full = (value / maxValue) * usableHeight
             val barHeight = full * animProgress
             // Faint full-height track behind each bar.
@@ -71,7 +97,12 @@ class BarChartView @JvmOverloads constructor(
             canvas.drawRoundRect(barRect, cornerRadius, cornerRadius, trackPaint)
             // Actual value bar, grounded at the bottom.
             barRect.set(x, usableHeight - barHeight, x + barWidth, usableHeight)
-            canvas.drawRoundRect(barRect, cornerRadius, cornerRadius, barPaint)
+            val paint = if (index == highlightIndex) highlightPaint else barPaint
+            canvas.drawRoundRect(barRect, cornerRadius, cornerRadius, paint)
+
+            if (showHourLabels && index % 6 == 0) {
+                canvas.drawText(index.toString(), x + barWidth / 2f, height - dp(4f), labelPaint)
+            }
             x += barWidth + barGap
         }
     }

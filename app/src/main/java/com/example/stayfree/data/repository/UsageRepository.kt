@@ -11,6 +11,8 @@ interface UsageRepository {
     fun getScreenTimeForPackageOnDate(packageName: String, date: String): Flow<Long>
     fun getUnlocksForPackageOnDate(packageName: String, date: String): Flow<Int>
     suspend fun syncFromUsageStats(date: String, resetTimeMinutes: Int)
+    /** Foreground time per clock hour (24 buckets, ms) for a calendar date. */
+    suspend fun getHourlyUsage(date: String): List<Long>
     suspend fun incrementUnlock(date: String)
     suspend fun incrementScreenOn(date: String)
 }

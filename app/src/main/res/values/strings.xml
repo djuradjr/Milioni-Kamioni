@@ -48,8 +48,12 @@
     <string name="dashboard_unlocks">Unlocks</string>
     <string name="dashboard_active_blocks">Active Blocks</string>
     <string name="dashboard_today">Today</string>
-    <string name="dashboard_yesterday">Yesterday</string>
-    <string name="dashboard_top_apps">Top Apps</string>
+    <string name="dashboard_screen_time_label">Screen time</string>
+    <string name="dashboard_peak_time">Peak time</string>
+    <string name="dashboard_most_used_apps">Most used apps</string>
+    <string name="dashboard_prev_day">Previous day</string>
+    <string name="dashboard_next_day">Next day</string>
+    <string name="dashboard_no_peak">—</string>
 
     <!-- Stats -->
     <string name="stats_daily">Daily</string>
@@ -79,6 +83,10 @@
     <string name="blocking_sleep_desc">Quiet hours every night</string>
     <string name="blocking_websites_desc">Block sites in your browser</string>
     <string name="blocking_in_app_desc">Reels, Shorts &amp; more</string>
+    <string name="blocking_block_apps">Block Apps</string>
+    <string name="blocking_block_apps_desc">Blokiraj cele aplikacije</string>
+    <string name="block_apps_empty">Nema dostupnih aplikacija</string>
+    <string name="block_apps_all_header">Sve aplikacije</string>
     <string name="blocking_rules_count">%1$d rule(s) • %2$d active</string>
     <string name="blocking_rules_empty">No app limits yet</string>
     <string name="blocking_rules_empty_desc">Tap + to set a daily limit, schedule, or instant block for an app.</string>
@@ -154,8 +162,9 @@
 
     <!-- Reward-unlock gate (reward-mode content like Instagram Stories) -->
     <string name="reward_gate_title">%1$s</string>
-    <string name="reward_gate_message">Watch a short ad to unlock 3 minutes — or step away.</string>
-    <string name="reward_gate_watch">Watch ad — unlock 3 min</string>
+    <string name="reward_gate_message">Otključaj 3 minuta pristupa — ili napravi pauzu.</string>
+    <string name="reward_gate_watch">PRVI MILION</string>
+    <string name="reward_gate_brand">MoreMoney</string>
     <string name="reward_gate_exit">Exit</string>
     <string name="reward_gate_cap">Daily unlock limit reached. Try again tomorrow.</string>
 
@@ -179,6 +188,7 @@
     <string name="overlay_focus_mode">Focus mode is active</string>
     <string name="overlay_sleep_mode">Sleep mode is active</string>
     <string name="overlay_website_blocked">This website is blocked</string>
+    <string name="overlay_app_blocked">This app is blocked</string>
     <string name="overlay_set_pin_hint">Want an override option? Set a PIN in Settings first.</string>
 
     <!-- In-App Block features -->

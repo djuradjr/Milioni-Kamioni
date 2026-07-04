@@ -22,6 +22,11 @@ class DashboardViewModel @Inject constructor(
     private val _selectedDate = MutableStateFlow(TimeUtils.getTodayString())
     val selectedDate: StateFlow<String> = _selectedDate.asStateFlow()
 
+    /** True while the selected date is today — drives the TODAY label and disables the forward arrow. */
+    val isToday: StateFlow<Boolean> = selectedDate
+        .map { it == TimeUtils.getTodayString() }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
+
     val totalScreenTime: StateFlow<Long> = selectedDate
         .flatMapLatest { date -> usageRepository.getTotalScreenTimeForDate(date) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0L)
@@ -39,20 +44,36 @@ class DashboardViewModel @Inject constructor(
         .map { it.size }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
 
+    /** Foreground ms per clock hour (24 buckets) for the hourly chart. */
+    val hourlyUsage: StateFlow<List<Long>> = selectedDate
+        .mapLatest { date -> usageRepository.getHourlyUsage(date) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), List(24) { 0L })
+
+    /** Hour (0-23) with the most usage, or null when there is no usage at all. */
+    val peakHour: StateFlow<Int?> = hourlyUsage
+        .map { buckets ->
+            val max = buckets.maxOrNull() ?: 0L
+            if (max > 0L) buckets.indexOf(max) else null
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+
     fun selectDate(date: String) {
         _selectedDate.value = date
+    }
+
+    fun goToPreviousDay() {
+        _selectedDate.value = TimeUtils.addDays(_selectedDate.value, -1)
+    }
+
+    fun goToNextDay() {
+        if (_selectedDate.value == TimeUtils.getTodayString()) return
+        _selectedDate.value = TimeUtils.addDays(_selectedDate.value, 1)
     }
 
     fun selectToday() {
         viewModelScope.launch {
             val resetTime = prefs.dailyResetTimeMinutes.first()
             _selectedDate.value = TimeUtils.getEffectiveDate(resetTime)
-        }
-    }
-
-    fun selectYesterday() {
-        viewModelScope.launch {
-            _selectedDate.value = TimeUtils.getDateStringDaysAgo(1)
         }
     }
 }

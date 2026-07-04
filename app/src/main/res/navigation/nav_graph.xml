@@ -7,7 +7,11 @@
     <fragment
         android:id="@+id/dashboardFragment"
         android:name="com.example.stayfree.ui.dashboard.DashboardFragment"
-        android:label="@string/nav_dashboard" />
+        android:label="@string/nav_dashboard">
+        <action
+            android:id="@+id/action_dashboard_to_appDetail"
+            app:destination="@id/appDetailStatsFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/statsFragment"
@@ -46,6 +50,9 @@
         <action
             android:id="@+id/action_blocking_to_inapp"
             app:destination="@id/inAppBlockFragment" />
+        <action
+            android:id="@+id/action_blocking_to_blockApps"
+            app:destination="@id/blockAppsFragment" />
     </fragment>
 
     <fragment
@@ -77,6 +84,11 @@
         android:id="@+id/inAppBlockFragment"
         android:name="com.example.stayfree.ui.inapp.InAppBlockFragment"
         android:label="In-App Blocking" />
+
+    <fragment
+        android:id="@+id/blockAppsFragment"
+        android:name="com.example.stayfree.ui.blockapps.BlockAppsFragment"
+        android:label="@string/blocking_block_apps" />
 
     <fragment
         android:id="@+id/settingsFragment"

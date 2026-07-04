@@ -7,6 +7,7 @@ import com.example.stayfree.data.local.db.dao.AppUsageDao
 import com.example.stayfree.data.local.entity.AppUsageEntity
 import com.example.stayfree.domain.model.AppUsage
 import com.example.stayfree.util.AppInfoUtils
+import com.example.stayfree.util.TimeUtils
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -92,6 +93,46 @@ class UsageRepositoryImpl @Inject constructor(
                 )
             )
         }
+    }
+
+    /**
+     * Splits foreground sessions from raw UsageEvents into 24 clock-hour buckets.
+     * Only works within the system's event retention window (~last 7 days);
+     * older dates return all zeros.
+     */
+    override suspend fun getHourlyUsage(date: String): List<Long> {
+        val buckets = LongArray(24)
+        val dayStart = TimeUtils.getDayStartMs(date) ?: return buckets.toList()
+        val dayEnd = minOf(dayStart + 24 * 3_600_000L, System.currentTimeMillis())
+        if (dayEnd <= dayStart) return buckets.toList()
+
+        val events = usageStatsManager.queryEvents(dayStart, dayEnd) ?: return buckets.toList()
+        val foregroundSince = mutableMapOf<String, Long>()
+        val event = UsageEvents.Event()
+
+        fun addSession(startMs: Long, endMs: Long) {
+            var cursor = startMs.coerceAtLeast(dayStart)
+            val stop = endMs.coerceAtMost(dayEnd)
+            while (cursor < stop) {
+                val hour = ((cursor - dayStart) / 3_600_000L).toInt().coerceIn(0, 23)
+                val hourEnd = dayStart + (hour + 1) * 3_600_000L
+                buckets[hour] += minOf(stop, hourEnd) - cursor
+                cursor = hourEnd
+            }
+        }
+
+        while (events.hasNextEvent()) {
+            events.getNextEvent(event)
+            val pkg = event.packageName ?: continue
+            when (event.eventType) {
+                UsageEvents.Event.ACTIVITY_RESUMED ->
+                    if (pkg !in foregroundSince) foregroundSince[pkg] = event.timeStamp
+                UsageEvents.Event.ACTIVITY_PAUSED ->
+                    addSession(foregroundSince.remove(pkg) ?: dayStart, event.timeStamp)
+            }
+        }
+        for ((_, since) in foregroundSince) addSession(since, dayEnd)
+        return buckets.toList()
     }
 
     override suspend fun incrementUnlock(date: String) {

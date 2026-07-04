@@ -37,6 +37,38 @@ object TimeUtils {
         return dateFormat.format(cal.time)
     }
 
+    /** Epoch ms of local midnight for a "yyyy-MM-dd" string, or null if unparsable. */
+    fun getDayStartMs(date: String): Long? {
+        val parsed = try {
+            dateFormat.parse(date)
+        } catch (e: java.text.ParseException) {
+            null
+        } ?: return null
+        return Calendar.getInstance().apply {
+            time = parsed
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.timeInMillis
+    }
+
+    /** Shifts a "yyyy-MM-dd" string by [days] (negative = past). Returns the input if unparsable. */
+    fun addDays(date: String, days: Int): String {
+        val startMs = getDayStartMs(date) ?: return date
+        val cal = Calendar.getInstance().apply {
+            timeInMillis = startMs
+            add(Calendar.DAY_OF_YEAR, days)
+        }
+        return dateFormat.format(cal.time)
+    }
+
+    /** Formats a "yyyy-MM-dd" string for display, e.g. "Fri, 4 Jul". Returns the input if unparsable. */
+    fun formatDisplayDate(date: String): String {
+        val startMs = getDayStartMs(date) ?: return date
+        return SimpleDateFormat("EEE, d MMM", Locale.US).format(Date(startMs))
+    }
+
     /** Format milliseconds to human-readable "Xh Ym" or "Ym Zs" */
     fun formatDuration(ms: Long): String {
         val totalSeconds = ms / 1000
