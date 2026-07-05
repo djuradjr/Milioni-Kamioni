@@ -24,7 +24,7 @@ class SettingsFragment : Fragment() {
         // Hosted on GitHub Pages (gh-pages branch of the app repo); the same URL
         // goes into Play Console -> App content -> Privacy policy.
         private const val PRIVACY_POLICY_URL =
-            "https://mentalyill.github.io/Milioni-Kamioni/privacy.html"
+            "https://djuradjr.github.io/Milioni-Kamioni/privacy.html"
     }
 
     private var _binding: FragmentSettingsBinding? = null
