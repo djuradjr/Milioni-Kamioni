@@ -22,7 +22,7 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.djuki.moremoney"
+        applicationId = "com.djuki.blockbrainrot"
         minSdk = 23
         targetSdk = 35
         versionCode = 1
@@ -50,13 +50,13 @@ android {
             )
             signingConfig = signingConfigs.findByName("release")
             // Production identity + name.
-            resValue("string", "app_name", "MoreMoney")
+            resValue("string", "app_name", "Block Brainrot")
         }
         debug {
             // Separate package + name so a debug build installs ALONGSIDE the
             // release one (two independent copies on the same phone).
             applicationIdSuffix = ".debug"
-            resValue("string", "app_name", "MoreMoney Dev")
+            resValue("string", "app_name", "Block Brainrot Dev")
         }
     }
 

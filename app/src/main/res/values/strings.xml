@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- app_name is provided per build type in build.gradle.kts (MoreMoney / MoreMoney Dev) -->
+    <!-- app_name is provided per build type in build.gradle.kts (Block Brainrot / Block Brainrot Dev) -->
 
     <!-- Navigation -->
     <string name="nav_dashboard">Dashboard</string>
@@ -9,14 +9,14 @@
     <string name="nav_settings">Settings</string>
 
     <!-- Accessibility Service -->
-    <string name="accessibility_service_label">MoreMoney Screen Monitor</string>
-    <string name="accessibility_service_description">MoreMoney uses the Accessibility Service to detect which app or website is currently open so it can enforce your blocking rules.</string>
+    <string name="accessibility_service_label">Block Brainrot Screen Monitor</string>
+    <string name="accessibility_service_description">Block Brainrot uses the Accessibility Service to detect which app or website is currently open so it can enforce your blocking rules.</string>
 
     <!-- Onboarding -->
     <string name="onboarding_usage_title">Usage Access</string>
-    <string name="onboarding_usage_desc">MoreMoney needs permission to view your app usage statistics. This lets us show you exactly how much time you spend in each app.</string>
+    <string name="onboarding_usage_desc">Block Brainrot needs permission to view your app usage statistics. This lets us show you exactly how much time you spend in each app.</string>
     <string name="onboarding_accessibility_title">Accessibility Service</string>
-    <string name="onboarding_accessibility_desc">Enable MoreMoney in Accessibility Settings to allow it to detect your active app and enforce blocking rules.</string>
+    <string name="onboarding_accessibility_desc">Enable Block Brainrot in Accessibility Settings to allow it to detect your active app and enforce blocking rules.</string>
 
     <!-- Prominent disclosure (Play policy) -->
     <string name="disclosure_title">Accessibility access</string>
@@ -24,11 +24,11 @@
     <string name="disclosure_accept">Accept and continue</string>
     <string name="disclosure_decline">Not now</string>
     <string name="onboarding_overlay_title">Display Over Other Apps</string>
-    <string name="onboarding_overlay_desc">MoreMoney needs to draw over other apps to show the block screen when you try to open a blocked app.</string>
+    <string name="onboarding_overlay_desc">Block Brainrot needs to draw over other apps to show the block screen when you try to open a blocked app.</string>
     <string name="onboarding_notifications_title">Notifications</string>
-    <string name="onboarding_notifications_desc">Allow notifications so MoreMoney can alert you when you are approaching your daily limits.</string>
+    <string name="onboarding_notifications_desc">Allow notifications so Block Brainrot can alert you when you are approaching your daily limits.</string>
     <string name="onboarding_battery_title">Battery Optimization</string>
-    <string name="onboarding_battery_desc">Exclude MoreMoney from battery optimization so it keeps tracking even when your screen is off.</string>
+    <string name="onboarding_battery_desc">Exclude Block Brainrot from battery optimization so it keeps tracking even when your screen is off.</string>
 
     <!-- Content descriptions -->
     <string name="cd_delete_rule">Delete rule</string>
@@ -157,14 +157,14 @@
     <string name="content_block_need_more">I need 5 more minutes</string>
 
     <!-- Content interstitial (shown after the host app is sent to background) -->
-    <string name="interstitial_placeholder">MoreMoney</string>
+    <string name="interstitial_placeholder">Block Brainrot</string>
     <string name="interstitial_close">Close</string>
 
     <!-- Reward-unlock gate (reward-mode content like Instagram Stories) -->
     <string name="reward_gate_title">%1$s</string>
     <string name="reward_gate_message">Otključaj 3 minuta pristupa — ili napravi pauzu.</string>
     <string name="reward_gate_watch">PRVI MILION</string>
-    <string name="reward_gate_brand">MoreMoney</string>
+    <string name="reward_gate_brand">Block Brainrot</string>
     <string name="reward_gate_exit">Exit</string>
     <string name="reward_gate_cap">Daily unlock limit reached. Try again tomorrow.</string>
 

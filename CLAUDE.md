@@ -11,9 +11,13 @@ Guidance for AI agents working in this repo. Read this first.
 - Git remote: `https://github.com/djuradjr/Milioni-Kamioni.git` (branch `main`).
   (GitHub username renamed `MentalyIll` → `djuradjr` on 2026-07-05; old owner URL
   no longer redirects. Pages/privacy URL is `https://djuradjr.github.io/Milioni-Kamioni/privacy.html`.)
-- Rebrand StayFree → MoreMoney is **partial by design**: `namespace = com.example.stayfree`
-  stays (don't rename packages), but `applicationId = com.djuki.moremoney`
-  (debug variant: `com.djuki.moremoney.debug`, label "MoreMoney Dev", installs alongside release).
+- Public app name is **"Block Brainrot"** (rebranded from MoreMoney on 2026-07-06;
+  repo folder + internal project name stay "MoreMoney"). Release `app_name = "Block Brainrot"`,
+  debug `app_name = "Block Brainrot Dev"` (set via `resValue` in `app/build.gradle.kts`).
+- Package rebrand is **partial by design**: `namespace = com.example.stayfree` stays
+  (don't rename packages), but `applicationId = com.djuki.blockbrainrot`
+  (debug variant: `com.djuki.blockbrainrot.debug`, installs alongside release).
+  ⚠️ applicationId locked at first Play publish — do not change after upload.
 
 ## 2. Build & run
 - Export JDK before every Gradle call: `export JAVA_HOME="$HOME/.jdks/openjdk-22.0.2"`
@@ -25,11 +29,11 @@ Guidance for AI agents working in this repo. Read this first.
 ## 3. ⚠️ Gotcha #1 — reinstall DISABLES the accessibility service
 Every `adb install -r` turns the a11y service off (Android security). After EVERY reinstall re-run:
 ```
-adb shell settings put secure enabled_accessibility_services com.djuki.moremoney.debug/com.example.stayfree.service.StayFreeAccessibilityService
+adb shell settings put secure enabled_accessibility_services com.djuki.blockbrainrot.debug/com.example.stayfree.service.StayFreeAccessibilityService
 adb shell settings put secure accessibility_enabled 1
-adb shell appops set com.djuki.moremoney.debug SYSTEM_ALERT_WINDOW allow
+adb shell appops set com.djuki.blockbrainrot.debug SYSTEM_ALERT_WINDOW allow
 ```
-Then poll `dumpsys accessibility | grep 'MoreMoney Screen Monitor'` until bound (may take a few s; re-set `accessibility_enabled 1` while waiting). Without this, NOTHING blocks — the #1 cause of "it doesn't work".
+Then poll `dumpsys accessibility | grep 'Block Brainrot Screen Monitor'` until bound (may take a few s; re-set `accessibility_enabled 1` while waiting). Without this, NOTHING blocks — the #1 cause of "it doesn't work".
 
 ## 4. Emulator testing
 - AVD `Pixel_9`; boot: `emulator -avd Pixel_9 -gpu host -no-snapshot-load` (run in background), then wait `getprop sys.boot_completed == 1`.

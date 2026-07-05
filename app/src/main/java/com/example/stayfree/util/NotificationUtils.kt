@@ -30,7 +30,7 @@ object NotificationUtils {
                         CHANNEL_FOREGROUND,
                         "Usage Tracking",
                         NotificationManager.IMPORTANCE_MIN
-                    ).apply { description = "MoreMoney is tracking your screen time" },
+                    ).apply { description = "Block Brainrot is tracking your screen time" },
                     NotificationChannel(
                         CHANNEL_USAGE_ALERTS,
                         "Usage Alerts",

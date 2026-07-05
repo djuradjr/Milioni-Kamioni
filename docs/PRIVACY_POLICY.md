@@ -1,13 +1,13 @@
-# MoreMoney — Privacy Policy
+# Block Brainrot — Privacy Policy
 
-_Last updated: 2026-06-13_
+_Last updated: 2026-07-06_
 
-MoreMoney is a screen-time tracking and app-blocking application. This policy
+Block Brainrot is a screen-time tracking and app-blocking application. This policy
 explains what data the app handles and where it goes.
 
 ## The short version
 
-**All data stays on your device.** MoreMoney has **no internet access** — the
+**All data stays on your device.** Block Brainrot has **no internet access** — the
 app does not declare the INTERNET permission, so it is technically incapable of
 sending any data anywhere. There are no accounts, no analytics, no ads, and no
 third-party SDKs that collect data.
@@ -24,7 +24,7 @@ third-party SDKs that collect data.
 
 ## Accessibility Service disclosure
 
-MoreMoney uses Android's Accessibility Service to detect which app is in the
+Block Brainrot uses Android's Accessibility Service to detect which app is in the
 foreground and, when you have configured website blocking, to read the browser
 address bar. This is the only mechanism Android provides to block an app or
 website at the moment it is opened. The information read this way is:
@@ -46,7 +46,7 @@ uninstalling the app — there is no server-side copy to delete.
 
 ## Children
 
-MoreMoney does not collect personal data from anyone, including children.
+Block Brainrot does not collect personal data from anyone, including children.
 
 ## Changes
 
