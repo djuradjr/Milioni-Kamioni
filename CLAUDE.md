@@ -8,7 +8,9 @@ Guidance for AI agents working in this repo. Read this first.
   was renamed `StayFree` → `MoreMoney` on 2026-07-03; the old `IdeaProjects\StayFree`
   path no longer exists (only the folder name changed — the package/namespace/class
   names below are unaffected and intentionally keep `stayfree`).
-- Git remote: `https://github.com/MentalyIll/Milioni-Kamioni.git` (branch `main`).
+- Git remote: `https://github.com/djuradjr/Milioni-Kamioni.git` (branch `main`).
+  (GitHub username renamed `MentalyIll` → `djuradjr` on 2026-07-05; old owner URL
+  no longer redirects. Pages/privacy URL is `https://djuradjr.github.io/Milioni-Kamioni/privacy.html`.)
 - Rebrand StayFree → MoreMoney is **partial by design**: `namespace = com.example.stayfree`
   stays (don't rename packages), but `applicationId = com.djuki.moremoney`
   (debug variant: `com.djuki.moremoney.debug`, label "MoreMoney Dev", installs alongside release).
