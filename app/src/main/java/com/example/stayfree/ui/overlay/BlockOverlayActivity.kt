@@ -85,7 +85,7 @@ class BlockOverlayActivity : AppCompatActivity() {
 
         binding.tvBlockReason.text = when (blockReason) {
             "SCHEDULED" -> getString(R.string.overlay_by_schedule)
-            "DAILY_LIMIT" -> getString(R.string.overlay_daily_limit_reached)
+            "DAILY_LIMIT", "APP_LIMIT_REACHED" -> getString(R.string.overlay_daily_limit_reached)
             "FOCUS" -> getString(R.string.overlay_focus_mode)
             "SLEEP" -> getString(R.string.overlay_sleep_mode)
             "WEBSITE_BLOCKED", "WEBSITE_CAP_REACHED" -> getString(R.string.overlay_website_blocked)

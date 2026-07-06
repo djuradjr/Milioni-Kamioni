@@ -27,6 +27,20 @@
     <color name="accent_purple_container">#EDE7F3</color>
     <color name="on_accent_purple">#FFFFFF</color>
 
+    <!-- Psychology accents: teal = calm/self-control (positive states, success,
+         "time saved"), ink = trust/focus (premium dark, night/sleep) -->
+    <color name="accent_teal">#00897B</color>
+    <color name="accent_teal_container">#D2F1EA</color>
+    <color name="on_accent_teal">#FFFFFF</color>
+    <color name="on_accent_teal_container">#00382F</color>
+    <color name="ink">#1B2B4B</color>
+    <color name="ink_light">#2E4570</color>
+    <color name="on_ink">#FFFFFF</color>
+
+    <!-- On-gradient glass elements (badges, icon circles) -->
+    <color name="glass_white">#2EFFFFFF</color>
+    <color name="glass_white_strong">#40FFFFFF</color>
+
     <!-- Block overlay gradient -->
     <color name="overlay_gradient_start">#F4511E</color>
     <color name="overlay_gradient_end">#E64A19</color>

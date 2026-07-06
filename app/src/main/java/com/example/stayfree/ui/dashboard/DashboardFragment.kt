@@ -1,9 +1,11 @@
 package com.example.stayfree.ui.dashboard
 
 import android.os.Bundle
+import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.DecelerateInterpolator
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.WindowCompat
@@ -14,7 +16,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.stayfree.R
 import com.example.stayfree.databinding.FragmentDashboardBinding
+import com.example.stayfree.ui.common.CountUp
 import com.example.stayfree.util.TimeUtils
+import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -28,6 +32,16 @@ class DashboardFragment : Fragment() {
     private val viewModel: DashboardViewModel by viewModels()
     private lateinit var topAppsAdapter: TopAppsAdapter
 
+    // Tracks the previously shown date so day changes can slide in from the right side.
+    private var lastShownDate: String? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enterTransition = MaterialFadeThrough()
+        exitTransition = MaterialFadeThrough()
+        reenterTransition = MaterialFadeThrough()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentDashboardBinding.inflate(inflater, container, false)
         return binding.root
@@ -37,6 +51,7 @@ class DashboardFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         setupDateNav()
+        setupChart()
         observeData()
     }
 
@@ -54,20 +69,35 @@ class DashboardFragment : Fragment() {
     }
 
     private fun setupDateNav() {
-        binding.btnPrevDay.setOnClickListener { viewModel.goToPreviousDay() }
-        binding.btnNextDay.setOnClickListener { viewModel.goToNextDay() }
+        binding.btnPrevDay.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+            viewModel.goToPreviousDay()
+        }
+        binding.btnNextDay.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+            viewModel.goToNextDay()
+        }
+    }
+
+    private fun setupChart() {
+        binding.chartHourly.tooltipFormatter = { hour, minutes ->
+            String.format(
+                Locale.US, "%02d:00 · %s",
+                hour, TimeUtils.formatDuration((minutes * 60_000f).toLong())
+            )
+        }
     }
 
     private fun observeData() {
         viewLifecycleOwner.lifecycleScope.launch {
             launch {
                 viewModel.totalScreenTime.collectLatest { ms ->
-                    binding.tvTotalScreenTime.text = TimeUtils.formatDuration(ms)
+                    CountUp.animate(binding.tvTotalScreenTime, ms) { TimeUtils.formatDuration(it) }
                 }
             }
             launch {
                 viewModel.totalUnlocks.collectLatest { count ->
-                    binding.tvUnlocks.text = count.toString()
+                    CountUp.animate(binding.tvUnlocks, count.toLong()) { it.toString() }
                 }
             }
             launch {
@@ -77,7 +107,7 @@ class DashboardFragment : Fragment() {
             }
             launch {
                 viewModel.activeBlockCount.collectLatest { count ->
-                    binding.tvActiveBlocks.text = count.toString()
+                    CountUp.animate(binding.tvActiveBlocks, count.toLong()) { it.toString() }
                 }
             }
             launch {
@@ -88,6 +118,7 @@ class DashboardFragment : Fragment() {
                         else TimeUtils.formatDisplayDate(date)
                     binding.btnNextDay.isEnabled = !today
                     binding.btnNextDay.alpha = if (today) 0.3f else 1f
+                    animateDayChange(date)
                 }
             }
             launch {
@@ -106,6 +137,23 @@ class DashboardFragment : Fragment() {
                 }
             }
         }
+    }
+
+    /** Slides the whole content sideways when the user browses to another day. */
+    private fun animateDayChange(newDate: String) {
+        val previous = lastShownDate
+        lastShownDate = newDate
+        if (previous == null || previous == newDate) return
+        // ISO yyyy-MM-dd strings compare chronologically.
+        val direction = if (newDate > previous) 1f else -1f
+        binding.dashboardContent.translationX = 48f * direction
+        binding.dashboardContent.alpha = 0.4f
+        binding.dashboardContent.animate()
+            .translationX(0f)
+            .alpha(1f)
+            .setDuration(240)
+            .setInterpolator(DecelerateInterpolator())
+            .start()
     }
 
     // The dashboard is the only full-bleed orange screen, so the status bar is

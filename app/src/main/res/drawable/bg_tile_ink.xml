@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ink-navy gradient tile with a rounded ripple (Sleep mode card). -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/glass_white_strong">
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/radius_lg" />
+            <gradient
+                android:angle="315"
+                android:startColor="@color/ink"
+                android:endColor="@color/ink_light" />
+        </shape>
+    </item>
+</ripple>

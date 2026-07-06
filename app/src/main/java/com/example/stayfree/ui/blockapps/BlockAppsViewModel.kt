@@ -21,7 +21,8 @@ import javax.inject.Inject
 data class BlockAppItem(
     val packageName: String,
     val appName: String,
-    val isBlocked: Boolean
+    val isBlocked: Boolean,
+    val limitMinutes: Int
 )
 
 @HiltViewModel
@@ -36,12 +37,14 @@ class BlockAppsViewModel @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
     val items: StateFlow<List<BlockAppItem>> =
-        combine(installedApps, prefs.blockAppsEnabledPkgs) { apps, enabled ->
+        combine(installedApps, prefs.blockAppsEnabledPkgs, prefs.blockAppLimitsMinutes) { apps, enabled, limits ->
             apps.map { app ->
                 BlockAppItem(
                     packageName = app.packageName,
                     appName = app.appName,
-                    isBlocked = app.packageName in enabled
+                    isBlocked = app.packageName in enabled,
+                    limitMinutes = limits[app.packageName]
+                        ?: AppPreferences.DEFAULT_BLOCK_APP_LIMIT_MINUTES
                 )
             }
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
@@ -53,6 +56,10 @@ class BlockAppsViewModel @Inject constructor(
 
     fun setBlocked(packageName: String, blocked: Boolean) {
         viewModelScope.launch { prefs.setBlockAppEnabled(packageName, blocked) }
+    }
+
+    fun setLimit(packageName: String, minutes: Int) {
+        viewModelScope.launch { prefs.setBlockAppLimitMinutes(packageName, minutes) }
     }
 
     fun setContentEnabled(id: String, enabled: Boolean) {

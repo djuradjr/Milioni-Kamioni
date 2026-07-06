@@ -14,20 +14,32 @@ class AppUsageListAdapter(
     private val onClick: (AppUsage) -> Unit
 ) : ListAdapter<AppUsage, AppUsageListAdapter.ViewHolder>(DIFF) {
 
+    // Usage of the #1 app; each row's bar is drawn relative to it.
+    private var maxTimeMs: Long = 1L
+
+    override fun submitList(list: List<AppUsage>?) {
+        maxTimeMs = (list?.maxOfOrNull { it.totalTimeMs } ?: 1L).coerceAtLeast(1L)
+        super.submitList(list)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemAppUsageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), maxTimeMs)
     }
 
     inner class ViewHolder(private val binding: ItemAppUsageBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(appUsage: AppUsage) {
+        fun bind(appUsage: AppUsage, maxTimeMs: Long) {
             binding.tvAppName.text = appUsage.appName
             binding.tvUsageTime.text = TimeUtils.formatDuration(appUsage.totalTimeMs)
             binding.tvUnlockCount.text = "${appUsage.unlockCount} unlocks"
+            binding.progressUsage.setProgressCompat(
+                ((appUsage.totalTimeMs * 100) / maxTimeMs).toInt().coerceIn(0, 100),
+                true
+            )
             val icon = AppInfoUtils.getAppIcon(binding.root.context, appUsage.packageName)
             if (icon != null) binding.ivAppIcon.setImageDrawable(icon)
             binding.root.setOnClickListener { onClick(appUsage) }

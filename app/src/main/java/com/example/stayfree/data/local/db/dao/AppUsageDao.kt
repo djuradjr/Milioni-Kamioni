@@ -31,6 +31,12 @@ interface AppUsageDao {
     @Query("SELECT SUM(unlockCount) FROM app_usage WHERE date = :date")
     fun getTotalUnlocksForDate(date: String): Flow<Int?>
 
+    @Query("SELECT SUM(totalTimeMs) FROM app_usage WHERE date >= :fromDate AND date <= :toDate AND packageName != '__device__'")
+    fun getTotalScreenTimeBetween(fromDate: String, toDate: String): Flow<Long?>
+
+    @Query("SELECT SUM(unlockCount) FROM app_usage WHERE date >= :fromDate AND date <= :toDate")
+    fun getTotalUnlocksBetween(fromDate: String, toDate: String): Flow<Int?>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(entity: AppUsageEntity)
 

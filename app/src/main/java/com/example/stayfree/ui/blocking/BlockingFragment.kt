@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -11,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.stayfree.R
 import com.example.stayfree.databinding.FragmentBlockingBinding
+import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -22,6 +24,13 @@ class BlockingFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: BlockingViewModel by viewModels()
     private lateinit var adapter: BlockRulesAdapter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enterTransition = MaterialFadeThrough()
+        exitTransition = MaterialFadeThrough()
+        reenterTransition = MaterialFadeThrough()
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentBlockingBinding.inflate(inflater, container, false)
@@ -60,16 +69,63 @@ class BlockingFragment : Fragment() {
             findNavController().navigate(R.id.action_blocking_to_blockApps)
         }
 
+        observeData()
+    }
+
+    private fun observeData() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.allRules.collectLatest { rules ->
-                adapter.submitList(rules)
-                val active = rules.count { it.isActive }
-                binding.tvRulesCount.text =
-                    resources.getString(R.string.blocking_rules_count, rules.size, active)
-                val empty = rules.isEmpty()
-                binding.emptyState.visibility = if (empty) View.VISIBLE else View.GONE
-                binding.rvBlockRules.visibility = if (empty) View.GONE else View.VISIBLE
+            launch {
+                viewModel.allRules.collectLatest { rules ->
+                    adapter.submitList(rules)
+                    val active = rules.count { it.isActive }
+                    binding.tvRulesCount.text =
+                        resources.getString(R.string.blocking_rules_count, rules.size, active)
+                    val empty = rules.isEmpty()
+                    binding.emptyState.visibility = if (empty) View.VISIBLE else View.GONE
+                    binding.rvBlockRules.visibility = if (empty) View.GONE else View.VISIBLE
+                }
             }
+            launch {
+                viewModel.focusActive.collectLatest { active ->
+                    bindOnOffBadge(binding.badgeFocus, active)
+                }
+            }
+            launch {
+                viewModel.sleepConfigured.collectLatest { active ->
+                    bindOnOffBadge(binding.badgeSleep, active)
+                }
+            }
+            launch {
+                viewModel.activeWebsiteCount.collectLatest { count ->
+                    bindCountBadge(binding.badgeWebsites, count)
+                }
+            }
+            launch {
+                viewModel.blockedAppCount.collectLatest { count ->
+                    bindCountBadge(binding.badgeBlockApps, count)
+                }
+            }
+        }
+    }
+
+    /** "Active now" gets the teal pill; off states stay quiet glass. */
+    private fun bindOnOffBadge(badge: TextView, active: Boolean) {
+        badge.visibility = View.VISIBLE
+        badge.text = getString(
+            if (active) R.string.blocking_status_active else R.string.blocking_status_off
+        )
+        badge.setBackgroundResource(
+            if (active) R.drawable.bg_badge_teal else R.drawable.bg_badge_glass
+        )
+    }
+
+    private fun bindCountBadge(badge: TextView, count: Int) {
+        if (count > 0) {
+            badge.visibility = View.VISIBLE
+            badge.text = getString(R.string.blocking_count_active, count)
+            badge.setBackgroundResource(R.drawable.bg_badge_teal)
+        } else {
+            badge.visibility = View.GONE
         }
     }
 

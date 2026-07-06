@@ -34,6 +34,23 @@
         <item name="android:windowLightStatusBar">true</item>
         <!-- Fully-rounded (pill) buttons everywhere -->
         <item name="materialButtonStyle">@style/Widget.App.Button</item>
+        <!-- White bottom nav with an orange pill indicator -->
+        <item name="bottomNavigationStyle">@style/Widget.App.BottomNav</item>
+    </style>
+
+    <style name="Widget.App.BottomNav" parent="Widget.Material3.BottomNavigationView">
+        <!-- Plain white bar: elevation stays 0 because M3 would otherwise blend an
+             orange surface-tint overlay into the background (looks pink). -->
+        <item name="android:background">@color/surface</item>
+        <item name="backgroundTint">@color/surface</item>
+        <item name="elevation">0dp</item>
+        <item name="itemActiveIndicatorStyle">@style/Widget.App.BottomNav.Indicator</item>
+        <item name="itemIconTint">@color/bottom_nav_icon_tint</item>
+        <item name="itemTextColor">@color/bottom_nav_text_tint</item>
+    </style>
+
+    <style name="Widget.App.BottomNav.Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@color/primary</item>
     </style>
 
     <style name="ShapeAppearance.App.Pill" parent="">

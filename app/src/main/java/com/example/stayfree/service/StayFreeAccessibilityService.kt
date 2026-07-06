@@ -43,9 +43,10 @@ class StayFreeAccessibilityService : AccessibilityService() {
     @Volatile private var blockedPackagesCache = emptySet<String>()
     // Packages never blocked by global modes (focus/sleep): self, launcher, systemui, dialer, settings
     @Volatile private var exemptPackages = emptySet<String>()
-    // Current continuous foreground session (for SESSION rules and DAILY_LIMIT delta)
-    private var currentForegroundPackage: String? = null
-    private var foregroundSince: Long = 0L
+    // Current continuous foreground session (for SESSION rules and DAILY_LIMIT delta).
+    // Volatile: also read by the periodic limit check on the IO refresh loop.
+    @Volatile private var currentForegroundPackage: String? = null
+    @Volatile private var foregroundSince: Long = 0L
     // Debounce for TYPE_WINDOW_CONTENT_CHANGED floods (state changes always evaluate)
     private val lastContentCheckTime = mutableMapOf<String, Long>()
     // Per-package last check for in-app blocks (debounce)
@@ -55,8 +56,11 @@ class StayFreeAccessibilityService : AccessibilityService() {
     // Epoch ms until which reward-mode content (e.g. Stories) is unlocked.
     @Volatile private var contentUnlockUntil: Long = 0L
     // Whole-app block: packages whose slider is ON (Block Apps screen). Any
-    // foreground screen of these gets covered by the block overlay.
+    // foreground screen of these gets covered by the block overlay once the
+    // daily allowance below is used up.
     @Volatile private var blockAppsEnabledPkgs: Set<String> = emptySet()
+    // Daily allowance in minutes per blocked app (0 = block immediately).
+    @Volatile private var blockAppLimitsMin: Map<String, Int> = emptyMap()
     private var lastContentBlockAt: Long = 0L
     // Website time tracking
     private var currentBrowserDomain: String? = null
@@ -119,6 +123,9 @@ class StayFreeAccessibilityService : AccessibilityService() {
         serviceScope.launch {
             prefs.blockAppsEnabledPkgs.collect { blockAppsEnabledPkgs = it }
         }
+        serviceScope.launch {
+            prefs.blockAppLimitsMinutes.collect { blockAppLimitsMin = it }
+        }
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
@@ -145,10 +152,12 @@ class StayFreeAccessibilityService : AccessibilityService() {
             eventType == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED && pkg in BROWSER_URL_VIEW_IDS
 
         serviceScope.launch(Dispatchers.Main) {
-            // 0) Whole-app block (Block Apps screen) — explicit per-app choice.
-            // Exempt launcher/systemui/dialer so the phone can't be soft-bricked.
-            if (pkg in blockAppsEnabledPkgs && pkg !in exemptPackages) {
-                showBlockOverlay(pkg, "APP_BLOCKED")
+            // 0) Whole-app block (Block Apps screen) — explicit per-app choice with
+            // a daily time allowance (0 min = block on open). Under the allowance
+            // we fall through so the other rules still apply.
+            val appBlockReason = wholeAppBlockReason(pkg, now)
+            if (appBlockReason != null) {
+                showBlockOverlay(pkg, appBlockReason)
                 return@launch
             }
 
@@ -282,6 +291,25 @@ class StayFreeAccessibilityService : AccessibilityService() {
                 Log.w(TAG, "Block screen launch rejected: ${e.message}")
             }
         }
+    }
+
+    /**
+     * Whole-app block decision (Block Apps screen). Returns the overlay reason,
+     * or null when the app may stay open (slider OFF / exempt / still under
+     * today's allowance). The synced usage already counts the in-progress
+     * session up to the last ~60s sync, so we take max(persisted, session)
+     * instead of summing — a sum would double-count the current session.
+     */
+    private suspend fun wholeAppBlockReason(pkg: String, now: Long): String? {
+        if (pkg !in blockAppsEnabledPkgs || pkg in exemptPackages) return null
+        val limitMin = blockAppLimitsMin[pkg] ?: AppPreferences.DEFAULT_BLOCK_APP_LIMIT_MINUTES
+        if (limitMin <= 0) return "APP_BLOCKED"
+
+        val resetTime = prefs.dailyResetTimeMinutes.first()
+        val date = TimeUtils.getEffectiveDate(resetTime)
+        val usedMs = usageRepository.getScreenTimeForPackageOnDate(pkg, date).first()
+        val sessionMs = if (currentForegroundPackage == pkg) now - foregroundSince else 0L
+        return if (maxOf(usedMs, sessionMs) >= limitMin * 60_000L) "APP_LIMIT_REACHED" else null
     }
 
     private suspend fun evaluateRules(pkg: String, now: Long): com.example.stayfree.domain.BlockDecision? {
@@ -496,6 +524,18 @@ class StayFreeAccessibilityService : AccessibilityService() {
                     val rules = blockingRepository.getActiveRulesOnce()
                     blockedPackagesCache = rules.map { it.packageName }.toSet()
                     exemptPackages = computeExemptPackages()
+                } catch (e: Exception) { /* continue */ }
+                // A time limit must also fire while the user idles inside the app
+                // (video playback emits few accessibility events) — re-check the
+                // current foreground app on every tick.
+                try {
+                    val fg = currentForegroundPackage
+                    if (fg != null) {
+                        val reason = wholeAppBlockReason(fg, System.currentTimeMillis())
+                        if (reason != null) {
+                            withContext(Dispatchers.Main) { showBlockOverlay(fg, reason) }
+                        }
+                    }
                 } catch (e: Exception) { /* continue */ }
                 delay(CACHE_REFRESH_INTERVAL_MS)
             }

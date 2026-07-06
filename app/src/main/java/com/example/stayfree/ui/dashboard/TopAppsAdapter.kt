@@ -35,8 +35,10 @@ class TopAppsAdapter(
         fun bind(appUsage: AppUsage, maxTimeMs: Long, onClick: (AppUsage) -> Unit) {
             binding.tvAppName.text = appUsage.appName
             binding.tvUsageTime.text = TimeUtils.formatDuration(appUsage.totalTimeMs)
-            binding.progressUsage.progress =
-                ((appUsage.totalTimeMs * 100) / maxTimeMs).toInt().coerceIn(0, 100)
+            binding.progressUsage.setProgressCompat(
+                ((appUsage.totalTimeMs * 100) / maxTimeMs).toInt().coerceIn(0, 100),
+                true
+            )
             val icon = AppInfoUtils.getAppIcon(binding.root.context, appUsage.packageName)
             if (icon != null) binding.ivAppIcon.setImageDrawable(icon)
             binding.root.setOnClickListener { onClick(appUsage) }

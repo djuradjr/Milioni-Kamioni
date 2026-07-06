@@ -16,192 +16,279 @@
             android:layout_height="wrap_content"
             android:text="@string/blocking_tools_title"
             android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:textStyle="bold"
             android:layout_marginBottom="@dimen/spacing_sm" />
 
-        <!-- Row 1: Focus + Sleep (purple accent) -->
+        <!-- Row 1: Focus (purple) + Sleep (ink navy) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginBottom="@dimen/spacing_sm">
 
-            <com.google.android.material.card.MaterialCardView
+            <LinearLayout
                 android:id="@+id/btn_focus_mode"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_marginEnd="@dimen/spacing_sm"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_md"
                 android:clickable="true"
                 android:focusable="true"
-                app:cardBackgroundColor="?attr/colorTertiary"
-                app:cardCornerRadius="@dimen/radius_md"
-                app:cardElevation="0dp">
+                android:background="@drawable/bg_tile_purple"
+                android:stateListAnimator="@animator/press_scale">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="@dimen/spacing_md">
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="@dimen/spacing_sm">
 
                     <ImageView
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:padding="9dp"
+                        android:background="@drawable/bg_icon_circle_glass"
                         android:src="@drawable/ic_focus"
-                        app:tint="?attr/colorOnTertiary"
-                        android:importantForAccessibility="no"
-                        android:layout_marginBottom="@dimen/spacing_sm" />
+                        app:tint="@color/on_accent_purple"
+                        android:importantForAccessibility="no" />
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1" />
 
                     <TextView
+                        android:id="@+id/badge_focus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/blocking_focus_mode"
-                        android:textAppearance="?attr/textAppearanceTitleSmall"
-                        android:textColor="?attr/colorOnTertiary" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/blocking_focus_desc"
-                        android:textAppearance="?attr/textAppearanceBodySmall"
-                        android:textColor="?attr/colorOnTertiary"
-                        android:alpha="0.85" />
+                        android:background="@drawable/bg_badge_glass"
+                        android:paddingHorizontal="@dimen/spacing_sm"
+                        android:paddingVertical="3dp"
+                        android:textAppearance="?attr/textAppearanceLabelSmall"
+                        android:textStyle="bold"
+                        android:textColor="@color/on_accent_purple"
+                        android:visibility="gone" />
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
 
-            <com.google.android.material.card.MaterialCardView
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/blocking_focus_mode"
+                    android:textAppearance="?attr/textAppearanceTitleSmall"
+                    android:textStyle="bold"
+                    android:textColor="@color/on_accent_purple" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/blocking_focus_desc"
+                    android:textAppearance="?attr/textAppearanceBodySmall"
+                    android:textColor="@color/on_accent_purple"
+                    android:alpha="0.85" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/btn_sleep_mode"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_marginStart="@dimen/spacing_sm"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_md"
                 android:clickable="true"
                 android:focusable="true"
-                app:cardBackgroundColor="?attr/colorTertiary"
-                app:cardCornerRadius="@dimen/radius_md"
-                app:cardElevation="0dp">
+                android:background="@drawable/bg_tile_ink"
+                android:stateListAnimator="@animator/press_scale">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="@dimen/spacing_md">
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="@dimen/spacing_sm">
 
                     <ImageView
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:padding="9dp"
+                        android:background="@drawable/bg_icon_circle_glass"
                         android:src="@drawable/ic_sleep"
-                        app:tint="?attr/colorOnTertiary"
-                        android:importantForAccessibility="no"
-                        android:layout_marginBottom="@dimen/spacing_sm" />
+                        app:tint="@color/on_ink"
+                        android:importantForAccessibility="no" />
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1" />
 
                     <TextView
+                        android:id="@+id/badge_sleep"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/blocking_sleep_mode"
-                        android:textAppearance="?attr/textAppearanceTitleSmall"
-                        android:textColor="?attr/colorOnTertiary" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/blocking_sleep_desc"
-                        android:textAppearance="?attr/textAppearanceBodySmall"
-                        android:textColor="?attr/colorOnTertiary"
-                        android:alpha="0.85" />
+                        android:background="@drawable/bg_badge_glass"
+                        android:paddingHorizontal="@dimen/spacing_sm"
+                        android:paddingVertical="3dp"
+                        android:textAppearance="?attr/textAppearanceLabelSmall"
+                        android:textStyle="bold"
+                        android:textColor="@color/on_ink"
+                        android:visibility="gone" />
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/blocking_sleep_mode"
+                    android:textAppearance="?attr/textAppearanceTitleSmall"
+                    android:textStyle="bold"
+                    android:textColor="@color/on_ink" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/blocking_sleep_desc"
+                    android:textAppearance="?attr/textAppearanceBodySmall"
+                    android:textColor="@color/on_ink"
+                    android:alpha="0.85" />
+            </LinearLayout>
         </LinearLayout>
 
-        <!-- Row 2: Websites + In-App (surface) -->
+        <!-- Row 2: Websites + Block Apps (orange) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginBottom="@dimen/spacing_md">
 
-            <com.google.android.material.card.MaterialCardView
+            <LinearLayout
                 android:id="@+id/btn_website_blocking"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_marginEnd="@dimen/spacing_sm"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_md"
                 android:clickable="true"
                 android:focusable="true"
-                app:cardBackgroundColor="?attr/colorSurfaceContainer"
-                app:cardCornerRadius="@dimen/radius_md"
-                app:cardElevation="0dp">
+                android:background="@drawable/bg_tile_orange"
+                android:stateListAnimator="@animator/press_scale">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="@dimen/spacing_md">
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="@dimen/spacing_sm">
 
                     <ImageView
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:padding="9dp"
+                        android:background="@drawable/bg_icon_circle_glass"
                         android:src="@drawable/ic_web"
-                        app:tint="?attr/colorPrimary"
-                        android:importantForAccessibility="no"
-                        android:layout_marginBottom="@dimen/spacing_sm" />
+                        app:tint="@color/on_primary"
+                        android:importantForAccessibility="no" />
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1" />
 
                     <TextView
+                        android:id="@+id/badge_websites"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/blocking_websites"
-                        android:textAppearance="?attr/textAppearanceTitleSmall"
-                        android:textColor="?attr/colorOnSurface" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/blocking_websites_desc"
-                        android:textAppearance="?attr/textAppearanceBodySmall"
-                        android:textColor="?attr/colorOnSurfaceVariant" />
+                        android:background="@drawable/bg_badge_glass"
+                        android:paddingHorizontal="@dimen/spacing_sm"
+                        android:paddingVertical="3dp"
+                        android:textAppearance="?attr/textAppearanceLabelSmall"
+                        android:textStyle="bold"
+                        android:textColor="@color/on_primary"
+                        android:visibility="gone" />
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
 
-            <com.google.android.material.card.MaterialCardView
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/blocking_websites"
+                    android:textAppearance="?attr/textAppearanceTitleSmall"
+                    android:textStyle="bold"
+                    android:textColor="@color/on_primary" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/blocking_websites_desc"
+                    android:textAppearance="?attr/textAppearanceBodySmall"
+                    android:textColor="@color/on_primary"
+                    android:alpha="0.85" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/btn_in_app_blocking"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_marginStart="@dimen/spacing_sm"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_md"
                 android:clickable="true"
                 android:focusable="true"
-                app:cardBackgroundColor="?attr/colorSurfaceContainer"
-                app:cardCornerRadius="@dimen/radius_md"
-                app:cardElevation="0dp">
+                android:background="@drawable/bg_tile_orange"
+                android:stateListAnimator="@animator/press_scale">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="@dimen/spacing_md">
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="@dimen/spacing_sm">
 
                     <ImageView
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:padding="9dp"
+                        android:background="@drawable/bg_icon_circle_glass"
                         android:src="@drawable/ic_layers"
-                        app:tint="?attr/colorPrimary"
-                        android:importantForAccessibility="no"
-                        android:layout_marginBottom="@dimen/spacing_sm" />
+                        app:tint="@color/on_primary"
+                        android:importantForAccessibility="no" />
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1" />
 
                     <TextView
+                        android:id="@+id/badge_block_apps"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/blocking_block_apps"
-                        android:textAppearance="?attr/textAppearanceTitleSmall"
-                        android:textColor="?attr/colorOnSurface" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/blocking_block_apps_desc"
-                        android:textAppearance="?attr/textAppearanceBodySmall"
-                        android:textColor="?attr/colorOnSurfaceVariant" />
+                        android:background="@drawable/bg_badge_glass"
+                        android:paddingHorizontal="@dimen/spacing_sm"
+                        android:paddingVertical="3dp"
+                        android:textAppearance="?attr/textAppearanceLabelSmall"
+                        android:textStyle="bold"
+                        android:textColor="@color/on_primary"
+                        android:visibility="gone" />
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/blocking_block_apps"
+                    android:textAppearance="?attr/textAppearanceTitleSmall"
+                    android:textStyle="bold"
+                    android:textColor="@color/on_primary" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/blocking_block_apps_desc"
+                    android:textAppearance="?attr/textAppearanceBodySmall"
+                    android:textColor="@color/on_primary"
+                    android:alpha="0.85" />
+            </LinearLayout>
         </LinearLayout>
 
         <!-- App rules header + count -->
@@ -215,7 +302,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/blocking_app_rules"
-                android:textAppearance="?attr/textAppearanceTitleMedium" />
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tv_rules_count"

@@ -10,9 +10,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.example.stayfree.R
 import com.example.stayfree.databinding.FragmentSettingsBinding
+import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -30,6 +32,13 @@ class SettingsFragment : Fragment() {
     private var _binding: FragmentSettingsBinding? = null
     private val binding get() = _binding!!
     private val viewModel: SettingsViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enterTransition = MaterialFadeThrough()
+        exitTransition = MaterialFadeThrough()
+        reenterTransition = MaterialFadeThrough()
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentSettingsBinding.inflate(inflater, container, false)
@@ -64,6 +73,13 @@ class SettingsFragment : Fragment() {
                 viewModel.pinEnabled.collectLatest { enabled ->
                     binding.tvPinSubtitle.setText(
                         if (enabled) R.string.settings_pin_on else R.string.settings_pin_off
+                    )
+                    // Protected state reads as a calm teal "all good" signal.
+                    binding.tvPinSubtitle.setTextColor(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            if (enabled) R.color.accent_teal else R.color.on_surface_variant
+                        )
                     )
                 }
             }

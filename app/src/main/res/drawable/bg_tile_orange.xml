@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Orange gradient tile with a rounded ripple (Blocking hub cards). -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/glass_white_strong">
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/radius_lg" />
+            <gradient
+                android:angle="315"
+                android:startColor="#F4511E"
+                android:endColor="#FB8C00" />
+        </shape>
+    </item>
+</ripple>

@@ -25,11 +25,20 @@ class UsageRepositoryImpl @Inject constructor(
     override fun getUsageForDate(date: String): Flow<List<AppUsage>> =
         dao.getUsageForDate(date).map { list -> list.map { it.toDomain() } }
 
+    override fun getUsageFromDate(fromDate: String): Flow<List<AppUsage>> =
+        dao.getUsageFromDate(fromDate).map { list -> list.map { it.toDomain() } }
+
     override fun getTotalScreenTimeForDate(date: String): Flow<Long> =
         dao.getTotalScreenTimeForDate(date).map { it ?: 0L }
 
     override fun getTotalUnlocksForDate(date: String): Flow<Int> =
         dao.getTotalUnlocksForDate(date).map { it ?: 0 }
+
+    override fun getTotalScreenTimeBetween(fromDate: String, toDate: String): Flow<Long> =
+        dao.getTotalScreenTimeBetween(fromDate, toDate).map { it ?: 0L }
+
+    override fun getTotalUnlocksBetween(fromDate: String, toDate: String): Flow<Int> =
+        dao.getTotalUnlocksBetween(fromDate, toDate).map { it ?: 0 }
 
     override fun getUsageForPackage(packageName: String, fromDate: String): Flow<List<AppUsage>> =
         dao.getUsageForPackage(packageName, fromDate).map { list -> list.map { it.toDomain() } }

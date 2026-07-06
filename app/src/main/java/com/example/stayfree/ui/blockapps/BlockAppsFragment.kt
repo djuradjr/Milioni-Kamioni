@@ -30,7 +30,10 @@ class BlockAppsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = BlockAppsAdapter { pkg, blocked -> viewModel.setBlocked(pkg, blocked) }
+        adapter = BlockAppsAdapter(
+            onToggle = { pkg, blocked -> viewModel.setBlocked(pkg, blocked) },
+            onLimitChange = { pkg, minutes -> viewModel.setLimit(pkg, minutes) }
+        )
         binding.rvBlockApps.apply {
             layoutManager = LinearLayoutManager(requireContext())
             this.adapter = this@BlockAppsFragment.adapter

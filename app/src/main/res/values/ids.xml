@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- View-tag keys for the count-up text animation helper -->
+    <item name="tag_count_value" type="id" />
+    <item name="tag_count_animator" type="id" />
+</resources>

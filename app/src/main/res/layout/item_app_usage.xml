@@ -5,6 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginVertical="@dimen/spacing_xs"
+    android:stateListAnimator="@animator/press_scale"
+    android:foreground="?attr/selectableItemBackground"
     app:cardBackgroundColor="?attr/colorSurfaceContainer"
     app:cardCornerRadius="@dimen/radius_md"
     app:cardElevation="0dp">
@@ -31,9 +33,11 @@
 
             <TextView
                 android:id="@+id/tv_app_name"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="?attr/textAppearanceTitleSmall" />
+                android:textAppearance="?attr/textAppearanceTitleSmall"
+                android:maxLines="1"
+                android:ellipsize="end" />
 
             <TextView
                 android:id="@+id/tv_unlock_count"
@@ -41,13 +45,27 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?attr/textAppearanceBodySmall"
                 android:textColor="?attr/colorOnSurfaceVariant" />
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/progress_usage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                app:trackThickness="5dp"
+                app:trackCornerRadius="3dp"
+                app:trackStopIndicatorSize="0dp"
+                app:indicatorColor="?attr/colorPrimary"
+                app:trackColor="?attr/colorSurfaceVariant"
+                android:max="100" />
         </LinearLayout>
 
         <TextView
             android:id="@+id/tv_usage_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_md"
             android:textAppearance="?attr/textAppearanceTitleSmall"
+            android:textStyle="bold"
             android:textColor="?attr/colorPrimary" />
 
     </LinearLayout>

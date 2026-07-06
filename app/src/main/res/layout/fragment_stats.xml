@@ -9,13 +9,20 @@
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabMode="fixed">
+        android:background="@android:color/transparent"
+        app:tabMode="fixed"
+        app:tabIndicatorColor="?attr/colorPrimary"
+        app:tabIndicatorHeight="3dp"
+        app:tabSelectedTextColor="?attr/colorPrimary"
+        app:tabTextColor="?attr/colorOnSurfaceVariant"
+        app:tabRippleColor="?attr/colorPrimaryContainer">
         <com.google.android.material.tabs.TabItem android:text="@string/stats_daily" />
         <com.google.android.material.tabs.TabItem android:text="@string/stats_weekly" />
         <com.google.android.material.tabs.TabItem android:text="@string/stats_monthly" />
     </com.google.android.material.tabs.TabLayout>
 
     <LinearLayout
+        android:id="@+id/content_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -23,44 +30,60 @@
         android:paddingHorizontal="@dimen/spacing_md"
         android:paddingTop="@dimen/spacing_md">
 
-        <!-- Hero: total screen time + unlocks -->
-        <com.google.android.material.card.MaterialCardView
+        <!-- Hero: gradient total screen time + unlocks + trend badge -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_md"
-            app:cardBackgroundColor="?attr/colorPrimaryContainer"
-            app:cardCornerRadius="@dimen/radius_lg"
-            app:cardElevation="0dp">
+            android:orientation="vertical"
+            android:background="@drawable/bg_stats_hero"
+            android:padding="@dimen/spacing_lg"
+            android:layout_marginBottom="@dimen/spacing_md">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dashboard_total_screen_time"
+                android:textAppearance="?attr/textAppearanceLabelLarge"
+                android:textColor="@color/dash_text_secondary"
+                android:textAllCaps="true"
+                android:letterSpacing="0.1" />
+
+            <TextView
+                android:id="@+id/tv_total_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceDisplaySmall"
+                android:textStyle="bold"
+                android:textColor="@color/on_primary" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="@dimen/spacing_lg">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/dashboard_total_screen_time"
-                    android:textAppearance="?attr/textAppearanceTitleMedium"
-                    android:textColor="?attr/colorOnPrimaryContainer" />
-
-                <TextView
-                    android:id="@+id/tv_total_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?attr/textAppearanceDisplaySmall"
-                    android:textColor="?attr/colorOnPrimaryContainer" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="@dimen/spacing_xs">
 
                 <TextView
                     android:id="@+id/tv_total_unlocks"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="@color/dash_text_secondary" />
+
+                <TextView
+                    android:id="@+id/tv_trend"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?attr/textAppearanceBodyMedium"
-                    android:textColor="?attr/colorOnPrimaryContainer"
-                    android:alpha="0.85" />
+                    android:background="@drawable/bg_badge_glass"
+                    android:paddingHorizontal="@dimen/spacing_sm"
+                    android:paddingVertical="4dp"
+                    android:textAppearance="?attr/textAppearanceLabelMedium"
+                    android:textStyle="bold"
+                    android:textColor="@color/on_primary"
+                    android:visibility="gone" />
             </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
 
         <!-- Chart card -->
         <com.google.android.material.card.MaterialCardView

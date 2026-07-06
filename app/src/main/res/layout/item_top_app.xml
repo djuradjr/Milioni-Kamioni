@@ -5,6 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginVertical="@dimen/spacing_xs"
+    android:stateListAnimator="@animator/press_scale"
+    android:foreground="?attr/selectableItemBackground"
     app:cardBackgroundColor="@color/dash_card"
     app:cardCornerRadius="@dimen/radius_md"
     app:cardElevation="0dp"

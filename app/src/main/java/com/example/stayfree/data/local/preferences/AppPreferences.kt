@@ -8,6 +8,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import org.json.JSONObject
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -35,6 +36,10 @@ class AppPreferences @Inject constructor(
         // Whole-app block toggles (Block Apps screen). Stores package names whose
         // slider is ON. Enforcement is added later; for now this only persists UI state.
         val BLOCK_APPS_ENABLED = stringSetPreferencesKey("block_apps_enabled_pkgs")
+        // Per-app daily allowance for whole-app blocks: JSON map {pkg: minutes}.
+        // 0 minutes = block immediately; missing entry = DEFAULT_BLOCK_APP_LIMIT_MINUTES.
+        val BLOCK_APP_LIMITS = stringPreferencesKey("block_app_limits_json")
+        const val DEFAULT_BLOCK_APP_LIMIT_MINUTES = 30
         // Rewarded unlock (reward-mode content like Instagram Stories)
         val CONTENT_UNLOCK_UNTIL = longPreferencesKey("content_unlock_until")
         val CONTENT_UNLOCKS_USED = intPreferencesKey("content_unlocks_used_today")
@@ -58,6 +63,9 @@ class AppPreferences @Inject constructor(
     /** Package names whose whole-app block slider is ON (Block Apps screen). */
     val blockAppsEnabledPkgs: Flow<Set<String>> =
         dataStore.data.map { it[BLOCK_APPS_ENABLED] ?: emptySet() }
+    /** Daily allowance in minutes per blocked app (0 = block immediately). */
+    val blockAppLimitsMinutes: Flow<Map<String, Int>> =
+        dataStore.data.map { parseLimits(it[BLOCK_APP_LIMITS]) }
     /** Epoch ms until which reward-mode content is unlocked (0 = locked). */
     val contentUnlockUntil: Flow<Long> = dataStore.data.map { it[CONTENT_UNLOCK_UNTIL] ?: 0L }
 
@@ -116,6 +124,30 @@ class AppPreferences @Inject constructor(
         dataStore.edit { prefs ->
             val current = prefs[BLOCK_APPS_ENABLED] ?: emptySet()
             prefs[BLOCK_APPS_ENABLED] = if (enabled) current + packageName else current - packageName
+        }
+    }
+
+    suspend fun setBlockAppLimitMinutes(packageName: String, minutes: Int) {
+        dataStore.edit { prefs ->
+            val obj = try {
+                JSONObject(prefs[BLOCK_APP_LIMITS] ?: "{}")
+            } catch (e: Exception) {
+                JSONObject()
+            }
+            obj.put(packageName, minutes.coerceAtLeast(0))
+            prefs[BLOCK_APP_LIMITS] = obj.toString()
+        }
+    }
+
+    private fun parseLimits(json: String?): Map<String, Int> {
+        if (json.isNullOrEmpty()) return emptyMap()
+        return try {
+            val obj = JSONObject(json)
+            buildMap {
+                for (key in obj.keys()) put(key, obj.optInt(key))
+            }
+        } catch (e: Exception) {
+            emptyMap()
         }
     }
 

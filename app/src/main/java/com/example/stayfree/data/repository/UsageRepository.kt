@@ -5,8 +5,12 @@ import kotlinx.coroutines.flow.Flow
 
 interface UsageRepository {
     fun getUsageForDate(date: String): Flow<List<AppUsage>>
+    /** Per-app rows for every day in [fromDate, today] — one row per app per day. */
+    fun getUsageFromDate(fromDate: String): Flow<List<AppUsage>>
     fun getTotalScreenTimeForDate(date: String): Flow<Long>
     fun getTotalUnlocksForDate(date: String): Flow<Int>
+    fun getTotalScreenTimeBetween(fromDate: String, toDate: String): Flow<Long>
+    fun getTotalUnlocksBetween(fromDate: String, toDate: String): Flow<Int>
     fun getUsageForPackage(packageName: String, fromDate: String): Flow<List<AppUsage>>
     fun getScreenTimeForPackageOnDate(packageName: String, date: String): Flow<Long>
     fun getUnlocksForPackageOnDate(packageName: String, date: String): Flow<Int>

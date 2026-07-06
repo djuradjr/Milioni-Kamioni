@@ -12,28 +12,92 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="@dimen/spacing_md"
-        android:gravity="center_vertical">
+        android:orientation="vertical"
+        android:padding="@dimen/spacing_md">
 
-        <ImageView
-            android:id="@+id/iv_app_icon"
-            android:layout_width="@dimen/icon_md"
-            android:layout_height="@dimen/icon_md"
-            android:layout_marginEnd="@dimen/spacing_md"
-            android:importantForAccessibility="no" />
-
-        <TextView
-            android:id="@+id/tv_app_name"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textAppearance="?attr/textAppearanceTitleSmall" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
-        <com.google.android.material.materialswitch.MaterialSwitch
-            android:id="@+id/switch_active"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <ImageView
+                android:id="@+id/iv_app_icon"
+                android:layout_width="@dimen/icon_md"
+                android:layout_height="@dimen/icon_md"
+                android:layout_marginEnd="@dimen/spacing_md"
+                android:importantForAccessibility="no" />
+
+            <TextView
+                android:id="@+id/tv_app_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAppearance="?attr/textAppearanceTitleSmall" />
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/switch_active"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <!-- Daily-allowance stepper: visible only while the block slider is ON.
+             The value can only be stepped (‹ ›) through preset values, never typed. -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_limit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_sm"
+            android:visibility="gone"
+            app:cardBackgroundColor="?attr/colorSurfaceContainerHigh"
+            app:cardCornerRadius="@dimen/radius_sm"
+            app:cardElevation="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="@dimen/spacing_md"
+                android:paddingVertical="@dimen/spacing_xs">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/block_app_limit_label"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+
+                <ImageButton
+                    android:id="@+id/btn_limit_down"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/cd_limit_decrease"
+                    android:src="@drawable/ic_chevron_left"
+                    app:tint="?attr/colorOnSurface" />
+
+                <TextView
+                    android:id="@+id/tv_limit_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="64dp"
+                    android:gravity="center"
+                    android:textAppearance="?attr/textAppearanceTitleSmall" />
+
+                <ImageButton
+                    android:id="@+id/btn_limit_up"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/cd_limit_increase"
+                    android:src="@drawable/ic_chevron_right"
+                    app:tint="?attr/colorOnSurface" />
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>
