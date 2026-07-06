@@ -4,7 +4,9 @@ Guidance for AI agents working in this repo. Read this first.
 Scoped docs: `app/src/main/java/com/example/stayfree/domain/content/CLAUDE.md`
 (detection) · `app/src/main/java/com/example/stayfree/ui/CLAUDE.md` (design system).
 Project skills in `.claude/skills/`: **bb-code-review** (every diff review),
-**bb-security** (a11y/PIN/manifest/billing changes), **bb-ui** (any screen work).
+**bb-security** (a11y/PIN/manifest/billing changes), **bb-ui** (any screen work),
+**bb-verify** (proving any feature works), **bb-play-policy** (before any release
+or manifest/permission change), **bb-billing** (payments/premium work).
 
 ## 1. Project & location (critical)
 - **Repo lives at `C:\Users\djuki\IdeaProjects\Block Brainrot main`** — folder history:
@@ -22,9 +24,10 @@ Project skills in `.claude/skills/`: **bb-code-review** (every diff review),
 ## 2. Product direction: paid SaaS (decided 2026-07-06)
 - Block Brainrot is a **paid product** — NOT ad-supported. Do not add AdMob/rewarded
   ads; the AdMob template comments in `RewardGateActivity` are legacy reference only.
-- The gate flow stays, but "Watch ad → 3 min" becomes a **premium entitlement**
-  (Google Play Billing) in a future task. Until then `showAd()` remains a stub that
-  grants immediately.
+- **2026-07-07: the timed-unlock model is dropped** — detected content gets a plain
+  hard-block overlay (no 3-min grace, no daily cap). Not yet implemented: the code
+  still runs the reward-gate flow described in §7, but do NOT build anything new on
+  the unlock model. Premium via Google Play Billing is still planned — see `bb-billing`.
 - When billing lands, the `bb-security` skill's payments section is MANDATORY
   (paywall-bypass + data-leak tests, 3/3 each).
 
@@ -67,7 +70,7 @@ Flow: **`ContentSignatures.kt` → `StayFreeAccessibilityService.handleContentBl
 (`reel_viewer_*`), YouTube Shorts (`reel_watch_*`/`shorts`) — id-match; TikTok
 (`com.zhiliaoapp.musically`) — whole-app.
 
-## 7. Unlock model
+## 7. Unlock model (current code — slated for removal, see §2)
 - **Global unlock**: one gate pass → 3 min free for ALL reward targets (single
   `contentUnlockUntil` in DataStore). User chose global over per-platform.
 - Daily cap 5 (`RewardGateActivity.DAILY_CAP`), grace window `CONTENT_OPEN_GRACE_MS = 4s`.
