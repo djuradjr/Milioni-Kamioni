@@ -7,9 +7,9 @@ description: Google Play Billing implementation runbook for Block Brainrot. Use 
 
 Context: paid SaaS, app is offline by design (no `INTERNET` permission — the
 Billing library talks through the Play Store app, so this holds). The old
-timed-unlock model (3-min grace, daily cap) was dropped on 2026-07-07 in favor
-of a hard-block overlay; billing gates premium features — do NOT build
-entitlements on top of `contentUnlockUntil`/`DAILY_CAP` semantics.
+timed-unlock model (3-min grace, daily cap) was removed from the code on
+2026-07-07 in favor of a hard-block screen (`ContentBlockActivity`); billing
+gates premium features and must not resurrect timed-unlock semantics.
 
 ## 1. BillingClient lifecycle
 - Single client instance; connect lazily, retry with backoff on

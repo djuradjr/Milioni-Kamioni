@@ -162,22 +162,12 @@
     <string name="content_block_instagram_stories">Instagram Stories</string>
     <string name="content_block_youtube_shorts">YouTube Shorts</string>
     <string name="content_block_tiktok">TikTok</string>
-    <string name="content_block_title">%1$s are blocked</string>
-    <string name="content_block_subtitle">Take a breath — this is a limit you set for yourself.</string>
-    <string name="content_block_back">Back</string>
-    <string name="content_block_need_more">I need 5 more minutes</string>
 
-    <!-- Content interstitial (shown after the host app is sent to background) -->
-    <string name="interstitial_placeholder">Block Brainrot</string>
-    <string name="interstitial_close">Close</string>
-
-    <!-- Reward-unlock gate (reward-mode content like Instagram Stories) -->
-    <string name="reward_gate_title">%1$s</string>
-    <string name="reward_gate_message">Otključaj 3 minuta pristupa — ili napravi pauzu.</string>
-    <string name="reward_gate_watch">PRVI MILION</string>
-    <string name="reward_gate_brand">Block Brainrot</string>
-    <string name="reward_gate_exit">Exit</string>
-    <string name="reward_gate_cap">Daily unlock limit reached. Try again tomorrow.</string>
+    <!-- Content hard-block screen -->
+    <string name="content_block_title">%1$s blocked</string>
+    <string name="content_block_message">You blocked this to protect your focus. Take a break.</string>
+    <string name="content_block_brand">Block Brainrot</string>
+    <string name="content_block_exit">Exit</string>
 
     <!-- PIN -->
     <string name="pin_set_title">Set your PIN</string>

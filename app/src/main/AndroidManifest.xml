@@ -66,25 +66,15 @@
             android:taskAffinity=""
             android:theme="@style/Theme.StayFree.Overlay" />
 
-        <!-- Content Interstitial — full-screen black AdMob-template surface shown
-             after the host app (YouTube/Instagram) is sent to the background. -->
+        <!-- Content hard-block — covers the host app the moment a blocked
+             short-form surface (Reels/Stories/Shorts/TikTok) is detected. -->
         <activity
-            android:name=".ui.content.ContentInterstitialActivity"
+            android:name=".ui.content.ContentBlockActivity"
             android:exported="false"
             android:excludeFromRecents="true"
             android:launchMode="singleTask"
             android:taskAffinity=""
-            android:theme="@style/Theme.StayFree.Interstitial" />
-
-        <!-- Reward-unlock gate — shown over the host feed for reward-mode content
-             (Instagram Stories). Watch an ad to earn a short window of access. -->
-        <activity
-            android:name=".ui.content.RewardGateActivity"
-            android:exported="false"
-            android:excludeFromRecents="true"
-            android:launchMode="singleTask"
-            android:taskAffinity=""
-            android:theme="@style/Theme.StayFree.RewardGate" />
+            android:theme="@style/Theme.StayFree.ContentBlock" />
 
         <!-- Foreground Service — specialUse: continuous on-device screen-time
              tracking; dataSync would get a 6h timeout + boot-launch ban on

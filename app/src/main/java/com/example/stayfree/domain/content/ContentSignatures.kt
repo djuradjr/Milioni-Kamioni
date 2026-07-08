@@ -25,8 +25,7 @@ object ContentSignatures {
                 "clips_viewer",
                 "clips_video_container",
                 "clips_tab"
-            ),
-            blockMode = ContentBlockMode.REWARD_UNLOCK
+            )
         ),
         ContentBlockTarget(
             id = INSTAGRAM_STORIES,
@@ -42,8 +41,7 @@ object ContentSignatures {
                 "reel_viewer_media_container",
                 "reel_viewer_content_layout",
                 "reel_viewer_media_layout"
-            ),
-            blockMode = ContentBlockMode.REWARD_UNLOCK
+            )
         ),
         ContentBlockTarget(
             id = YOUTUBE_SHORTS,
@@ -59,8 +57,7 @@ object ContentSignatures {
                 "reel_watch_player",
                 "reel_player_overlay",
                 "shorts"
-            ),
-            blockMode = ContentBlockMode.REWARD_UNLOCK
+            )
         ),
         ContentBlockTarget(
             id = TIKTOK,
@@ -71,7 +68,6 @@ object ContentSignatures {
             // is useless. Treat the whole app as the surface, and don't press Back
             // (TikTok has no safe screen behind the feed — Back just exits the app).
             viewIdSignatures = emptyList(),
-            blockMode = ContentBlockMode.REWARD_UNLOCK,
             matchWholeApp = true,
             pressBackBeforeBlock = false
         )

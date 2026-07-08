@@ -14,12 +14,10 @@ import com.example.stayfree.data.repository.InAppBlockRepository
 import com.example.stayfree.data.repository.UsageRepository
 import com.example.stayfree.data.repository.WebsiteBlockRepository
 import com.example.stayfree.domain.BlockRuleEvaluator
-import com.example.stayfree.domain.content.ContentBlockMode
 import com.example.stayfree.domain.content.ContentSignatures
 import com.example.stayfree.domain.model.BlockType
 import com.example.stayfree.ui.blocking.FocusModeState
-import com.example.stayfree.ui.content.ContentInterstitialActivity
-import com.example.stayfree.ui.content.RewardGateActivity
+import com.example.stayfree.ui.content.ContentBlockActivity
 import com.example.stayfree.ui.overlay.BlockOverlayActivity
 import com.example.stayfree.util.TimeUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -51,10 +49,8 @@ class StayFreeAccessibilityService : AccessibilityService() {
     private val lastContentCheckTime = mutableMapOf<String, Long>()
     // Per-package last check for in-app blocks (debounce)
     private val lastInAppCheckTime = mutableMapOf<String, Long>()
-    // Per-content blocking (Reels/Shorts): exit host app + show interstitial
+    // Per-content blocking (Reels/Shorts): exit host app + show the block screen
     @Volatile private var enabledContentIds: Set<String> = emptySet()
-    // Epoch ms until which reward-mode content (e.g. Stories) is unlocked.
-    @Volatile private var contentUnlockUntil: Long = 0L
     // Whole-app block: packages whose slider is ON (Block Apps screen). Any
     // foreground screen of these gets covered by the block overlay once the
     // daily allowance below is used up.
@@ -62,6 +58,10 @@ class StayFreeAccessibilityService : AccessibilityService() {
     // Daily allowance in minutes per blocked app (0 = block immediately).
     @Volatile private var blockAppLimitsMin: Map<String, Int> = emptyMap()
     private var lastContentBlockAt: Long = 0L
+    // One-shot recheck scheduled when a match lands inside the on-open grace —
+    // static surfaces (e.g. TikTok's login wall) emit no further events, so
+    // without this the block would never fire after the grace expires.
+    private var graceRecheckJob: Job? = null
     // Website time tracking
     private var currentBrowserDomain: String? = null
     private var domainStartTime: Long = 0L
@@ -78,13 +78,13 @@ class StayFreeAccessibilityService : AccessibilityService() {
         private const val CACHE_REFRESH_INTERVAL_MS = 30_000L
         private const val INAPP_CHECK_DEBOUNCE_MS = 500L
         private const val URL_DEBOUNCE_MS = 500L
-        // Min gap between two interstitial launches (covers CONTENT_CHANGED bursts).
+        // Min gap between two block-screen launches (covers CONTENT_CHANGED bursts).
         private const val CONTENT_BLOCK_COOLDOWN_MS = 3_000L
         // After a host app enters foreground, ignore short-form surfaces for this
         // long — covers a cold launch auto-restoring Shorts/Reels (seen ≤3.5s).
         private const val CONTENT_OPEN_GRACE_MS = 4_000L
         // Let GLOBAL_ACTION_BACK settle (host leaves the Shorts player) before we
-        // cover the screen with the interstitial.
+        // cover the screen with the block screen.
         private const val BACK_SETTLE_MS = 300L
 
         // Browser URL bar view IDs
@@ -116,9 +116,6 @@ class StayFreeAccessibilityService : AccessibilityService() {
     private fun collectContentBlockState() {
         serviceScope.launch {
             prefs.contentBlockEnabledIds.collect { enabledContentIds = it }
-        }
-        serviceScope.launch {
-            prefs.contentUnlockUntil.collect { contentUnlockUntil = it }
         }
         serviceScope.launch {
             prefs.blockAppsEnabledPkgs.collect { blockAppsEnabledPkgs = it }
@@ -199,12 +196,12 @@ class StayFreeAccessibilityService : AccessibilityService() {
     }
 
     /**
-     * Per-content blocking (Reels/Shorts/Stories): the instant a blocked surface
-     * is detected we press Back to leave it, then cover the host's feed with our
-     * own screen — a hard interstitial (Shorts/Reels) or a rewarded-unlock gate
-     * (Stories). Cheap-skips any package without an enabled content target so the
-     * tree walk only runs inside Instagram/YouTube. A host app can expose several
-     * surfaces (Instagram = Reels + Stories), so we test every enabled target.
+     * Per-content blocking (Reels/Shorts/Stories/TikTok): the instant a blocked
+     * surface is detected we press Back to leave it, then cover the host's feed
+     * with the hard-block screen. Cheap-skips any package without an enabled
+     * content target so the tree walk only runs inside Instagram/YouTube. A host
+     * app can expose several surfaces (Instagram = Reels + Stories), so we test
+     * every enabled target.
      */
     private fun handleContentBlock(pkg: String) {
         val targets = ContentSignatures.allByPackage(pkg).filter { it.id in enabledContentIds }
@@ -250,13 +247,18 @@ class StayFreeAccessibilityService : AccessibilityService() {
         // a short on-open grace so a cold launch's transient flash of the
         // pre-inflated player doesn't fire; past that, block whenever the user is on
         // the surface — including apps that restore straight into Reels/Shorts on open.
-        if (now - foregroundSince < CONTENT_OPEN_GRACE_MS) return
-
-        // Reward-mode surface (Stories) with an active unlock → let it through.
-        if (matched.blockMode == ContentBlockMode.REWARD_UNLOCK && now < contentUnlockUntil) return
+        val sinceOpen = now - foregroundSince
+        if (sinceOpen < CONTENT_OPEN_GRACE_MS) {
+            graceRecheckJob?.cancel()
+            graceRecheckJob = serviceScope.launch(Dispatchers.Main) {
+                delay(CONTENT_OPEN_GRACE_MS - sinceOpen + 250)
+                if (currentForegroundPackage == pkg) handleContentBlock(pkg)
+            }
+            return
+        }
 
         lastContentBlockAt = now
-        Log.d(TAG, "Content surface: ${matched.displayName} in $pkg (mode=${matched.blockMode})")
+        Log.d(TAG, "Content surface: ${matched.displayName} in $pkg")
 
         if (!Settings.canDrawOverlays(this)) {
             Log.w(TAG, "No overlay permission — cannot show block screen")
@@ -268,25 +270,19 @@ class StayFreeAccessibilityService : AccessibilityService() {
         // and the user lands on the feed behind our screen. (We avoid
         // GLOBAL_ACTION_HOME: it races the launcher on top of us and triggers
         // YouTube's auto-PiP floating player.) Skipped for whole-app targets
-        // (TikTok) which have no safe screen behind the feed — there our full-screen
-        // gate simply covers the app instead.
+        // (TikTok) which have no safe screen behind the feed — there our
+        // full-screen block simply covers the app instead.
         serviceScope.launch(Dispatchers.Main) {
             if (matched.pressBackBeforeBlock) {
                 performGlobalAction(GLOBAL_ACTION_BACK)
                 delay(BACK_SETTLE_MS)
             }
             try {
-                val intent = when (matched.blockMode) {
-                    ContentBlockMode.REWARD_UNLOCK ->
-                        RewardGateActivity.newIntent(
-                            this@StayFreeAccessibilityService, matched.id, matched.displayName
-                        )
-                    ContentBlockMode.HARD_BLOCK ->
-                        ContentInterstitialActivity.newIntent(
-                            this@StayFreeAccessibilityService, matched.id, matched.displayName
-                        )
-                }
-                startActivity(intent)
+                startActivity(
+                    ContentBlockActivity.newIntent(
+                        this@StayFreeAccessibilityService, matched.displayName
+                    )
+                )
             } catch (e: Exception) {
                 Log.w(TAG, "Block screen launch rejected: ${e.message}")
             }
@@ -564,7 +560,7 @@ class StayFreeAccessibilityService : AccessibilityService() {
     }
 
     override fun onInterrupt() {
-        // No persistent UI to tear down — interstitial is a normal activity.
+        // No persistent UI to tear down — the block screen is a normal activity.
     }
 
     override fun onDestroy() {

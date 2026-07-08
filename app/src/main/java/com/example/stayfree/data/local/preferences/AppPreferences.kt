@@ -40,10 +40,6 @@ class AppPreferences @Inject constructor(
         // 0 minutes = block immediately; missing entry = DEFAULT_BLOCK_APP_LIMIT_MINUTES.
         val BLOCK_APP_LIMITS = stringPreferencesKey("block_app_limits_json")
         const val DEFAULT_BLOCK_APP_LIMIT_MINUTES = 30
-        // Rewarded unlock (reward-mode content like Instagram Stories)
-        val CONTENT_UNLOCK_UNTIL = longPreferencesKey("content_unlock_until")
-        val CONTENT_UNLOCKS_USED = intPreferencesKey("content_unlocks_used_today")
-        val CONTENT_UNLOCK_DATE = stringPreferencesKey("content_unlock_date")
     }
 
     val dailyResetTimeMinutes: Flow<Int> = dataStore.data.map { it[DAILY_RESET_TIME_MINUTES] ?: 0 }
@@ -66,8 +62,6 @@ class AppPreferences @Inject constructor(
     /** Daily allowance in minutes per blocked app (0 = block immediately). */
     val blockAppLimitsMinutes: Flow<Map<String, Int>> =
         dataStore.data.map { parseLimits(it[BLOCK_APP_LIMITS]) }
-    /** Epoch ms until which reward-mode content is unlocked (0 = locked). */
-    val contentUnlockUntil: Flow<Long> = dataStore.data.map { it[CONTENT_UNLOCK_UNTIL] ?: 0L }
 
     suspend fun setDailyResetTime(minutes: Int) {
         dataStore.edit { it[DAILY_RESET_TIME_MINUTES] = minutes }
@@ -151,25 +145,4 @@ class AppPreferences @Inject constructor(
         }
     }
 
-    /** Unlocks used so far for [today] (resets implicitly when the date changes). */
-    suspend fun unlocksUsedToday(today: String): Int {
-        val prefs = dataStore.data.first()
-        return if (prefs[CONTENT_UNLOCK_DATE] == today) (prefs[CONTENT_UNLOCKS_USED] ?: 0) else 0
-    }
-
-    /**
-     * Grants a timed reward unlock if the daily cap hasn't been reached.
-     * @return true if granted, false when [dailyCap] is already used up.
-     */
-    suspend fun grantContentUnlock(durationMs: Long, dailyCap: Int, today: String): Boolean {
-        val current = dataStore.data.first()
-        val used = if (current[CONTENT_UNLOCK_DATE] == today) (current[CONTENT_UNLOCKS_USED] ?: 0) else 0
-        if (used >= dailyCap) return false
-        dataStore.edit {
-            it[CONTENT_UNLOCK_UNTIL] = System.currentTimeMillis() + durationMs
-            it[CONTENT_UNLOCKS_USED] = used + 1
-            it[CONTENT_UNLOCK_DATE] = today
-        }
-        return true
-    }
 }

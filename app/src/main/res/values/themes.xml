@@ -85,20 +85,11 @@
         <item name="postSplashScreenTheme">@style/Theme.StayFree</item>
     </style>
 
-    <!-- Reward-unlock gate host — opaque branded surface over the host feed -->
-    <style name="Theme.StayFree.RewardGate" parent="Theme.Material3.Light.NoActionBar">
+    <!-- Content hard-block host — opaque branded surface over the host feed -->
+    <style name="Theme.StayFree.ContentBlock" parent="Theme.Material3.Light.NoActionBar">
         <item name="android:windowBackground">@drawable/bg_overlay_gradient</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">false</item>
-    </style>
-
-    <!-- Full-screen black interstitial host (AdMob template surface) -->
-    <style name="Theme.StayFree.Interstitial" parent="Theme.Material3.Light.NoActionBar">
-        <item name="android:windowBackground">@android:color/black</item>
-        <item name="android:statusBarColor">@android:color/black</item>
-        <item name="android:navigationBarColor">@android:color/black</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="android:windowAnimationStyle">@android:style/Animation</item>
     </style>
 </resources>

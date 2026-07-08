@@ -13,7 +13,7 @@ Full design rules: `.claude/skills/bb-ui/SKILL.md`.
     "time saved".
   - Ink `ink #1B2B4B` — trust/premium: dark premium surfaces, night/sleep.
   - Aubergine `accent_purple #3E2A56` — focus/sleep modes, achievements.
-- Gates/overlays (`ui/content/RewardGateActivity`, `ui/overlay/BlockOverlayActivity`)
+- Block screens (`ui/content/ContentBlockActivity`, `ui/overlay/BlockOverlayActivity`)
   run immersive full-screen, branded, calm copy — no timer pressure.
 - All copy through `strings.xml`, never hardcoded.
 - Verify visually on the Pixel_9 emulator (screencap; displayed coords ×≈1.21)

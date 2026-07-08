@@ -26,14 +26,14 @@ no new UI frameworks.
 ## Interactive (make it feel alive)
 - Animate numbers (`ui/common/CountUp`) and charts (`ui/common/BarChartView`);
   animate state transitions; ripple on every tappable surface.
-- Exception: gate/overlay entries use 0-duration transitions — they must appear
+- Exception: block-screen entries use 0-duration transitions — they must appear
   instantly (`overridePendingTransition(0, 0)`).
 - Empty, loading and error states are designed, never blank screens.
 
 ## Professional (polish rules)
 - Material3 spacing and typography scale consistent across all 4 tabs; nothing
   misaligned, no cramped layouts, generous whitespace.
-- Gates/overlays (`RewardGateActivity`, `BlockOverlayActivity`): immersive
+- Block screens (`ContentBlockActivity`, `BlockOverlayActivity`): immersive
   full-screen, branded, calm copy — never dark-pattern pressure (no fake timers,
   no guilt copy).
 - All copy through `strings.xml`; support both Serbian and English tone: short,
