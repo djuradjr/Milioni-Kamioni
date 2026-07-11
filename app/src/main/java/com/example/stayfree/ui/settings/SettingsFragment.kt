@@ -7,13 +7,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.core.content.ContextCompat
+import androidx.core.os.ConfigurationCompat
+import androidx.core.os.LocaleListCompat
 import androidx.navigation.fragment.findNavController
 import com.example.stayfree.R
 import com.example.stayfree.databinding.FragmentSettingsBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -47,6 +51,11 @@ class SettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.tvLanguage.setText(
+            if (currentLanguageTag() == "sr") R.string.language_serbian else R.string.language_english
+        )
+        binding.btnLanguage.setOnClickListener { showLanguageDialog() }
 
         binding.btnSetPin.setOnClickListener {
             findNavController().navigate(R.id.action_settings_to_pin)
@@ -89,6 +98,33 @@ class SettingsFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun currentLanguageTag(): String {
+        val appLocales = AppCompatDelegate.getApplicationLocales()
+        val language = if (appLocales.isEmpty) {
+            // No explicit choice yet — reflect the resolved system language.
+            ConfigurationCompat.getLocales(resources.configuration)[0]?.language
+        } else {
+            appLocales[0]?.language
+        }
+        return if (language == "sr") "sr" else "en"
+    }
+
+    private fun showLanguageDialog() {
+        val tags = arrayOf("en", "sr")
+        val names = arrayOf(getString(R.string.language_english), getString(R.string.language_serbian))
+        val checked = tags.indexOf(currentLanguageTag())
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.settings_language)
+            .setSingleChoiceItems(names, checked) { dialog, which ->
+                dialog.dismiss()
+                if (which != checked) {
+                    AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(tags[which]))
+                }
+            }
+            .setNegativeButton(R.string.btn_cancel, null)
+            .show()
     }
 
     override fun onDestroyView() {

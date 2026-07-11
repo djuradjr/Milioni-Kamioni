@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:inputType="numberPassword"
             android:maxLength="6"
-            android:hint="Enter PIN" />
+            android:hint="@string/pin_enter_hint" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton

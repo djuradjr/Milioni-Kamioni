@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.example.stayfree.R
 import com.example.stayfree.data.local.preferences.AppPreferences
 import com.example.stayfree.databinding.FragmentPinSetupBinding
 import com.example.stayfree.util.PinHasher
@@ -37,12 +38,12 @@ class PinSetupFragment : Fragment() {
         binding.btnConfirm.setOnClickListener {
             val pin = binding.etPin.text.toString()
             if (pin.length < 4) {
-                Toast.makeText(requireContext(), "PIN must be at least 4 digits", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.pin_too_short, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             if (firstPin == null) {
                 firstPin = pin
-                binding.tvInstruction.text = "Confirm your PIN"
+                binding.tvInstruction.setText(R.string.pin_confirm_title)
                 binding.etPin.text?.clear()
             } else {
                 if (firstPin == pin) {
@@ -51,12 +52,12 @@ class PinSetupFragment : Fragment() {
                         prefs.setPinHash(hash)
                         prefs.setPinEnabled(true)
                     }
-                    Toast.makeText(requireContext(), "PIN set successfully", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), R.string.pin_set_success, Toast.LENGTH_SHORT).show()
                     findNavController().popBackStack()
                 } else {
-                    Toast.makeText(requireContext(), "PINs do not match", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), R.string.pin_mismatch, Toast.LENGTH_SHORT).show()
                     firstPin = null
-                    binding.tvInstruction.text = "Set your PIN"
+                    binding.tvInstruction.setText(R.string.pin_set_title)
                     binding.etPin.text?.clear()
                 }
             }

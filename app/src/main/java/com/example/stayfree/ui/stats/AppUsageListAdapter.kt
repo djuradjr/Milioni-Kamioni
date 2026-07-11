@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.stayfree.R
 import com.example.stayfree.databinding.ItemAppUsageBinding
 import com.example.stayfree.domain.model.AppUsage
 import com.example.stayfree.util.AppInfoUtils
@@ -35,7 +36,8 @@ class AppUsageListAdapter(
         fun bind(appUsage: AppUsage, maxTimeMs: Long) {
             binding.tvAppName.text = appUsage.appName
             binding.tvUsageTime.text = TimeUtils.formatDuration(appUsage.totalTimeMs)
-            binding.tvUnlockCount.text = "${appUsage.unlockCount} unlocks"
+            binding.tvUnlockCount.text =
+                binding.root.context.getString(R.string.stats_unlocks_count, appUsage.unlockCount)
             binding.progressUsage.setProgressCompat(
                 ((appUsage.totalTimeMs * 100) / maxTimeMs).toInt().coerceIn(0, 100),
                 true

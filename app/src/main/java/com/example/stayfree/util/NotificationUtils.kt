@@ -28,19 +28,19 @@ object NotificationUtils {
                 listOf(
                     NotificationChannel(
                         CHANNEL_FOREGROUND,
-                        "Usage Tracking",
+                        context.getString(R.string.notif_channel_foreground_name),
                         NotificationManager.IMPORTANCE_MIN
-                    ).apply { description = "Block Brainrot is tracking your screen time" },
+                    ).apply { description = context.getString(R.string.notif_channel_foreground_desc) },
                     NotificationChannel(
                         CHANNEL_USAGE_ALERTS,
-                        "Usage Alerts",
+                        context.getString(R.string.notif_channel_alerts_name),
                         NotificationManager.IMPORTANCE_DEFAULT
-                    ).apply { description = "Alerts when you reach app usage limits" },
+                    ).apply { description = context.getString(R.string.notif_channel_alerts_desc) },
                     NotificationChannel(
                         CHANNEL_DAILY_SUMMARY,
-                        "Daily Summary",
+                        context.getString(R.string.notif_channel_summary_name),
                         NotificationManager.IMPORTANCE_LOW
-                    ).apply { description = "Your daily screen time summary" }
+                    ).apply { description = context.getString(R.string.notif_channel_summary_desc) }
                 )
             )
         }
@@ -54,7 +54,7 @@ object NotificationUtils {
         )
         return NotificationCompat.Builder(context, CHANNEL_FOREGROUND)
             .setContentTitle(context.getString(R.string.app_name))
-            .setContentText("Tracking your screen time")
+            .setContentText(context.getString(R.string.notif_foreground_text))
             .setSmallIcon(R.drawable.ic_notification)
             .setContentIntent(pendingIntent)
             .setOngoing(true)
@@ -65,8 +65,8 @@ object NotificationUtils {
     fun sendUsageAlert(context: Context, appName: String, percent: Int) {
         val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notification = NotificationCompat.Builder(context, CHANNEL_USAGE_ALERTS)
-            .setContentTitle("Usage Alert — $appName")
-            .setContentText("You've used $percent% of your daily limit for $appName")
+            .setContentTitle(context.getString(R.string.notif_usage_alert_title, appName))
+            .setContentText(context.getString(R.string.notif_usage_alert_text, percent, appName))
             .setSmallIcon(R.drawable.ic_notification)
             .setAutoCancel(true)
             .build()
@@ -76,8 +76,8 @@ object NotificationUtils {
     fun sendDailySummary(context: Context, totalScreenTime: String) {
         val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notification = NotificationCompat.Builder(context, CHANNEL_DAILY_SUMMARY)
-            .setContentTitle("Daily Screen Time Summary")
-            .setContentText("Total screen time yesterday: $totalScreenTime")
+            .setContentTitle(context.getString(R.string.notif_daily_summary_title))
+            .setContentText(context.getString(R.string.notif_daily_summary_text, totalScreenTime))
             .setSmallIcon(R.drawable.ic_notification)
             .setAutoCancel(true)
             .build()

@@ -53,7 +53,7 @@ class AppDetailStatsFragment : Fragment() {
             }
             launch {
                 viewModel.todayUnlocks.collectLatest { count ->
-                    binding.tvTodayUnlocks.text = "$count unlocks today"
+                    binding.tvTodayUnlocks.text = getString(R.string.stats_unlocks_today, count)
                 }
             }
             launch {

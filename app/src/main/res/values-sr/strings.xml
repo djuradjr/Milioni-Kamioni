@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Navigation -->
+    <string name="nav_dashboard">Pregled</string>
+    <string name="nav_stats">Statistika</string>
+    <string name="nav_blocking">Blokiranje</string>
+    <string name="nav_settings">Podešavanja</string>
+
+    <!-- Accessibility Service -->
+    <string name="accessibility_service_description">Block Brainrot koristi uslugu pristupačnosti da prepozna koja je aplikacija ili sajt trenutno otvoren i primeni tvoja pravila blokiranja.</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_usage_title">Pristup korišćenju</string>
+    <string name="onboarding_usage_desc">Block Brainrot treba dozvolu da vidi statistiku korišćenja aplikacija. Tako ti pokazujemo tačno koliko vremena provodiš u svakoj aplikaciji.</string>
+    <string name="onboarding_accessibility_title">Usluga pristupačnosti</string>
+    <string name="onboarding_accessibility_desc">Uključi Block Brainrot u podešavanjima pristupačnosti da bi prepoznao aktivnu aplikaciju i primenio pravila blokiranja.</string>
+
+    <!-- Prominent disclosure (Play policy) -->
+    <string name="disclosure_title">Dozvola za pristupačnost</string>
+    <string name="disclosure_message">Ova aplikacija koristi Androidovu uslugu pristupačnosti da očita koja je aplikacija trenutno na ekranu, i — samo kada blokiraš određene sajtove — adresnu traku pregledača.\n\nZašto: to je jedini način da se ekran blokade prikaže čim otvoriš blokiranu aplikaciju ili sajt.\n\nGde idu podaci: nigde. Sve se obrađuje i čuva samo na ovom uređaju. Aplikacija nema pristup internetu i nikada ne prikuplja, ne deli niti prodaje ove podatke.</string>
+    <string name="disclosure_accept">Prihvati i nastavi</string>
+    <string name="disclosure_decline">Ne sada</string>
+    <string name="onboarding_overlay_title">Prikaz preko drugih aplikacija</string>
+    <string name="onboarding_overlay_desc">Block Brainrot mora da crta preko drugih aplikacija da bi prikazao ekran blokade kad pokušaš da otvoriš blokiranu aplikaciju.</string>
+    <string name="onboarding_notifications_title">Obaveštenja</string>
+    <string name="onboarding_notifications_desc">Dozvoli obaveštenja da te Block Brainrot upozori kada se približavaš dnevnim limitima.</string>
+    <string name="onboarding_battery_title">Optimizacija baterije</string>
+    <string name="onboarding_battery_desc">Izuzmi Block Brainrot iz optimizacije baterije da bi pratio vreme i kad je ekran ugašen.</string>
+
+    <!-- Content descriptions -->
+    <string name="cd_delete_rule">Obriši pravilo</string>
+    <string name="cd_delete_website">Obriši blokadu sajta</string>
+
+    <!-- Buttons -->
+    <string name="btn_grant_permission">Odobri dozvolu</string>
+    <string name="btn_next">Dalje</string>
+    <string name="btn_save">Sačuvaj</string>
+    <string name="btn_cancel">Otkaži</string>
+    <string name="btn_delete">Obriši</string>
+    <string name="btn_go_back">Nazad</string>
+    <string name="btn_override">Zaobiđi (potreban PIN)</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard_total_screen_time">Ukupno vreme korišćenja</string>
+    <string name="dashboard_unlocks">Otključavanja</string>
+    <string name="dashboard_active_blocks">Aktivne blokade</string>
+    <string name="dashboard_today">Danas</string>
+    <string name="dashboard_screen_time_label">Vreme korišćenja</string>
+    <string name="dashboard_peak_time">Vrh aktivnosti</string>
+    <string name="dashboard_most_used_apps">Najkorišćenije aplikacije</string>
+    <string name="dashboard_prev_day">Prethodni dan</string>
+    <string name="dashboard_next_day">Sledeći dan</string>
+
+    <!-- Stats -->
+    <string name="stats_daily">Dnevno</string>
+    <string name="stats_weekly">Nedeljno</string>
+    <string name="stats_monthly">Mesečno</string>
+    <string name="stats_activity">Aktivnost</string>
+    <string name="stats_most_used">Najkorišćenije</string>
+    <string name="stats_unlocks_count">%1$d otključavanja</string>
+    <string name="stats_unlocks_today">%1$d otključavanja danas</string>
+    <string name="stats_empty">Još nema podataka</string>
+    <string name="stats_empty_desc">Kad počneš da koristiš telefon, vreme korišćenja će se pojaviti ovde.</string>
+    <string name="stats_trend_down">▼ %1$d%% u odnosu na prethodno</string>
+    <string name="stats_trend_up">▲ %1$d%% u odnosu na prethodno</string>
+
+    <!-- Blocking -->
+    <string name="block_type_now">Blokiraj odmah</string>
+    <string name="block_type_schedule">Raspored</string>
+    <string name="block_type_daily_limit">Dnevni limit</string>
+    <string name="block_type_session">Limit sesije</string>
+    <string name="blocking_focus_mode">Režim fokusa</string>
+    <string name="blocking_sleep_mode">Režim spavanja</string>
+    <string name="blocking_websites">Sajtovi</string>
+    <string name="blocking_in_app">U aplikaciji</string>
+    <string name="blocking_app_rules">Pravila blokiranja</string>
+    <string name="app_detail_block_this_app">Blokiraj ovu aplikaciju</string>
+
+    <!-- Blocking screen detail -->
+    <string name="blocking_tools_title">Alati za blokiranje</string>
+    <string name="blocking_focus_desc">Utišaj sve na određeno vreme</string>
+    <string name="blocking_sleep_desc">Mirni sati svake noći</string>
+    <string name="blocking_websites_desc">Blokiraj sajtove u pregledaču</string>
+    <string name="blocking_in_app_desc">Reels, Shorts i ostalo</string>
+    <string name="blocking_block_apps">Blokiraj aplikacije</string>
+    <string name="blocking_block_apps_desc">Blokiraj cele aplikacije</string>
+    <string name="block_apps_empty">Nema dostupnih aplikacija</string>
+    <string name="block_apps_all_header">Sve aplikacije</string>
+    <string name="block_app_limit_label">Dnevni limit</string>
+    <string name="block_app_limit_block_now">Odmah</string>
+    <string name="cd_limit_decrease">Smanji dnevni limit</string>
+    <string name="cd_limit_increase">Povećaj dnevni limit</string>
+    <string name="blocking_rules_count">%1$d pravila • %2$d aktivno</string>
+    <string name="blocking_status_active">Aktivno sada</string>
+    <string name="blocking_status_off">Isključeno</string>
+    <string name="blocking_count_active">%1$d aktivno</string>
+    <string name="blocking_count_none">Još nijedna</string>
+    <string name="blocking_rules_empty">Još nema limita za aplikacije</string>
+    <string name="blocking_rules_empty_desc">Dodirni + da postaviš dnevni limit, raspored ili trenutnu blokadu.</string>
+    <string name="blocking_add_rule">Dodaj pravilo blokiranja</string>
+
+    <!-- Settings detail -->
+    <string name="settings_pin_on">Zaštićeno — dodirni za izmenu</string>
+    <string name="settings_pin_off">Isključeno — dodirni da postaviš PIN</string>
+    <string name="settings_pin_subtitle">Traži PIN za zaobilaženje blokada</string>
+    <string name="settings_reset_subtitle">Kada se dnevni brojači resetuju</string>
+    <string name="settings_privacy_subtitle">Sve ostaje na tvom uređaju</string>
+    <string name="settings_app_tagline">Troši manje. Živi više.</string>
+
+    <!-- Add rule -->
+    <string name="add_rule_select_app">Izaberi aplikaciju</string>
+    <string name="add_rule_block_type">Tip blokade</string>
+    <string name="add_rule_session_duration">Trajanje sesije</string>
+    <string name="add_rule_break_duration">Trajanje pauze (minuti)</string>
+    <string name="add_rule_require_pin">Traži PIN za izmenu</string>
+    <string name="day_m">P</string>
+    <string name="day_t">U</string>
+    <string name="day_w">S</string>
+    <string name="day_th">Č</string>
+    <string name="day_f">P</string>
+    <string name="day_s">S</string>
+    <string name="day_su">N</string>
+
+    <!-- Focus mode -->
+    <string name="focus_header_title">Režim fokusa</string>
+    <string name="focus_header_tagline">Ostani u zoni — prolazi samo ono što dozvoliš.</string>
+    <string name="sleep_header_title">Režim spavanja</string>
+    <string name="sleep_header_tagline">Opusti se — distrakcije miruju dok se ti odmaraš.</string>
+    <string name="focus_whitelist_mode">Režim dozvoljenih (samo izabrane aplikacije)</string>
+    <string name="focus_custom_minutes">Prilagođeno (minuti):</string>
+    <string name="focus_start">Pokreni fokus</string>
+    <string name="focus_end_early">Prekini fokus ranije</string>
+
+    <!-- Sleep mode -->
+    <string name="sleep_days">Dani spavanja</string>
+    <string name="sleep_start_time">Početak spavanja</string>
+    <string name="sleep_wake_time">Vreme buđenja</string>
+
+    <!-- In-app blocking -->
+    <string name="inapp_description">Blokiraj pojedinačne delove aplikacija (npr. Shorts, Reels). Zahteva uslugu pristupačnosti.</string>
+
+    <!-- Website blocking -->
+    <string name="website_empty">Nema blokiranih sajtova</string>
+    <string name="website_empty_desc">Dodirni + da blokiraš sajt ili mu postaviš dnevni limit.</string>
+    <string name="website_add_title">Blokiraj sajt</string>
+    <string name="website_domain_hint">Domen (npr. youtube.com)</string>
+    <string name="website_cap_hint">Dnevni limit u minutima (prazno = uvek blokiraj)</string>
+    <string name="website_add">Dodaj sajt</string>
+    <string name="btn_add">Dodaj</string>
+
+    <!-- Content blocking (Reels/Shorts overlay) -->
+    <string name="content_block_group_title">Blokiraj sadržaj (beta)</string>
+    <string name="content_block_group_desc">Prekrij Reels i Shorts mirnim podsetnikom umesto blokiranja cele aplikacije. Detekcija zavisi od verzije aplikacije i povremeno traži ažuriranje.</string>
+
+    <!-- Content hard-block screen -->
+    <string name="content_block_title">Blokirano: %1$s</string>
+    <string name="content_block_message">Blokirano radi zaštite tvog fokusa. Napravi pauzu.</string>
+    <string name="content_block_exit">Izađi</string>
+
+    <!-- PIN -->
+    <string name="pin_set_title">Postavi PIN</string>
+    <string name="btn_confirm">Potvrdi</string>
+    <string name="pin_enter_hint">Unesi PIN</string>
+    <string name="pin_override_title">Zaobiđi blokadu</string>
+    <string name="pin_override_message">Unesi PIN za pristup ovoj aplikaciji.</string>
+    <string name="pin_incorrect">Pogrešan PIN</string>
+    <string name="pin_empty">PIN ne može biti prazan</string>
+    <string name="pin_too_short">PIN mora imati bar 4 cifre</string>
+    <string name="pin_confirm_title">Potvrdi PIN</string>
+    <string name="pin_set_success">PIN je postavljen</string>
+    <string name="pin_mismatch">PIN-ovi se ne poklapaju</string>
+
+    <!-- Reset time -->
+    <string name="reset_time_title">Postavi vreme dnevnog resetovanja</string>
+    <string name="settings_change_reset_time">Promeni vreme resetovanja</string>
+
+    <!-- Block Overlay -->
+    <string name="overlay_title">Ova aplikacija je blokirana</string>
+    <string name="overlay_by_schedule">Blokirano po rasporedu</string>
+    <string name="overlay_daily_limit_reached">Dnevni limit je dostignut</string>
+    <string name="overlay_focus_mode">Režim fokusa je aktivan</string>
+    <string name="overlay_sleep_mode">Režim spavanja je aktivan</string>
+    <string name="overlay_website_blocked">Ovaj sajt je blokiran</string>
+    <string name="overlay_app_blocked">Ova aplikacija je blokirana</string>
+    <string name="overlay_set_pin_hint">Želiš opciju zaobilaženja? Prvo postavi PIN u podešavanjima.</string>
+
+    <!-- Settings -->
+    <string name="settings_general">Opšte</string>
+    <string name="settings_language">Jezik</string>
+    <string name="settings_security">Bezbednost</string>
+    <string name="settings_set_pin">Postavi PIN</string>
+    <string name="settings_change_pin">Promeni PIN</string>
+    <string name="settings_remove_pin">Ukloni PIN</string>
+    <string name="settings_daily_reset">Vreme dnevnog resetovanja</string>
+    <string name="settings_notifications">Obaveštenja</string>
+    <string name="settings_export">Izvezi podatke</string>
+    <string name="settings_import">Uvezi podatke</string>
+    <string name="settings_about">O aplikaciji</string>
+    <string name="settings_version">Verzija %1$s</string>
+    <string name="settings_privacy_policy">Politika privatnosti</string>
+
+    <!-- Notifications -->
+    <string name="notif_channel_foreground_name">Praćenje korišćenja</string>
+    <string name="notif_channel_foreground_desc">Block Brainrot prati tvoje vreme korišćenja</string>
+    <string name="notif_channel_alerts_name">Upozorenja o korišćenju</string>
+    <string name="notif_channel_alerts_desc">Upozorenja kada dostigneš limite korišćenja</string>
+    <string name="notif_channel_summary_name">Dnevni pregled</string>
+    <string name="notif_channel_summary_desc">Tvoj dnevni pregled vremena korišćenja</string>
+    <string name="notif_foreground_text">Praćenje vremena korišćenja</string>
+    <string name="notif_usage_alert_title">Upozorenje — %1$s</string>
+    <string name="notif_usage_alert_text">Iskorišćeno je %1$d%% dnevnog limita za %2$s</string>
+    <string name="notif_daily_summary_title">Dnevni pregled vremena korišćenja</string>
+    <string name="notif_daily_summary_text">Ukupno vreme korišćenja juče: %1$s</string>
+</resources>

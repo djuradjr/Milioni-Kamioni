@@ -9,7 +9,8 @@
     <string name="nav_settings">Settings</string>
 
     <!-- Accessibility Service -->
-    <string name="accessibility_service_label">Block Brainrot Screen Monitor</string>
+    <!-- Untranslated: dumpsys tooling and the Play a11y declaration reference this exact label -->
+    <string name="accessibility_service_label" translatable="false">Block Brainrot Screen Monitor</string>
     <string name="accessibility_service_description">Block Brainrot uses the Accessibility Service to detect which app or website is currently open so it can enforce your blocking rules.</string>
 
     <!-- Onboarding -->
@@ -53,7 +54,7 @@
     <string name="dashboard_most_used_apps">Most used apps</string>
     <string name="dashboard_prev_day">Previous day</string>
     <string name="dashboard_next_day">Next day</string>
-    <string name="dashboard_no_peak">—</string>
+    <string name="dashboard_no_peak" translatable="false">—</string>
 
     <!-- Stats -->
     <string name="stats_daily">Daily</string>
@@ -62,6 +63,7 @@
     <string name="stats_activity">Activity</string>
     <string name="stats_most_used">Most used</string>
     <string name="stats_unlocks_count">%1$d unlocks</string>
+    <string name="stats_unlocks_today">%1$d unlocks today</string>
     <string name="stats_empty">No usage yet</string>
     <string name="stats_empty_desc">Once you start using your phone, your screen time will show up here.</string>
     <string name="stats_trend_down">▼ %1$d%% vs previous</string>
@@ -86,14 +88,14 @@
     <string name="blocking_websites_desc">Block sites in your browser</string>
     <string name="blocking_in_app_desc">Reels, Shorts &amp; more</string>
     <string name="blocking_block_apps">Block Apps</string>
-    <string name="blocking_block_apps_desc">Blokiraj cele aplikacije</string>
-    <string name="block_apps_empty">Nema dostupnih aplikacija</string>
-    <string name="block_apps_all_header">Sve aplikacije</string>
-    <string name="block_app_limit_label">Dnevni limit</string>
-    <string name="block_app_limit_minutes">%1$d min</string>
-    <string name="block_app_limit_block_now">Odmah</string>
-    <string name="cd_limit_decrease">Smanji dnevni limit</string>
-    <string name="cd_limit_increase">Povećaj dnevni limit</string>
+    <string name="blocking_block_apps_desc">Block entire apps</string>
+    <string name="block_apps_empty">No apps available</string>
+    <string name="block_apps_all_header">All apps</string>
+    <string name="block_app_limit_label">Daily limit</string>
+    <string name="block_app_limit_minutes" translatable="false">%1$d min</string>
+    <string name="block_app_limit_block_now">Now</string>
+    <string name="cd_limit_decrease">Decrease daily limit</string>
+    <string name="cd_limit_increase">Increase daily limit</string>
     <string name="blocking_rules_count">%1$d rule(s) • %2$d active</string>
     <string name="blocking_status_active">Active now</string>
     <string name="blocking_status_off">Off</string>
@@ -117,13 +119,15 @@
     <string name="add_rule_session_duration">Session duration</string>
     <string name="add_rule_break_duration">Break duration (minutes)</string>
     <string name="add_rule_require_pin">Require PIN to modify</string>
-    <string name="unit_hours_short">h</string>
-    <string name="unit_minutes_short">m</string>
+    <string name="unit_hours_short" translatable="false">h</string>
+    <string name="unit_minutes_short" translatable="false">m</string>
     <string name="day_m">M</string>
     <string name="day_t">T</string>
     <string name="day_w">W</string>
+    <string name="day_th">T</string>
     <string name="day_f">F</string>
     <string name="day_s">S</string>
+    <string name="day_su">S</string>
 
     <!-- Focus mode -->
     <string name="focus_header_title">Focus mode</string>
@@ -131,9 +135,9 @@
     <string name="sleep_header_title">Sleep mode</string>
     <string name="sleep_header_tagline">Wind down — distractions rest while you do.</string>
     <string name="focus_whitelist_mode">Whitelist mode (allow selected apps only)</string>
-    <string name="focus_25_min">25 min</string>
-    <string name="focus_45_min">45 min</string>
-    <string name="focus_60_min">60 min</string>
+    <string name="focus_25_min" translatable="false">25 min</string>
+    <string name="focus_45_min" translatable="false">45 min</string>
+    <string name="focus_60_min" translatable="false">60 min</string>
     <string name="focus_custom_minutes">Custom (minutes):</string>
     <string name="focus_start">Start Focus</string>
     <string name="focus_end_early">End Focus Early</string>
@@ -158,15 +162,15 @@
     <!-- Content blocking (Reels/Shorts overlay) -->
     <string name="content_block_group_title">Block content (beta)</string>
     <string name="content_block_group_desc">Cover Reels and Shorts with a calm reminder instead of blocking the whole app. Detection depends on the app version and may occasionally need an update.</string>
-    <string name="content_block_instagram_reels">Instagram Reels</string>
-    <string name="content_block_instagram_stories">Instagram Stories</string>
-    <string name="content_block_youtube_shorts">YouTube Shorts</string>
-    <string name="content_block_tiktok">TikTok</string>
+    <string name="content_block_instagram_reels" translatable="false">Instagram Reels</string>
+    <string name="content_block_instagram_stories" translatable="false">Instagram Stories</string>
+    <string name="content_block_youtube_shorts" translatable="false">YouTube Shorts</string>
+    <string name="content_block_tiktok" translatable="false">TikTok</string>
 
     <!-- Content hard-block screen -->
     <string name="content_block_title">%1$s blocked</string>
     <string name="content_block_message">You blocked this to protect your focus. Take a break.</string>
-    <string name="content_block_brand">Block Brainrot</string>
+    <string name="content_block_brand" translatable="false">Block Brainrot</string>
     <string name="content_block_exit">Exit</string>
 
     <!-- PIN -->
@@ -177,6 +181,10 @@
     <string name="pin_override_message">Enter your PIN to access this app.</string>
     <string name="pin_incorrect">Incorrect PIN</string>
     <string name="pin_empty">PIN cannot be empty</string>
+    <string name="pin_too_short">PIN must be at least 4 digits</string>
+    <string name="pin_confirm_title">Confirm your PIN</string>
+    <string name="pin_set_success">PIN set successfully</string>
+    <string name="pin_mismatch">PINs do not match</string>
 
     <!-- Reset time -->
     <string name="reset_time_title">Set Daily Reset Time</string>
@@ -193,14 +201,19 @@
     <string name="overlay_set_pin_hint">Want an override option? Set a PIN in Settings first.</string>
 
     <!-- In-App Block features -->
-    <string name="inapp_youtube_shorts">YouTube Shorts</string>
-    <string name="inapp_instagram_reels">Instagram Reels</string>
-    <string name="inapp_snapchat_spotlight">Snapchat Spotlight</string>
-    <string name="inapp_tiktok_foryou">TikTok For You</string>
-    <string name="inapp_facebook_reels">Facebook Reels</string>
-    <string name="inapp_twitter_trending">Twitter Trending</string>
+    <string name="inapp_youtube_shorts" translatable="false">YouTube Shorts</string>
+    <string name="inapp_instagram_reels" translatable="false">Instagram Reels</string>
+    <string name="inapp_snapchat_spotlight" translatable="false">Snapchat Spotlight</string>
+    <string name="inapp_tiktok_foryou" translatable="false">TikTok For You</string>
+    <string name="inapp_facebook_reels" translatable="false">Facebook Reels</string>
+    <string name="inapp_twitter_trending" translatable="false">Twitter Trending</string>
 
     <!-- Settings -->
+    <string name="settings_general">General</string>
+    <string name="settings_language">Language</string>
+    <!-- Endonyms — a language picker always shows each language in itself -->
+    <string name="language_english" translatable="false">English</string>
+    <string name="language_serbian" translatable="false">Srpski</string>
     <string name="settings_security">Security</string>
     <string name="settings_set_pin">Set PIN</string>
     <string name="settings_change_pin">Change PIN</string>
@@ -212,4 +225,17 @@
     <string name="settings_about">About</string>
     <string name="settings_version">Version %1$s</string>
     <string name="settings_privacy_policy">Privacy Policy</string>
+
+    <!-- Notifications -->
+    <string name="notif_channel_foreground_name">Usage Tracking</string>
+    <string name="notif_channel_foreground_desc">Block Brainrot is tracking your screen time</string>
+    <string name="notif_channel_alerts_name">Usage Alerts</string>
+    <string name="notif_channel_alerts_desc">Alerts when you reach app usage limits</string>
+    <string name="notif_channel_summary_name">Daily Summary</string>
+    <string name="notif_channel_summary_desc">Your daily screen time summary</string>
+    <string name="notif_foreground_text">Tracking your screen time</string>
+    <string name="notif_usage_alert_title">Usage alert — %1$s</string>
+    <string name="notif_usage_alert_text">You\'ve used %1$d%% of your daily limit for %2$s</string>
+    <string name="notif_daily_summary_title">Daily screen time summary</string>
+    <string name="notif_daily_summary_text">Total screen time yesterday: %1$s</string>
 </resources>

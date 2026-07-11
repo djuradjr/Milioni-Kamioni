@@ -49,6 +49,25 @@
             </LinearLayout>
         </LinearLayout>
 
+        <!-- General -->
+        <TextView style="@style/Settings.SectionHeader" android:text="@string/settings_general" />
+
+        <com.google.android.material.card.MaterialCardView style="@style/Settings.Card">
+            <LinearLayout
+                android:id="@+id/btn_language"
+                style="@style/Settings.Row">
+
+                <ImageView style="@style/Settings.RowIcon" android:src="@drawable/ic_language" app:tint="?attr/colorPrimary" />
+
+                <LinearLayout style="@style/Settings.RowText">
+                    <TextView style="@style/Settings.RowTitle" android:text="@string/settings_language" />
+                    <TextView android:id="@+id/tv_language" style="@style/Settings.RowSubtitle" />
+                </LinearLayout>
+
+                <ImageView style="@style/Settings.RowChevron" android:src="@drawable/ic_chevron_right" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
         <!-- Security -->
         <TextView style="@style/Settings.SectionHeader" android:text="@string/settings_security" />
 
