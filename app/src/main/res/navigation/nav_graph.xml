@@ -105,11 +105,11 @@
     <fragment
         android:id="@+id/pinSetupFragment"
         android:name="com.example.stayfree.ui.settings.PinSetupFragment"
-        android:label="PIN Setup" />
+        android:label="@string/pin_set_title" />
 
     <fragment
         android:id="@+id/resetTimeFragment"
         android:name="com.example.stayfree.ui.settings.ResetTimeFragment"
-        android:label="Daily Reset Time" />
+        android:label="@string/settings_daily_reset" />
 
 </navigation>

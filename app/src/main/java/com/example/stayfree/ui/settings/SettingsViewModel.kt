@@ -41,4 +41,8 @@ class SettingsViewModel @Inject constructor(
     fun setProfile(username: String, email: String) {
         viewModelScope.launch { prefs.setProfile(username, email) }
     }
+
+    fun clearPin() {
+        viewModelScope.launch { prefs.clearPin() }
+    }
 }

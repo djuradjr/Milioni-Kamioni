@@ -110,25 +110,26 @@
 
                     <ImageView style="@style/Settings.RowChevron" android:src="@drawable/ic_chevron_right" />
                 </LinearLayout>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
 
-        <!-- Security -->
-        <TextView style="@style/Settings.SectionHeader" android:text="@string/settings_security" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="56dp"
+                    android:background="?attr/colorSurfaceVariant" />
 
-        <com.google.android.material.card.MaterialCardView style="@style/Settings.Card">
-            <LinearLayout
-                android:id="@+id/btn_set_pin"
-                style="@style/Settings.Row">
+                <LinearLayout
+                    android:id="@+id/btn_set_pin"
+                    style="@style/Settings.Row">
 
-                <ImageView style="@style/Settings.RowIcon" android:src="@drawable/ic_lock" app:tint="?attr/colorPrimary" />
+                    <ImageView style="@style/Settings.RowIcon" android:src="@drawable/ic_lock" app:tint="?attr/colorPrimary" />
 
-                <LinearLayout style="@style/Settings.RowText">
-                    <TextView style="@style/Settings.RowTitle" android:text="@string/settings_set_pin" />
-                    <TextView android:id="@+id/tv_pin_subtitle" style="@style/Settings.RowSubtitle" />
+                    <LinearLayout style="@style/Settings.RowText">
+                        <TextView style="@style/Settings.RowTitle" android:text="@string/settings_pin_code" />
+                        <TextView android:id="@+id/tv_pin_subtitle" style="@style/Settings.RowSubtitle" />
+                    </LinearLayout>
+
+                    <ImageView style="@style/Settings.RowChevron" android:src="@drawable/ic_chevron_right" />
                 </LinearLayout>
-
-                <ImageView style="@style/Settings.RowChevron" android:src="@drawable/ic_chevron_right" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 

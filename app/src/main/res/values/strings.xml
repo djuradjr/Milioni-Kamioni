@@ -185,6 +185,8 @@
     <string name="pin_confirm_title">Confirm your PIN</string>
     <string name="pin_set_success">PIN set successfully</string>
     <string name="pin_mismatch">PINs do not match</string>
+    <string name="pin_locked_out">Too many attempts — try again in %1$d s</string>
+    <string name="pin_removed">PIN removed</string>
 
     <!-- Reset time -->
     <string name="reset_time_title">Set Daily Reset Time</string>
@@ -223,8 +225,7 @@
     <!-- Endonyms — a language picker always shows each language in itself -->
     <string name="language_english" translatable="false">English</string>
     <string name="language_serbian" translatable="false">Srpski</string>
-    <string name="settings_security">Security</string>
-    <string name="settings_set_pin">Set PIN</string>
+    <string name="settings_pin_code">PIN code</string>
     <string name="settings_change_pin">Change PIN</string>
     <string name="settings_remove_pin">Remove PIN</string>
     <string name="settings_daily_reset">Daily Reset Time</string>

@@ -170,6 +170,8 @@
     <string name="pin_confirm_title">Potvrdi PIN</string>
     <string name="pin_set_success">PIN je postavljen</string>
     <string name="pin_mismatch">PIN-ovi se ne poklapaju</string>
+    <string name="pin_locked_out">Previše pokušaja — probaj ponovo za %1$d s</string>
+    <string name="pin_removed">PIN je uklonjen</string>
 
     <!-- Reset time -->
     <string name="reset_time_title">Postavi vreme dnevnog resetovanja</string>
@@ -197,8 +199,7 @@
     <string name="settings_appearance">Izgled</string>
     <string name="appearance_light">Svetla</string>
     <string name="appearance_dark">Tamna</string>
-    <string name="settings_security">Bezbednost</string>
-    <string name="settings_set_pin">Postavi PIN</string>
+    <string name="settings_pin_code">PIN kod</string>
     <string name="settings_change_pin">Promeni PIN</string>
     <string name="settings_remove_pin">Ukloni PIN</string>
     <string name="settings_daily_reset">Vreme dnevnog resetovanja</string>

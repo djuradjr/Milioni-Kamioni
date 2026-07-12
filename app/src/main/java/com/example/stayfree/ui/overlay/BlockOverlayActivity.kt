@@ -2,17 +2,15 @@ package com.example.stayfree.ui.overlay
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.stayfree.R
 import com.example.stayfree.data.local.preferences.AppPreferences
 import com.example.stayfree.databinding.ActivityBlockOverlayBinding
-import com.example.stayfree.databinding.DialogPinEntryBinding
-import com.example.stayfree.util.PinHasher
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.example.stayfree.util.AppInfoUtils
+import com.example.stayfree.util.PinGate
+import com.example.stayfree.util.PinPrompt
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -22,6 +20,7 @@ import javax.inject.Inject
 class BlockOverlayActivity : AppCompatActivity() {
 
     @Inject lateinit var prefs: AppPreferences
+    @Inject lateinit var pinGate: PinGate
 
     private lateinit var binding: ActivityBlockOverlayBinding
     private var packageName_: String = ""
@@ -105,28 +104,13 @@ class BlockOverlayActivity : AppCompatActivity() {
     }
 
     private fun showPinDialog() {
-        val dialogBinding = DialogPinEntryBinding.inflate(layoutInflater)
-        MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.pin_override_title)
-            .setMessage(R.string.pin_override_message)
-            .setView(dialogBinding.root)
-            .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                val entered = dialogBinding.etPin.text?.toString().orEmpty()
-                if (entered.isEmpty()) {
-                    Toast.makeText(this, R.string.pin_empty, Toast.LENGTH_SHORT).show()
-                    return@setPositiveButton
-                }
-                lifecycleScope.launch {
-                    val storedHash = prefs.pinHash.first()
-                    if (storedHash != null && PinHasher.verify(entered, storedHash)) {
-                        finish()
-                    } else {
-                        Toast.makeText(this@BlockOverlayActivity, R.string.pin_incorrect, Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-            .setNegativeButton(R.string.btn_cancel, null)
-            .show()
+        PinPrompt.show(
+            context = this,
+            scope = lifecycleScope,
+            pinGate = pinGate,
+            title = R.string.pin_override_title,
+            message = R.string.pin_override_message
+        ) { finish() }
     }
 
 }

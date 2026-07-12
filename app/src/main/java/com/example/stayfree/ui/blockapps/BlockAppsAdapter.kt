@@ -13,7 +13,7 @@ import com.example.stayfree.util.AppInfoUtils
 
 class BlockAppsAdapter(
     private val onToggle: (packageName: String, blocked: Boolean) -> Unit,
-    private val onLimitChange: (packageName: String, minutes: Int) -> Unit
+    private val onLimitChange: (packageName: String, minutes: Int, increase: Boolean) -> Unit
 ) : ListAdapter<BlockAppItem, BlockAppsAdapter.ViewHolder>(DIFF) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -56,10 +56,10 @@ class BlockAppsAdapter(
             // from it snaps to the nearest preset.
             val idx = nearestStepIndex(item.limitMinutes)
             bindArrow(binding.btnLimitDown, enabled = idx > 0) {
-                onLimitChange(item.packageName, LIMIT_STEPS[idx - 1])
+                onLimitChange(item.packageName, LIMIT_STEPS[idx - 1], false)
             }
             bindArrow(binding.btnLimitUp, enabled = idx < LIMIT_STEPS.lastIndex) {
-                onLimitChange(item.packageName, LIMIT_STEPS[idx + 1])
+                onLimitChange(item.packageName, LIMIT_STEPS[idx + 1], true)
             }
         }
 

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Patterns
+import android.widget.Toast
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,11 +23,14 @@ import com.example.stayfree.data.local.preferences.AppPreferences
 import com.example.stayfree.databinding.DialogAccountEditBinding
 import com.example.stayfree.databinding.FragmentSettingsBinding
 import com.example.stayfree.util.AppearanceModes
+import com.example.stayfree.util.PinGate
+import com.example.stayfree.util.PinPrompt
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class SettingsFragment : Fragment() {
@@ -41,6 +45,8 @@ class SettingsFragment : Fragment() {
     private var _binding: FragmentSettingsBinding? = null
     private val binding get() = _binding!!
     private val viewModel: SettingsViewModel by viewModels()
+
+    @Inject lateinit var pinGate: PinGate
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,7 +71,8 @@ class SettingsFragment : Fragment() {
         binding.btnAccount.setOnClickListener { showAccountDialog() }
 
         binding.btnSetPin.setOnClickListener {
-            findNavController().navigate(R.id.action_settings_to_pin)
+            if (viewModel.pinEnabled.value) showPinActionsDialog()
+            else findNavController().navigate(R.id.action_settings_to_pin)
         }
 
         binding.btnResetTime.setOnClickListener {
@@ -136,6 +143,26 @@ class SettingsFragment : Fragment() {
             appLocales[0]?.language
         }
         return if (language == "sr") "sr" else "en"
+    }
+
+    private fun showPinActionsDialog() {
+        val actions = arrayOf(getString(R.string.settings_change_pin), getString(R.string.settings_remove_pin))
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.settings_pin_code)
+            .setItems(actions) { _, which ->
+                val scope = viewLifecycleOwner.lifecycleScope
+                when (which) {
+                    0 -> PinPrompt.show(requireContext(), scope, pinGate) {
+                        findNavController().navigate(R.id.action_settings_to_pin)
+                    }
+                    1 -> PinPrompt.show(requireContext(), scope, pinGate) {
+                        viewModel.clearPin()
+                        Toast.makeText(requireContext(), R.string.pin_removed, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            .setNegativeButton(R.string.btn_cancel, null)
+            .show()
     }
 
     private fun showAccountDialog() {

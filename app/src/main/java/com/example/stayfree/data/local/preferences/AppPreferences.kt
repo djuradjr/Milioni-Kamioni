@@ -30,6 +30,8 @@ class AppPreferences @Inject constructor(
         const val APPEARANCE_SYSTEM = "system"
         val PIN_HASH = stringPreferencesKey("pin_hash")
         val PIN_ENABLED = booleanPreferencesKey("pin_enabled")
+        val PIN_FAILED_ATTEMPTS = intPreferencesKey("pin_failed_attempts")
+        val PIN_LOCKOUT_UNTIL = longPreferencesKey("pin_lockout_until")
         // Local-only profile — never leaves the device (no INTERNET permission).
         val PROFILE_USERNAME = stringPreferencesKey("profile_username")
         val PROFILE_EMAIL = stringPreferencesKey("profile_email")
@@ -53,6 +55,7 @@ class AppPreferences @Inject constructor(
     val appearanceMode: Flow<String> = dataStore.data.map { it[APPEARANCE_MODE] ?: APPEARANCE_LIGHT }
     val pinHash: Flow<String?> = dataStore.data.map { it[PIN_HASH] }
     val pinEnabled: Flow<Boolean> = dataStore.data.map { it[PIN_ENABLED] ?: false }
+    val pinLockoutUntil: Flow<Long> = dataStore.data.map { it[PIN_LOCKOUT_UNTIL] ?: 0L }
     val profileUsername: Flow<String> = dataStore.data.map { it[PROFILE_USERNAME] ?: "" }
     val profileEmail: Flow<String> = dataStore.data.map { it[PROFILE_EMAIL] ?: "" }
     val onboardingComplete: Flow<Boolean> = dataStore.data.map { it[ONBOARDING_COMPLETE] ?: false }
@@ -87,6 +90,43 @@ class AppPreferences @Inject constructor(
 
     suspend fun setPinEnabled(enabled: Boolean) {
         dataStore.edit { it[PIN_ENABLED] = enabled }
+    }
+
+    suspend fun setPin(hash: String) {
+        dataStore.edit {
+            it[PIN_HASH] = hash
+            it[PIN_ENABLED] = true
+            it.remove(PIN_FAILED_ATTEMPTS)
+            it.remove(PIN_LOCKOUT_UNTIL)
+        }
+    }
+
+    suspend fun clearPin() {
+        dataStore.edit {
+            it.remove(PIN_HASH)
+            it[PIN_ENABLED] = false
+            it.remove(PIN_FAILED_ATTEMPTS)
+            it.remove(PIN_LOCKOUT_UNTIL)
+        }
+    }
+
+    /** Increments the failed-attempt counter and returns the new count. */
+    suspend fun registerFailedPinAttempt(): Int {
+        val updated = dataStore.edit {
+            it[PIN_FAILED_ATTEMPTS] = (it[PIN_FAILED_ATTEMPTS] ?: 0) + 1
+        }
+        return updated[PIN_FAILED_ATTEMPTS] ?: 0
+    }
+
+    suspend fun resetPinAttempts() {
+        dataStore.edit {
+            it.remove(PIN_FAILED_ATTEMPTS)
+            it.remove(PIN_LOCKOUT_UNTIL)
+        }
+    }
+
+    suspend fun setPinLockout(untilMillis: Long) {
+        dataStore.edit { it[PIN_LOCKOUT_UNTIL] = untilMillis }
     }
 
     suspend fun setProfile(username: String, email: String) {

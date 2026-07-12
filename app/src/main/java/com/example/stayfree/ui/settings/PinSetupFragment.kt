@@ -49,8 +49,7 @@ class PinSetupFragment : Fragment() {
                 if (firstPin == pin) {
                     val hash = PinHasher.hash(pin)
                     CoroutineScope(Dispatchers.IO).launch {
-                        prefs.setPinHash(hash)
-                        prefs.setPinEnabled(true)
+                        prefs.setPin(hash)
                     }
                     Toast.makeText(requireContext(), R.string.pin_set_success, Toast.LENGTH_SHORT).show()
                     findNavController().popBackStack()
