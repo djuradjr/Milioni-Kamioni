@@ -49,6 +49,25 @@
             </LinearLayout>
         </LinearLayout>
 
+        <!-- Account (local-only profile) -->
+        <TextView style="@style/Settings.SectionHeader" android:text="@string/settings_account" />
+
+        <com.google.android.material.card.MaterialCardView style="@style/Settings.Card">
+            <LinearLayout
+                android:id="@+id/btn_account"
+                style="@style/Settings.Row">
+
+                <ImageView style="@style/Settings.RowIcon" android:src="@drawable/ic_person" app:tint="?attr/colorPrimary" />
+
+                <LinearLayout style="@style/Settings.RowText">
+                    <TextView android:id="@+id/tv_account_name" style="@style/Settings.RowTitle" />
+                    <TextView android:id="@+id/tv_account_email" style="@style/Settings.RowSubtitle" />
+                </LinearLayout>
+
+                <ImageView style="@style/Settings.RowChevron" android:src="@drawable/ic_chevron_right" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
         <!-- General -->
         <TextView style="@style/Settings.SectionHeader" android:text="@string/settings_general" />
 

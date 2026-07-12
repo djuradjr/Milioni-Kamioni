@@ -24,11 +24,21 @@ class SettingsViewModel @Inject constructor(
     val appearanceMode: StateFlow<String> = prefs.appearanceMode
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AppPreferences.APPEARANCE_LIGHT)
 
+    val profileUsername: StateFlow<String> = prefs.profileUsername
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
+
+    val profileEmail: StateFlow<String> = prefs.profileEmail
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
+
     fun setDailyResetTime(minutes: Int) {
         viewModelScope.launch { prefs.setDailyResetTime(minutes) }
     }
 
     fun setAppearanceMode(mode: String) {
         viewModelScope.launch { prefs.setAppearanceMode(mode) }
+    }
+
+    fun setProfile(username: String, email: String) {
+        viewModelScope.launch { prefs.setProfile(username, email) }
     }
 }

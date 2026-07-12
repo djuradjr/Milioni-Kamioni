@@ -209,6 +209,12 @@
     <string name="inapp_twitter_trending" translatable="false">Twitter Trending</string>
 
     <!-- Settings -->
+    <string name="settings_account">Account</string>
+    <string name="settings_username">Username</string>
+    <string name="settings_email">Email</string>
+    <string name="account_name_placeholder">Set your name</string>
+    <string name="account_email_placeholder">Add your email</string>
+    <string name="account_invalid_email">Invalid email address</string>
     <string name="settings_general">General</string>
     <string name="settings_language">Language</string>
     <string name="settings_appearance">Appearance</string>

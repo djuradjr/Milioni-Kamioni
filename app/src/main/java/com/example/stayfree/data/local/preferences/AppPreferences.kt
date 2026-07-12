@@ -30,8 +30,9 @@ class AppPreferences @Inject constructor(
         const val APPEARANCE_SYSTEM = "system"
         val PIN_HASH = stringPreferencesKey("pin_hash")
         val PIN_ENABLED = booleanPreferencesKey("pin_enabled")
-        val SYNC_ENABLED = booleanPreferencesKey("sync_enabled")
-        val USER_ID = stringPreferencesKey("user_id")
+        // Local-only profile — never leaves the device (no INTERNET permission).
+        val PROFILE_USERNAME = stringPreferencesKey("profile_username")
+        val PROFILE_EMAIL = stringPreferencesKey("profile_email")
         val ONBOARDING_COMPLETE = booleanPreferencesKey("onboarding_complete")
         val DASHBOARD_CARD_ORDER = stringPreferencesKey("dashboard_card_order")
         val FOCUS_ACTIVE = booleanPreferencesKey("focus_active")
@@ -52,8 +53,8 @@ class AppPreferences @Inject constructor(
     val appearanceMode: Flow<String> = dataStore.data.map { it[APPEARANCE_MODE] ?: APPEARANCE_LIGHT }
     val pinHash: Flow<String?> = dataStore.data.map { it[PIN_HASH] }
     val pinEnabled: Flow<Boolean> = dataStore.data.map { it[PIN_ENABLED] ?: false }
-    val syncEnabled: Flow<Boolean> = dataStore.data.map { it[SYNC_ENABLED] ?: false }
-    val userId: Flow<String?> = dataStore.data.map { it[USER_ID] }
+    val profileUsername: Flow<String> = dataStore.data.map { it[PROFILE_USERNAME] ?: "" }
+    val profileEmail: Flow<String> = dataStore.data.map { it[PROFILE_EMAIL] ?: "" }
     val onboardingComplete: Flow<Boolean> = dataStore.data.map { it[ONBOARDING_COMPLETE] ?: false }
     val dashboardCardOrder: Flow<String?> = dataStore.data.map { it[DASHBOARD_CARD_ORDER] }
     val focusActive: Flow<Boolean> = dataStore.data.map { it[FOCUS_ACTIVE] ?: false }
@@ -88,13 +89,10 @@ class AppPreferences @Inject constructor(
         dataStore.edit { it[PIN_ENABLED] = enabled }
     }
 
-    suspend fun setSyncEnabled(enabled: Boolean) {
-        dataStore.edit { it[SYNC_ENABLED] = enabled }
-    }
-
-    suspend fun setUserId(uid: String?) {
+    suspend fun setProfile(username: String, email: String) {
         dataStore.edit {
-            if (uid != null) it[USER_ID] = uid else it.remove(USER_ID)
+            it[PROFILE_USERNAME] = username
+            it[PROFILE_EMAIL] = email
         }
     }
 

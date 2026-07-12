@@ -186,6 +186,12 @@
     <string name="overlay_set_pin_hint">Želiš opciju zaobilaženja? Prvo postavi PIN u podešavanjima.</string>
 
     <!-- Settings -->
+    <string name="settings_account">Nalog</string>
+    <string name="settings_username">Korisničko ime</string>
+    <string name="settings_email">Email</string>
+    <string name="account_name_placeholder">Postavi ime</string>
+    <string name="account_email_placeholder">Dodaj email</string>
+    <string name="account_invalid_email">Email adresa nije ispravna</string>
     <string name="settings_general">Opšte</string>
     <string name="settings_language">Jezik</string>
     <string name="settings_appearance">Izgled</string>

@@ -3,10 +3,12 @@ package com.example.stayfree.ui.settings
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -17,6 +19,7 @@ import androidx.core.os.LocaleListCompat
 import androidx.navigation.fragment.findNavController
 import com.example.stayfree.R
 import com.example.stayfree.data.local.preferences.AppPreferences
+import com.example.stayfree.databinding.DialogAccountEditBinding
 import com.example.stayfree.databinding.FragmentSettingsBinding
 import com.example.stayfree.util.AppearanceModes
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -59,6 +62,7 @@ class SettingsFragment : Fragment() {
         )
         binding.btnLanguage.setOnClickListener { showLanguageDialog() }
         binding.btnAppearance.setOnClickListener { showAppearanceDialog() }
+        binding.btnAccount.setOnClickListener { showAccountDialog() }
 
         binding.btnSetPin.setOnClickListener {
             findNavController().navigate(R.id.action_settings_to_pin)
@@ -108,6 +112,18 @@ class SettingsFragment : Fragment() {
                     )
                 }
             }
+            launch {
+                viewModel.profileUsername.collectLatest { name ->
+                    binding.tvAccountName.text =
+                        name.ifBlank { getString(R.string.account_name_placeholder) }
+                }
+            }
+            launch {
+                viewModel.profileEmail.collectLatest { email ->
+                    binding.tvAccountEmail.text =
+                        email.ifBlank { getString(R.string.account_email_placeholder) }
+                }
+            }
         }
     }
 
@@ -120,6 +136,29 @@ class SettingsFragment : Fragment() {
             appLocales[0]?.language
         }
         return if (language == "sr") "sr" else "en"
+    }
+
+    private fun showAccountDialog() {
+        val dialogBinding = DialogAccountEditBinding.inflate(layoutInflater)
+        dialogBinding.etUsername.setText(viewModel.profileUsername.value)
+        dialogBinding.etEmail.setText(viewModel.profileEmail.value)
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.settings_account)
+            .setView(dialogBinding.root)
+            .setPositiveButton(R.string.btn_save, null)
+            .setNegativeButton(R.string.btn_cancel, null)
+            .show()
+        // Manual click handler so an invalid email keeps the dialog open.
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            val name = dialogBinding.etUsername.text.toString().trim()
+            val email = dialogBinding.etEmail.text.toString().trim()
+            if (email.isNotEmpty() && !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                dialogBinding.tilEmail.error = getString(R.string.account_invalid_email)
+                return@setOnClickListener
+            }
+            viewModel.setProfile(name, email)
+            dialog.dismiss()
+        }
     }
 
     private fun showAppearanceDialog() {

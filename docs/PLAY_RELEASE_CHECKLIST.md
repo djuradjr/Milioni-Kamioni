@@ -6,6 +6,9 @@
 - [x] `targetSdk = 35` (Play requirement as of mid-2026)
 - [x] `allowBackup = false`, backup/data-extraction rules exclude everything
 - [x] No INTERNET permission (strong Data Safety argument)
+- [x] Account username/email are LOCAL-ONLY (DataStore, backup-excluded, never
+  transmitted) — Data Safety stays "no data collected"; re-answer the form if
+  any egress path is ever added
 - [x] FGS type `specialUse` + `PROPERTY_SPECIAL_USE_FGS_SUBTYPE` description
 - [x] Accessibility prominent disclosure dialog before enabling the service
 - [x] Release minify + shrinkResources, signing config wired to `keystore.properties`
