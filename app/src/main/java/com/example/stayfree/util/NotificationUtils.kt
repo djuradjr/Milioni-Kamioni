@@ -62,16 +62,17 @@ object NotificationUtils {
             .build()
     }
 
-    fun sendUsageAlert(context: Context, appName: String, percent: Int) {
+    /** One notification per app (id = package hash) so alerts don't overwrite each other. */
+    fun sendBeforeTimeoutAlert(context: Context, packageName: String, appName: String, minutesLeft: Int) {
         if (!PermissionUtils.hasNotificationPermission(context)) return
         val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notification = NotificationCompat.Builder(context, CHANNEL_USAGE_ALERTS)
-            .setContentTitle(context.getString(R.string.notif_usage_alert_title, appName))
-            .setContentText(context.getString(R.string.notif_usage_alert_text, percent, appName))
+            .setContentTitle(context.getString(R.string.notif_before_timeout_title, appName, minutesLeft))
+            .setContentText(context.getString(R.string.notif_before_timeout_text))
             .setSmallIcon(R.drawable.ic_notification)
             .setAutoCancel(true)
             .build()
-        nm.notify(NOTIFICATION_ID_USAGE_ALERT, notification)
+        nm.notify(packageName.hashCode(), notification)
     }
 
     fun sendDailySummary(context: Context, totalScreenTime: String) {

@@ -223,8 +223,8 @@
     <string name="notif_channel_summary_name">Dnevni pregled</string>
     <string name="notif_channel_summary_desc">Tvoj dnevni pregled vremena korišćenja</string>
     <string name="notif_foreground_text">Praćenje vremena korišćenja</string>
-    <string name="notif_usage_alert_title">Upozorenje — %1$s</string>
-    <string name="notif_usage_alert_text">Iskorišćeno je %1$d%% dnevnog limita za %2$s</string>
+    <string name="notif_before_timeout_title">%1$s — još %2$d min</string>
+    <string name="notif_before_timeout_text">Dnevni limit samo što nije istekao. Vreme za pauzu?</string>
     <string name="notif_daily_summary_title">Dnevni pregled vremena korišćenja</string>
     <string name="notif_daily_summary_text">Ukupno vreme korišćenja juče: %1$s</string>
 </resources>

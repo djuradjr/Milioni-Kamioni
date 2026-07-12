@@ -7,6 +7,7 @@ import androidx.lifecycle.LifecycleService
 import com.example.stayfree.data.local.preferences.AppPreferences
 import com.example.stayfree.data.repository.UsageRepository
 import com.example.stayfree.receiver.ScreenStateReceiver
+import com.example.stayfree.util.AppInfoUtils
 import com.example.stayfree.util.NotificationUtils
 import com.example.stayfree.util.TimeUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,6 +24,10 @@ class UsageTrackingService : LifecycleService() {
     private val serviceScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private lateinit var screenStateReceiver: ScreenStateReceiver
     private var syncJob: Job? = null
+
+    // One warning per app per day ("pkg|date"). In-memory on purpose: a service
+    // restart may repeat a warning once, which beats persisting churn every 60s.
+    private val warnedLimitKeys = mutableSetOf<String>()
 
     override fun onCreate() {
         super.onCreate()
@@ -63,11 +68,39 @@ class UsageTrackingService : LifecycleService() {
                     val resetTime = prefs.dailyResetTimeMinutes.first()
                     val date = TimeUtils.getEffectiveDate(resetTime)
                     usageRepository.syncFromUsageStats(date, resetTime)
+                    checkBeforeTimeoutWarnings(date)
                 } catch (e: Exception) {
                     // continue on error
                 }
                 delay(60_000L)
             }
         }
+    }
+
+    private suspend fun checkBeforeTimeoutWarnings(date: String) {
+        if (!prefs.notificationsMaster.first() || !prefs.notifBeforeTimeout.first()) return
+        val enabledPkgs = prefs.blockAppsEnabledPkgs.first()
+        if (enabledPkgs.isEmpty()) return
+        val limits = prefs.blockAppLimitsMinutes.first()
+        for (pkg in enabledPkgs) {
+            val limitMin = limits[pkg] ?: AppPreferences.DEFAULT_BLOCK_APP_LIMIT_MINUTES
+            if (limitMin <= 0) continue // block-now targets have no countdown
+            val key = "$pkg|$date"
+            if (key in warnedLimitKeys) continue
+            val usedMs = usageRepository.getScreenTimeForPackageOnDate(pkg, date).first()
+            val remainingMs = limitMin * 60_000L - usedMs
+            if (remainingMs in 1..WARN_BEFORE_MS) {
+                warnedLimitKeys.add(key)
+                NotificationUtils.sendBeforeTimeoutAlert(
+                    this, pkg,
+                    AppInfoUtils.getAppName(this, pkg),
+                    ((remainingMs + 59_999) / 60_000).toInt()
+                )
+            }
+        }
+    }
+
+    private companion object {
+        const val WARN_BEFORE_MS = 5 * 60_000L
     }
 }

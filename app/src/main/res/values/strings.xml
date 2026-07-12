@@ -249,8 +249,8 @@
     <string name="notif_channel_summary_name">Daily Summary</string>
     <string name="notif_channel_summary_desc">Your daily screen time summary</string>
     <string name="notif_foreground_text">Tracking your screen time</string>
-    <string name="notif_usage_alert_title">Usage alert — %1$s</string>
-    <string name="notif_usage_alert_text">You\'ve used %1$d%% of your daily limit for %2$s</string>
+    <string name="notif_before_timeout_title">%1$s — %2$d min left</string>
+    <string name="notif_before_timeout_text">Daily limit almost reached. Time for a break?</string>
     <string name="notif_daily_summary_title">Daily screen time summary</string>
     <string name="notif_daily_summary_text">Total screen time yesterday: %1$s</string>
 </resources>
