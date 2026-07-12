@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Light-only: night mode is forced off in StayFreeApp -->
-    <style name="Base.Theme.StayFree" parent="Theme.Material3.Light.NoActionBar">
+    <bool name="light_status_bar">true</bool>
+
+    <!-- DayNight: the mode is applied at startup from AppPreferences (light default) -->
+    <style name="Base.Theme.StayFree" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorOnPrimary">@color/on_primary</item>
         <item name="colorPrimaryContainer">@color/primary_container</item>
@@ -31,7 +33,7 @@
         <item name="android:colorBackground">@color/surface_container_low</item>
         <item name="android:windowBackground">@color/surface_container_low</item>
         <item name="android:statusBarColor">@color/surface_container_low</item>
-        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightStatusBar">@bool/light_status_bar</item>
         <!-- Fully-rounded (pill) buttons everywhere -->
         <item name="materialButtonStyle">@style/Widget.App.Button</item>
         <!-- White bottom nav with an orange pill indicator -->

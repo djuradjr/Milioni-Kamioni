@@ -188,6 +188,9 @@
     <!-- Settings -->
     <string name="settings_general">Opšte</string>
     <string name="settings_language">Jezik</string>
+    <string name="settings_appearance">Izgled</string>
+    <string name="appearance_light">Svetla</string>
+    <string name="appearance_dark">Tamna</string>
     <string name="settings_security">Bezbednost</string>
     <string name="settings_set_pin">Postavi PIN</string>
     <string name="settings_change_pin">Promeni PIN</string>

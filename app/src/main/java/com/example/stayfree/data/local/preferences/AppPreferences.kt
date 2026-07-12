@@ -22,6 +22,12 @@ class AppPreferences @Inject constructor(
 
     companion object {
         val DAILY_RESET_TIME_MINUTES = intPreferencesKey("daily_reset_time_minutes")
+        // "light" | "dark" | "system" — the UI exposes only light/dark; "system"
+        // is reserved so a future "follow system" option needs no migration.
+        val APPEARANCE_MODE = stringPreferencesKey("appearance_mode")
+        const val APPEARANCE_LIGHT = "light"
+        const val APPEARANCE_DARK = "dark"
+        const val APPEARANCE_SYSTEM = "system"
         val PIN_HASH = stringPreferencesKey("pin_hash")
         val PIN_ENABLED = booleanPreferencesKey("pin_enabled")
         val SYNC_ENABLED = booleanPreferencesKey("sync_enabled")
@@ -43,6 +49,7 @@ class AppPreferences @Inject constructor(
     }
 
     val dailyResetTimeMinutes: Flow<Int> = dataStore.data.map { it[DAILY_RESET_TIME_MINUTES] ?: 0 }
+    val appearanceMode: Flow<String> = dataStore.data.map { it[APPEARANCE_MODE] ?: APPEARANCE_LIGHT }
     val pinHash: Flow<String?> = dataStore.data.map { it[PIN_HASH] }
     val pinEnabled: Flow<Boolean> = dataStore.data.map { it[PIN_ENABLED] ?: false }
     val syncEnabled: Flow<Boolean> = dataStore.data.map { it[SYNC_ENABLED] ?: false }
@@ -65,6 +72,10 @@ class AppPreferences @Inject constructor(
 
     suspend fun setDailyResetTime(minutes: Int) {
         dataStore.edit { it[DAILY_RESET_TIME_MINUTES] = minutes }
+    }
+
+    suspend fun setAppearanceMode(mode: String) {
+        dataStore.edit { it[APPEARANCE_MODE] = mode }
     }
 
     suspend fun setPinHash(hash: String?) {

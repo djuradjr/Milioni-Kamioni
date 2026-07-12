@@ -9,8 +9,12 @@ Goal: every screen must look **worth paying for**. The user explicitly likes
 **interactive and professional** interfaces — alive, but never gimmicky.
 
 ## Stack (fixed)
-XML layouts + ViewBinding + Material3 components, light-only theme. NO Compose,
-no new UI frameworks.
+XML layouts + ViewBinding + Material3 components, DayNight theme (Light is the
+default; user picks Light/Dark in Settings → Appearance). NO Compose, no new UI
+frameworks. Dark palette lives in `values-night/colors.xml` (ink-anchored);
+brand surfaces (dashboard `dash_*`, block-screen gradients, `glass_*`) stay
+identical in both modes. Any new color must be defined in BOTH files or read
+through `?attr`. Verify new screens in both modes.
 
 ## Palette & color psychology (`values/colors.xml` — intentional, don't fight it)
 - **Orange `#F4511E`** (primary) — energy/urgency. The dashboard is full-bleed

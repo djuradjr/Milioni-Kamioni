@@ -54,17 +54,43 @@
 
         <com.google.android.material.card.MaterialCardView style="@style/Settings.Card">
             <LinearLayout
-                android:id="@+id/btn_language"
-                style="@style/Settings.Row">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-                <ImageView style="@style/Settings.RowIcon" android:src="@drawable/ic_language" app:tint="?attr/colorPrimary" />
+                <LinearLayout
+                    android:id="@+id/btn_language"
+                    style="@style/Settings.Row">
 
-                <LinearLayout style="@style/Settings.RowText">
-                    <TextView style="@style/Settings.RowTitle" android:text="@string/settings_language" />
-                    <TextView android:id="@+id/tv_language" style="@style/Settings.RowSubtitle" />
+                    <ImageView style="@style/Settings.RowIcon" android:src="@drawable/ic_language" app:tint="?attr/colorPrimary" />
+
+                    <LinearLayout style="@style/Settings.RowText">
+                        <TextView style="@style/Settings.RowTitle" android:text="@string/settings_language" />
+                        <TextView android:id="@+id/tv_language" style="@style/Settings.RowSubtitle" />
+                    </LinearLayout>
+
+                    <ImageView style="@style/Settings.RowChevron" android:src="@drawable/ic_chevron_right" />
                 </LinearLayout>
 
-                <ImageView style="@style/Settings.RowChevron" android:src="@drawable/ic_chevron_right" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="56dp"
+                    android:background="?attr/colorSurfaceVariant" />
+
+                <LinearLayout
+                    android:id="@+id/btn_appearance"
+                    style="@style/Settings.Row">
+
+                    <ImageView style="@style/Settings.RowIcon" android:src="@drawable/ic_contrast" app:tint="?attr/colorPrimary" />
+
+                    <LinearLayout style="@style/Settings.RowText">
+                        <TextView style="@style/Settings.RowTitle" android:text="@string/settings_appearance" />
+                        <TextView android:id="@+id/tv_appearance" style="@style/Settings.RowSubtitle" />
+                    </LinearLayout>
+
+                    <ImageView style="@style/Settings.RowChevron" android:src="@drawable/ic_chevron_right" />
+                </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Ink-anchored dark palette. Brand surfaces (dash_*, overlay gradient,
+         glass_*, content-block screen) intentionally keep their light values —
+         the dashboard and block screens stay orange-branded in both modes.
+         primary/on_primary are NOT overridden: on_primary doubles as text on
+         the always-orange dashboard gradient, so it must stay white. -->
+    <color name="primary_container">#7A2E12</color>
+    <color name="on_primary_container">#FFDBCF</color>
+    <color name="secondary">#FFB74D</color>
+    <color name="on_secondary">#402D00</color>
+    <color name="secondary_container">#5C3600</color>
+    <color name="on_secondary_container">#FFE0B2</color>
+    <color name="background">#101A30</color>
+    <color name="on_background">#E7ECF5</color>
+    <color name="surface">#16213A</color>
+    <color name="on_surface">#E7ECF5</color>
+    <color name="surface_variant">#2E4570</color>
+    <color name="on_surface_variant">#B7C2D8</color>
+    <color name="surface_container">#1B2B4B</color>
+    <color name="surface_container_low">#101A30</color>
+    <color name="surface_container_high">#24365C</color>
+    <color name="outline">#6E7FA0</color>
+    <color name="error">#FFB4AB</color>
+    <color name="on_error">#690005</color>
+
+    <!-- Accents lightened for dark-surface contrast -->
+    <color name="accent_purple">#4A3566</color>
+    <color name="accent_purple_container">#3E2A56</color>
+    <color name="accent_teal">#4DB6AC</color>
+    <color name="accent_teal_container">#00382F</color>
+    <color name="on_accent_teal_container">#D2F1EA</color>
+
+    <!-- Sleep/ink cards must stay distinct from the ink-based background -->
+    <color name="ink">#2E4570</color>
+    <color name="ink_light">#3E5A8F</color>
+</resources>

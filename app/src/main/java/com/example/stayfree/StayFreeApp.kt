@@ -7,6 +7,7 @@ import androidx.work.Configuration
 import com.example.stayfree.data.local.preferences.AppPreferences
 import com.example.stayfree.data.repository.BlockingRepository
 import com.example.stayfree.service.TrackingScheduler
+import com.example.stayfree.util.AppearanceModes
 import com.example.stayfree.util.NotificationUtils
 import com.example.stayfree.util.PinHasher
 import dagger.hilt.android.HiltAndroidApp
@@ -15,6 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltAndroidApp
@@ -28,8 +30,10 @@ class StayFreeApp : Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
-        // Orange/white light-only design — ignore the system dark mode.
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        // Synchronous read on purpose: an async apply would flash the wrong
+        // theme on cold start, then visibly recreate the first activity.
+        val appearance = runBlocking { prefs.appearanceMode.first() }
+        AppCompatDelegate.setDefaultNightMode(AppearanceModes.toNightMode(appearance))
         NotificationUtils.createChannels(this)
         applicationScope.launch {
             val resetTime = prefs.dailyResetTimeMinutes.first()

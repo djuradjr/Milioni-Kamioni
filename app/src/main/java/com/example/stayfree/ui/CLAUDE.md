@@ -1,6 +1,8 @@
 # UI (design system) — read before touching any screen
 
-Stack: XML layouts + ViewBinding + Material3, light-only theme. NO Compose.
+Stack: XML layouts + ViewBinding + Material3, DayNight theme (Light default,
+user-picked in Settings; dark palette in `values-night/colors.xml`, brand
+surfaces identical in both modes). NO Compose.
 Full design rules: `.claude/skills/bb-ui/SKILL.md`.
 
 - The user wants the app to look **worth paying for**: interactive AND

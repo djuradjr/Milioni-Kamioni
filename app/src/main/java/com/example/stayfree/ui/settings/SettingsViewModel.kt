@@ -21,7 +21,14 @@ class SettingsViewModel @Inject constructor(
     val dailyResetTime: StateFlow<Int> = prefs.dailyResetTimeMinutes
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
 
+    val appearanceMode: StateFlow<String> = prefs.appearanceMode
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AppPreferences.APPEARANCE_LIGHT)
+
     fun setDailyResetTime(minutes: Int) {
         viewModelScope.launch { prefs.setDailyResetTime(minutes) }
+    }
+
+    fun setAppearanceMode(mode: String) {
+        viewModelScope.launch { prefs.setAppearanceMode(mode) }
     }
 }
