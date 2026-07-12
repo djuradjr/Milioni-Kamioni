@@ -133,6 +133,72 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Notifications: master switch + per-type children -->
+        <TextView style="@style/Settings.SectionHeader" android:text="@string/settings_notifications" />
+
+        <com.google.android.material.card.MaterialCardView style="@style/Settings.Card">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout style="@style/Settings.Row" android:clickable="false" android:focusable="false">
+                    <ImageView style="@style/Settings.RowIcon" android:src="@drawable/ic_notification" app:tint="?attr/colorPrimary" />
+                    <LinearLayout style="@style/Settings.RowText">
+                        <TextView style="@style/Settings.RowTitle" android:text="@string/settings_notifications_all" />
+                    </LinearLayout>
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switch_notif_master"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="56dp"
+                    android:background="?attr/colorSurfaceVariant" />
+
+                <LinearLayout
+                    android:id="@+id/row_notif_before_timeout"
+                    style="@style/Settings.Row"
+                    android:paddingStart="72dp"
+                    android:clickable="false"
+                    android:focusable="false">
+                    <LinearLayout style="@style/Settings.RowText">
+                        <TextView style="@style/Settings.RowTitle" android:text="@string/notif_toggle_before_timeout" />
+                        <TextView style="@style/Settings.RowSubtitle" android:text="@string/notif_toggle_before_timeout_desc" />
+                    </LinearLayout>
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switch_notif_before_timeout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="72dp"
+                    android:background="?attr/colorSurfaceVariant" />
+
+                <LinearLayout
+                    android:id="@+id/row_notif_daily_summary"
+                    style="@style/Settings.Row"
+                    android:paddingStart="72dp"
+                    android:clickable="false"
+                    android:focusable="false">
+                    <LinearLayout style="@style/Settings.RowText">
+                        <TextView style="@style/Settings.RowTitle" android:text="@string/notif_toggle_daily_summary" />
+                        <TextView style="@style/Settings.RowSubtitle" android:text="@string/notif_toggle_daily_summary_desc" />
+                    </LinearLayout>
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switch_notif_daily_summary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
         <!-- Daily reset -->
         <TextView style="@style/Settings.SectionHeader" android:text="@string/settings_daily_reset" />
 

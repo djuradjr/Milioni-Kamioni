@@ -30,6 +30,15 @@ class SettingsViewModel @Inject constructor(
     val profileEmail: StateFlow<String> = prefs.profileEmail
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
 
+    val notificationsMaster: StateFlow<Boolean> = prefs.notificationsMaster
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
+
+    val notifBeforeTimeout: StateFlow<Boolean> = prefs.notifBeforeTimeout
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
+
+    val notifDailySummary: StateFlow<Boolean> = prefs.notifDailySummary
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
+
     fun setDailyResetTime(minutes: Int) {
         viewModelScope.launch { prefs.setDailyResetTime(minutes) }
     }
@@ -44,5 +53,17 @@ class SettingsViewModel @Inject constructor(
 
     fun clearPin() {
         viewModelScope.launch { prefs.clearPin() }
+    }
+
+    fun setNotificationsMaster(enabled: Boolean) {
+        viewModelScope.launch { prefs.setNotificationsMaster(enabled) }
+    }
+
+    fun setNotifBeforeTimeout(enabled: Boolean) {
+        viewModelScope.launch { prefs.setNotifBeforeTimeout(enabled) }
+    }
+
+    fun setNotifDailySummary(enabled: Boolean) {
+        viewModelScope.launch { prefs.setNotifDailySummary(enabled) }
     }
 }

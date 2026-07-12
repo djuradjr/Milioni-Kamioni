@@ -63,6 +63,7 @@ object NotificationUtils {
     }
 
     fun sendUsageAlert(context: Context, appName: String, percent: Int) {
+        if (!PermissionUtils.hasNotificationPermission(context)) return
         val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notification = NotificationCompat.Builder(context, CHANNEL_USAGE_ALERTS)
             .setContentTitle(context.getString(R.string.notif_usage_alert_title, appName))
@@ -74,6 +75,7 @@ object NotificationUtils {
     }
 
     fun sendDailySummary(context: Context, totalScreenTime: String) {
+        if (!PermissionUtils.hasNotificationPermission(context)) return
         val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notification = NotificationCompat.Builder(context, CHANNEL_DAILY_SUMMARY)
             .setContentTitle(context.getString(R.string.notif_daily_summary_title))

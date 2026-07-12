@@ -1,7 +1,9 @@
 package com.example.stayfree.ui.settings
 
+import android.Manifest
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Patterns
 import android.widget.Toast
@@ -23,8 +25,10 @@ import com.example.stayfree.data.local.preferences.AppPreferences
 import com.example.stayfree.databinding.DialogAccountEditBinding
 import com.example.stayfree.databinding.FragmentSettingsBinding
 import com.example.stayfree.util.AppearanceModes
+import com.example.stayfree.util.PermissionUtils
 import com.example.stayfree.util.PinGate
 import com.example.stayfree.util.PinPrompt
+import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
@@ -48,6 +52,14 @@ class SettingsFragment : Fragment() {
 
     @Inject lateinit var pinGate: PinGate
 
+    // Master flag flips ON only after the permission is actually granted;
+    // on denial the switch must visually stay off.
+    private val notifPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+            if (granted) viewModel.setNotificationsMaster(true)
+            else binding.switchNotifMaster.isChecked = false
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enterTransition = MaterialFadeThrough()
@@ -69,6 +81,23 @@ class SettingsFragment : Fragment() {
         binding.btnLanguage.setOnClickListener { showLanguageDialog() }
         binding.btnAppearance.setOnClickListener { showAppearanceDialog() }
         binding.btnAccount.setOnClickListener { showAccountDialog() }
+
+        binding.switchNotifMaster.setOnCheckedChangeListener { btn, checked ->
+            if (!btn.isPressed) return@setOnCheckedChangeListener
+            if (checked && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                !PermissionUtils.hasNotificationPermission(requireContext())
+            ) {
+                notifPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                return@setOnCheckedChangeListener
+            }
+            viewModel.setNotificationsMaster(checked)
+        }
+        binding.switchNotifBeforeTimeout.setOnCheckedChangeListener { btn, checked ->
+            if (btn.isPressed) viewModel.setNotifBeforeTimeout(checked)
+        }
+        binding.switchNotifDailySummary.setOnCheckedChangeListener { btn, checked ->
+            if (btn.isPressed) viewModel.setNotifDailySummary(checked)
+        }
 
         binding.btnSetPin.setOnClickListener {
             if (viewModel.pinEnabled.value) showPinActionsDialog()
@@ -131,6 +160,23 @@ class SettingsFragment : Fragment() {
                         email.ifBlank { getString(R.string.account_email_placeholder) }
                 }
             }
+            launch {
+                viewModel.notificationsMaster.collectLatest { on ->
+                    binding.switchNotifMaster.isChecked = on
+                    setNotifChildEnabled(binding.rowNotifBeforeTimeout, binding.switchNotifBeforeTimeout, on)
+                    setNotifChildEnabled(binding.rowNotifDailySummary, binding.switchNotifDailySummary, on)
+                }
+            }
+            launch {
+                viewModel.notifBeforeTimeout.collectLatest {
+                    binding.switchNotifBeforeTimeout.isChecked = it
+                }
+            }
+            launch {
+                viewModel.notifDailySummary.collectLatest {
+                    binding.switchNotifDailySummary.isChecked = it
+                }
+            }
         }
     }
 
@@ -143,6 +189,11 @@ class SettingsFragment : Fragment() {
             appLocales[0]?.language
         }
         return if (language == "sr") "sr" else "en"
+    }
+
+    private fun setNotifChildEnabled(row: View, switch: MaterialSwitch, enabled: Boolean) {
+        row.alpha = if (enabled) 1f else 0.4f
+        switch.isEnabled = enabled
     }
 
     private fun showPinActionsDialog() {

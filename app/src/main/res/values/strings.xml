@@ -230,6 +230,11 @@
     <string name="settings_remove_pin">Remove PIN</string>
     <string name="settings_daily_reset">Daily Reset Time</string>
     <string name="settings_notifications">Notifications</string>
+    <string name="settings_notifications_all">All notifications</string>
+    <string name="notif_toggle_before_timeout">Before timeout</string>
+    <string name="notif_toggle_before_timeout_desc">Warns 5 minutes before an app\'s daily limit runs out</string>
+    <string name="notif_toggle_daily_summary">Daily summary</string>
+    <string name="notif_toggle_daily_summary_desc">Yesterday\'s screen time, once a day</string>
     <string name="settings_export">Export Data</string>
     <string name="settings_import">Import Data</string>
     <string name="settings_about">About</string>

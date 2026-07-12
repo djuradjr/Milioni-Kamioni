@@ -204,6 +204,11 @@
     <string name="settings_remove_pin">Ukloni PIN</string>
     <string name="settings_daily_reset">Vreme dnevnog resetovanja</string>
     <string name="settings_notifications">Obaveštenja</string>
+    <string name="settings_notifications_all">Sva obaveštenja</string>
+    <string name="notif_toggle_before_timeout">Pre isteka limita</string>
+    <string name="notif_toggle_before_timeout_desc">Upozorenje 5 minuta pre nego što istekne dnevni limit aplikacije</string>
+    <string name="notif_toggle_daily_summary">Dnevni pregled</string>
+    <string name="notif_toggle_daily_summary_desc">Jučerašnje vreme korišćenja, jednom dnevno</string>
     <string name="settings_export">Izvezi podatke</string>
     <string name="settings_import">Uvezi podatke</string>
     <string name="settings_about">O aplikaciji</string>

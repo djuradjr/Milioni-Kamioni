@@ -36,6 +36,11 @@ class AppPreferences @Inject constructor(
         val PROFILE_USERNAME = stringPreferencesKey("profile_username")
         val PROFILE_EMAIL = stringPreferencesKey("profile_email")
         val ONBOARDING_COMPLETE = booleanPreferencesKey("onboarding_complete")
+        // Master ON by default — actual delivery is additionally gated by the
+        // POST_NOTIFICATIONS permission and the per-type child flag.
+        val NOTIFICATIONS_MASTER = booleanPreferencesKey("notifications_master_enabled")
+        val NOTIF_BEFORE_TIMEOUT = booleanPreferencesKey("notif_before_timeout")
+        val NOTIF_DAILY_SUMMARY = booleanPreferencesKey("notif_daily_summary")
         val DASHBOARD_CARD_ORDER = stringPreferencesKey("dashboard_card_order")
         val FOCUS_ACTIVE = booleanPreferencesKey("focus_active")
         val FOCUS_END_TIME = longPreferencesKey("focus_end_time")
@@ -59,6 +64,9 @@ class AppPreferences @Inject constructor(
     val profileUsername: Flow<String> = dataStore.data.map { it[PROFILE_USERNAME] ?: "" }
     val profileEmail: Flow<String> = dataStore.data.map { it[PROFILE_EMAIL] ?: "" }
     val onboardingComplete: Flow<Boolean> = dataStore.data.map { it[ONBOARDING_COMPLETE] ?: false }
+    val notificationsMaster: Flow<Boolean> = dataStore.data.map { it[NOTIFICATIONS_MASTER] ?: true }
+    val notifBeforeTimeout: Flow<Boolean> = dataStore.data.map { it[NOTIF_BEFORE_TIMEOUT] ?: true }
+    val notifDailySummary: Flow<Boolean> = dataStore.data.map { it[NOTIF_DAILY_SUMMARY] ?: true }
     val dashboardCardOrder: Flow<String?> = dataStore.data.map { it[DASHBOARD_CARD_ORDER] }
     val focusActive: Flow<Boolean> = dataStore.data.map { it[FOCUS_ACTIVE] ?: false }
     val focusEndTime: Flow<Long> = dataStore.data.map { it[FOCUS_END_TIME] ?: 0L }
@@ -138,6 +146,18 @@ class AppPreferences @Inject constructor(
 
     suspend fun setOnboardingComplete(complete: Boolean) {
         dataStore.edit { it[ONBOARDING_COMPLETE] = complete }
+    }
+
+    suspend fun setNotificationsMaster(enabled: Boolean) {
+        dataStore.edit { it[NOTIFICATIONS_MASTER] = enabled }
+    }
+
+    suspend fun setNotifBeforeTimeout(enabled: Boolean) {
+        dataStore.edit { it[NOTIF_BEFORE_TIMEOUT] = enabled }
+    }
+
+    suspend fun setNotifDailySummary(enabled: Boolean) {
+        dataStore.edit { it[NOTIF_DAILY_SUMMARY] = enabled }
     }
 
     suspend fun setDashboardCardOrder(order: String) {
