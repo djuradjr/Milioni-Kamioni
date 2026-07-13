@@ -11,7 +11,7 @@ or manifest/permission change), **bb-billing** (payments/premium work).
 ## 1. Project & location (critical)
 - **Repo lives at `C:\Users\djuki\IdeaProjects\Block Brainrot main`** — folder history:
   `StayFree` → `MoreMoney` (2026-07-03) → `Block Brainrot main` (2026-07-06); the old
-  paths no longer exist. Never write to `D:\MoreMoney`.
+  paths no longer exist. Work ONLY in this C: folder — never in any old location.
 - Work on branch **`main`**. Remote: `https://github.com/djuradjr/Milioni-Kamioni.git`.
   Privacy URL (already wired in `SettingsFragment`):
   `https://djuradjr.github.io/Milioni-Kamioni/privacy.html`.
@@ -89,7 +89,7 @@ keep the app itself networkless unless a future explicit decision changes that.
 - **Verify before "done"**: never declare a feature working without proof — build
   green + behavior exercised. Blocking features: **3/3 in a row** on the emulator.
 - Feature commit messages in **Serbian**, ending with the `Co-Authored-By: Claude` trailer.
-- Don't touch `D:\MoreMoney`.
+- Work only in `C:\Users\djuki\IdeaProjects\Block Brainrot main` — no other folder location exists.
 
 ## 9. Play / release state
 - `keystore.properties` (repo root, gitignored) drives release signing; absent →
