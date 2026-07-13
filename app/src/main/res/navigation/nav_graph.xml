@@ -14,15 +14,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/statsFragment"
-        android:name="com.example.stayfree.ui.stats.StatsFragment"
-        android:label="@string/nav_stats">
-        <action
-            android:id="@+id/action_stats_to_appDetail"
-            app:destination="@id/appDetailStatsFragment" />
-    </fragment>
-
-    <fragment
         android:id="@+id/appDetailStatsFragment"
         android:name="com.example.stayfree.ui.stats.AppDetailStatsFragment"
         android:label="App Detail">

@@ -5,14 +5,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.stayfree.databinding.ItemTopAppBinding
+import com.example.stayfree.R
+import com.example.stayfree.databinding.ItemAppUsageBinding
 import com.example.stayfree.domain.model.AppUsage
 import com.example.stayfree.util.AppInfoUtils
 import com.example.stayfree.util.TimeUtils
 
-class TopAppsAdapter(
-    private val onClick: (AppUsage) -> Unit = {}
-) : ListAdapter<AppUsage, TopAppsAdapter.ViewHolder>(DIFF) {
+class AppUsageListAdapter(
+    private val onClick: (AppUsage) -> Unit
+) : ListAdapter<AppUsage, AppUsageListAdapter.ViewHolder>(DIFF) {
 
     // Usage of the #1 app; each row's bar is drawn relative to it.
     private var maxTimeMs: Long = 1L
@@ -23,18 +24,20 @@ class TopAppsAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemTopAppBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemAppUsageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position), maxTimeMs, onClick)
+        holder.bind(getItem(position), maxTimeMs)
     }
 
-    class ViewHolder(private val binding: ItemTopAppBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(appUsage: AppUsage, maxTimeMs: Long, onClick: (AppUsage) -> Unit) {
+    inner class ViewHolder(private val binding: ItemAppUsageBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(appUsage: AppUsage, maxTimeMs: Long) {
             binding.tvAppName.text = appUsage.appName
             binding.tvUsageTime.text = TimeUtils.formatDuration(appUsage.totalTimeMs)
+            binding.tvUnlockCount.text =
+                binding.root.context.getString(R.string.stats_unlocks_count, appUsage.unlockCount)
             binding.progressUsage.setProgressCompat(
                 ((appUsage.totalTimeMs * 100) / maxTimeMs).toInt().coerceIn(0, 100),
                 true

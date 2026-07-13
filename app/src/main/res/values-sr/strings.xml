@@ -3,7 +3,6 @@
 
     <!-- Navigation -->
     <string name="nav_dashboard">Pregled</string>
-    <string name="nav_stats">Statistika</string>
     <string name="nav_blocking">Blokiranje</string>
     <string name="nav_settings">Podešavanja</string>
 
@@ -57,11 +56,8 @@
     <string name="stats_weekly">Nedeljno</string>
     <string name="stats_monthly">Mesečno</string>
     <string name="stats_activity">Aktivnost</string>
-    <string name="stats_most_used">Najkorišćenije</string>
     <string name="stats_unlocks_count">%1$d otključavanja</string>
     <string name="stats_unlocks_today">%1$d otključavanja danas</string>
-    <string name="stats_empty">Još nema podataka</string>
-    <string name="stats_empty_desc">Kad počneš da koristiš telefon, vreme korišćenja će se pojaviti ovde.</string>
     <string name="stats_trend_down">▼ %1$d%% u odnosu na prethodno</string>
     <string name="stats_trend_up">▲ %1$d%% u odnosu na prethodno</string>
 

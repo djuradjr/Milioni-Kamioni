@@ -4,7 +4,6 @@
 
     <!-- Navigation -->
     <string name="nav_dashboard">Dashboard</string>
-    <string name="nav_stats">Stats</string>
     <string name="nav_blocking">Blocking</string>
     <string name="nav_settings">Settings</string>
 
@@ -61,11 +60,8 @@
     <string name="stats_weekly">Weekly</string>
     <string name="stats_monthly">Monthly</string>
     <string name="stats_activity">Activity</string>
-    <string name="stats_most_used">Most used</string>
     <string name="stats_unlocks_count">%1$d unlocks</string>
     <string name="stats_unlocks_today">%1$d unlocks today</string>
-    <string name="stats_empty">No usage yet</string>
-    <string name="stats_empty_desc">Once you start using your phone, your screen time will show up here.</string>
     <string name="stats_trend_down">▼ %1$d%% vs previous</string>
     <string name="stats_trend_up">▲ %1$d%% vs previous</string>
 

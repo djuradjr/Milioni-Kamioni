@@ -1,95 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_dashboard_gradient"
-    android:fillViewport="true">
+    android:orientation="vertical"
+    android:background="@drawable/bg_dashboard_gradient">
 
-    <LinearLayout
-        android:id="@+id/dashboard_content"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="@dimen/spacing_md">
+        android:background="@android:color/transparent"
+        app:tabMode="fixed"
+        app:tabIndicatorColor="@color/on_primary"
+        app:tabIndicatorHeight="3dp"
+        app:tabSelectedTextColor="@color/on_primary"
+        app:tabTextColor="@color/dash_text_secondary"
+        app:tabRippleColor="@color/dash_card">
+        <com.google.android.material.tabs.TabItem android:text="@string/stats_daily" />
+        <com.google.android.material.tabs.TabItem android:text="@string/stats_weekly" />
+        <com.google.android.material.tabs.TabItem android:text="@string/stats_monthly" />
+    </com.google.android.material.tabs.TabLayout>
 
-        <!-- Date navigation: ‹ TODAY › -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
         <LinearLayout
+            android:id="@+id/dashboard_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="@dimen/spacing_md">
-
-            <ImageButton
-                android:id="@+id/btn_prev_day"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_chevron_left"
-                app:tint="@color/on_primary"
-                android:contentDescription="@string/dashboard_prev_day" />
-
-            <TextView
-                android:id="@+id/tv_selected_date"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:textAppearance="?attr/textAppearanceTitleMedium"
-                android:textColor="@color/on_primary"
-                android:textStyle="bold"
-                android:textAllCaps="true"
-                android:letterSpacing="0.08" />
-
-            <ImageButton
-                android:id="@+id/btn_next_day"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_chevron_right"
-                app:tint="@color/on_primary"
-                android:contentDescription="@string/dashboard_next_day" />
-        </LinearLayout>
-
-        <!-- Hero: big centered screen time -->
-        <TextView
-            android:id="@+id/tv_total_screen_time"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textAppearance="?attr/textAppearanceDisplayLarge"
-            android:textColor="@color/on_primary"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/dashboard_screen_time_label"
-            android:textAppearance="?attr/textAppearanceLabelLarge"
-            android:textColor="@color/dash_text_secondary"
-            android:textAllCaps="true"
-            android:letterSpacing="0.15"
-            android:layout_marginBottom="@dimen/spacing_lg" />
-
-        <!-- Peak time card with hourly chart -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_md"
-            app:cardBackgroundColor="@color/dash_card"
-            app:cardCornerRadius="@dimen/radius_lg"
-            app:cardElevation="0dp"
-            app:strokeWidth="1dp"
-            app:strokeColor="@color/dash_card_stroke">
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_md">
 
             <LinearLayout
+                android:id="@+id/daily_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="@dimen/spacing_md">
+                android:orientation="vertical">
 
+                <!-- Date navigation: ‹ TODAY › -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -97,150 +49,353 @@
                     android:gravity="center_vertical"
                     android:layout_marginBottom="@dimen/spacing_md">
 
+                    <ImageButton
+                        android:id="@+id/btn_prev_day"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_chevron_left"
+                        app:tint="@color/on_primary"
+                        android:contentDescription="@string/dashboard_prev_day" />
+
                     <TextView
+                        android:id="@+id/tv_selected_date"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/dashboard_peak_time"
+                        android:gravity="center"
                         android:textAppearance="?attr/textAppearanceTitleMedium"
+                        android:textColor="@color/on_primary"
                         android:textStyle="bold"
-                        android:textColor="@color/on_primary" />
+                        android:textAllCaps="true"
+                        android:letterSpacing="0.08" />
 
-                    <TextView
-                        android:id="@+id/tv_peak_time"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?attr/textAppearanceTitleMedium"
-                        android:textStyle="bold"
-                        android:textColor="@color/dash_value_accent" />
+                    <ImageButton
+                        android:id="@+id/btn_next_day"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_chevron_right"
+                        app:tint="@color/on_primary"
+                        android:contentDescription="@string/dashboard_next_day" />
                 </LinearLayout>
 
-                <com.example.stayfree.ui.common.BarChartView
-                    android:id="@+id/chart_hourly"
+                <!-- Hero: big centered screen time -->
+                <TextView
+                    android:id="@+id/tv_total_screen_time"
                     android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    app:showHourLabels="true"
-                    app:barColor="@color/dash_chart_bar"
-                    app:barTrackColor="@color/dash_chart_track"
-                    app:barHighlightColor="@color/dash_chart_peak"
-                    app:barLabelColor="@color/dash_text_secondary" />
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textAppearance="?attr/textAppearanceDisplayLarge"
+                    android:textColor="@color/on_primary"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/dashboard_screen_time_label"
+                    android:textAppearance="?attr/textAppearanceLabelLarge"
+                    android:textColor="@color/dash_text_secondary"
+                    android:textAllCaps="true"
+                    android:letterSpacing="0.15"
+                    android:layout_marginBottom="@dimen/spacing_lg" />
+
+                <!-- Peak time card with hourly chart -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_md"
+                    app:cardBackgroundColor="@color/dash_card"
+                    app:cardCornerRadius="@dimen/radius_lg"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/dash_card_stroke">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_md">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="@dimen/spacing_md">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/dashboard_peak_time"
+                                android:textAppearance="?attr/textAppearanceTitleMedium"
+                                android:textStyle="bold"
+                                android:textColor="@color/on_primary" />
+
+                            <TextView
+                                android:id="@+id/tv_peak_time"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?attr/textAppearanceTitleMedium"
+                                android:textStyle="bold"
+                                android:textColor="@color/dash_value_accent" />
+                        </LinearLayout>
+
+                        <com.example.stayfree.ui.common.BarChartView
+                            android:id="@+id/chart_hourly"
+                            android:layout_width="match_parent"
+                            android:layout_height="150dp"
+                            app:showHourLabels="true"
+                            app:barColor="@color/dash_chart_bar"
+                            app:barTrackColor="@color/dash_chart_track"
+                            app:barHighlightColor="@color/dash_chart_peak"
+                            app:barLabelColor="@color/dash_text_secondary" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Stats row: unlocks + active blocks -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="@dimen/spacing_lg">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="@dimen/spacing_sm"
+                        app:cardBackgroundColor="@color/dash_card"
+                        app:cardCornerRadius="@dimen/radius_lg"
+                        app:cardElevation="0dp"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="@color/dash_card_stroke">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:padding="@dimen/spacing_md">
+
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:src="@drawable/ic_lock"
+                                app:tint="@color/on_primary"
+                                android:layout_marginBottom="@dimen/spacing_sm"
+                                android:importantForAccessibility="no" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/dashboard_unlocks"
+                                android:textAppearance="?attr/textAppearanceLabelMedium"
+                                android:textColor="@color/dash_text_secondary"
+                                android:textAllCaps="true"
+                                android:letterSpacing="0.1" />
+
+                            <TextView
+                                android:id="@+id/tv_unlocks"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?attr/textAppearanceHeadlineMedium"
+                                android:textStyle="bold"
+                                android:textColor="@color/on_primary" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="@dimen/spacing_sm"
+                        app:cardBackgroundColor="@color/dash_card"
+                        app:cardCornerRadius="@dimen/radius_lg"
+                        app:cardElevation="0dp"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="@color/dash_card_stroke">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:padding="@dimen/spacing_md">
+
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:src="@drawable/ic_shield"
+                                app:tint="@color/on_primary"
+                                android:layout_marginBottom="@dimen/spacing_sm"
+                                android:importantForAccessibility="no" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/dashboard_active_blocks"
+                                android:textAppearance="?attr/textAppearanceLabelMedium"
+                                android:textColor="@color/dash_text_secondary"
+                                android:textAllCaps="true"
+                                android:letterSpacing="0.1" />
+
+                            <TextView
+                                android:id="@+id/tv_active_blocks"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?attr/textAppearanceHeadlineMedium"
+                                android:textStyle="bold"
+                                android:textColor="@color/on_primary" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+
+                <!-- Most used apps -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dashboard_most_used_apps"
+                    android:textAppearance="?attr/textAppearanceTitleLarge"
+                    android:textStyle="bold"
+                    android:textColor="@color/on_primary"
+                    android:layout_marginBottom="@dimen/spacing_sm" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_top_apps"
+                    android:layoutAnimation="@anim/layout_animation_slide_up"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false" />
             </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
 
-        <!-- Stats row: unlocks + active blocks -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="@dimen/spacing_lg">
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="0dp"
+            <!-- Weekly/Monthly rolling-window content -->
+            <LinearLayout
+                android:id="@+id/period_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginEnd="@dimen/spacing_sm"
-                app:cardBackgroundColor="@color/dash_card"
-                app:cardCornerRadius="@dimen/radius_lg"
-                app:cardElevation="0dp"
-                app:strokeWidth="1dp"
-                app:strokeColor="@color/dash_card_stroke">
+                android:orientation="vertical"
+                android:visibility="gone">
 
-                <LinearLayout
+                <!-- Hero: period total + unlocks + trend badge -->
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:padding="@dimen/spacing_md">
+                    android:layout_marginBottom="@dimen/spacing_md"
+                    app:cardBackgroundColor="@color/dash_card"
+                    app:cardCornerRadius="@dimen/radius_lg"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/dash_card_stroke">
 
-                    <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@drawable/ic_lock"
-                        app:tint="@color/on_primary"
-                        android:layout_marginBottom="@dimen/spacing_sm"
-                        android:importantForAccessibility="no" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/dashboard_unlocks"
-                        android:textAppearance="?attr/textAppearanceLabelMedium"
-                        android:textColor="@color/dash_text_secondary"
-                        android:textAllCaps="true"
-                        android:letterSpacing="0.1" />
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_lg">
 
-                    <TextView
-                        android:id="@+id/tv_unlocks"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?attr/textAppearanceHeadlineMedium"
-                        android:textStyle="bold"
-                        android:textColor="@color/on_primary" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/dashboard_total_screen_time"
+                            android:textAppearance="?attr/textAppearanceLabelLarge"
+                            android:textColor="@color/dash_text_secondary"
+                            android:textAllCaps="true"
+                            android:letterSpacing="0.1" />
 
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="@dimen/spacing_sm"
-                app:cardBackgroundColor="@color/dash_card"
-                app:cardCornerRadius="@dimen/radius_lg"
-                app:cardElevation="0dp"
-                app:strokeWidth="1dp"
-                app:strokeColor="@color/dash_card_stroke">
+                        <TextView
+                            android:id="@+id/tv_period_total_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?attr/textAppearanceDisplaySmall"
+                            android:textStyle="bold"
+                            android:textColor="@color/on_primary" />
 
-                <LinearLayout
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginTop="@dimen/spacing_xs">
+
+                            <TextView
+                                android:id="@+id/tv_period_unlocks"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:textAppearance="?attr/textAppearanceBodyMedium"
+                                android:textColor="@color/dash_text_secondary" />
+
+                            <TextView
+                                android:id="@+id/tv_trend"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/bg_badge_glass"
+                                android:paddingHorizontal="@dimen/spacing_sm"
+                                android:paddingVertical="4dp"
+                                android:textAppearance="?attr/textAppearanceLabelMedium"
+                                android:textStyle="bold"
+                                android:textColor="@color/on_primary"
+                                android:visibility="gone" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Per-app activity chart -->
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:padding="@dimen/spacing_md">
+                    android:layout_marginBottom="@dimen/spacing_md"
+                    app:cardBackgroundColor="@color/dash_card"
+                    app:cardCornerRadius="@dimen/radius_lg"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/dash_card_stroke">
 
-                    <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@drawable/ic_shield"
-                        app:tint="@color/on_primary"
-                        android:layout_marginBottom="@dimen/spacing_sm"
-                        android:importantForAccessibility="no" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/dashboard_active_blocks"
-                        android:textAppearance="?attr/textAppearanceLabelMedium"
-                        android:textColor="@color/dash_text_secondary"
-                        android:textAllCaps="true"
-                        android:letterSpacing="0.1" />
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_md">
 
-                    <TextView
-                        android:id="@+id/tv_active_blocks"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?attr/textAppearanceHeadlineMedium"
-                        android:textStyle="bold"
-                        android:textColor="@color/on_primary" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/stats_activity"
+                            android:textAppearance="?attr/textAppearanceTitleMedium"
+                            android:textStyle="bold"
+                            android:textColor="@color/on_primary"
+                            android:layout_marginBottom="@dimen/spacing_sm" />
+
+                        <com.example.stayfree.ui.common.BarChartView
+                            android:id="@+id/chart_period"
+                            android:layout_width="match_parent"
+                            android:layout_height="160dp"
+                            app:barColor="@color/dash_chart_bar"
+                            app:barTrackColor="@color/dash_chart_track"
+                            app:barHighlightColor="@color/dash_chart_peak"
+                            app:barLabelColor="@color/dash_text_secondary" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dashboard_most_used_apps"
+                    android:textAppearance="?attr/textAppearanceTitleLarge"
+                    android:textStyle="bold"
+                    android:textColor="@color/on_primary"
+                    android:layout_marginBottom="@dimen/spacing_sm" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_period_apps"
+                    android:layoutAnimation="@anim/layout_animation_slide_up"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false" />
+            </LinearLayout>
         </LinearLayout>
-
-        <!-- Most used apps -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/dashboard_most_used_apps"
-            android:textAppearance="?attr/textAppearanceTitleLarge"
-            android:textStyle="bold"
-            android:textColor="@color/on_primary"
-            android:layout_marginBottom="@dimen/spacing_sm" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_top_apps"
-            android:layoutAnimation="@anim/layout_animation_slide_up"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false" />
-
-    </LinearLayout>
-</ScrollView>
+    </ScrollView>
+</LinearLayout>

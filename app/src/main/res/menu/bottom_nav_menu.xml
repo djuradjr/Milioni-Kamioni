@@ -7,11 +7,6 @@
         android:title="@string/nav_dashboard" />
 
     <item
-        android:id="@+id/statsFragment"
-        android:icon="@drawable/ic_stats"
-        android:title="@string/nav_stats" />
-
-    <item
         android:id="@+id/blockingFragment"
         android:icon="@drawable/ic_block"
         android:title="@string/nav_blocking" />
