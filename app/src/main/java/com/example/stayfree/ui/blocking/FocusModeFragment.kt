@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.stayfree.databinding.FragmentFocusModeBinding
+import com.example.stayfree.ui.common.bindBackHeader
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -27,6 +28,8 @@ class FocusModeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        bindBackHeader(binding.backHeader)
 
         // Duration presets
         binding.chipGroup.setOnCheckedStateChangeListener { group, checkedIds ->

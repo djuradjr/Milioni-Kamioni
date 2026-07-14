@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.stayfree.R
 import com.example.stayfree.databinding.DialogAddWebsiteBinding
 import com.example.stayfree.databinding.FragmentWebsiteBlockBinding
+import com.example.stayfree.ui.common.bindBackHeader
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -31,6 +32,8 @@ class WebsiteBlockFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        bindBackHeader(binding.backHeader)
 
         adapter = WebsiteBlockAdapter(
             onToggle = { entity -> viewModel.toggleWebsite(entity) },

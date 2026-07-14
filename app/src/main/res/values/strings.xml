@@ -159,6 +159,7 @@
     <string name="block_content_toggle">Block %1$s</string>
     <string name="block_app_full_block">Block entire app</string>
     <string name="cd_expand_content">Content blocking options</string>
+    <string name="cd_back">Back</string>
 
     <!-- Content hard-block screen -->
     <string name="content_block_title">%1$s blocked</string>

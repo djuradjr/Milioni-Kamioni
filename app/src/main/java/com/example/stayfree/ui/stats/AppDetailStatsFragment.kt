@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.stayfree.R
 import com.example.stayfree.databinding.FragmentAppDetailStatsBinding
+import com.example.stayfree.ui.common.bindBackHeader
 import com.example.stayfree.util.AppInfoUtils
 import com.example.stayfree.util.TimeUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,6 +32,8 @@ class AppDetailStatsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        bindBackHeader(binding.backHeader)
 
         val packageName = arguments?.getString("packageName") ?: return
         viewModel.loadApp(packageName)

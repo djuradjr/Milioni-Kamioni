@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.stayfree.databinding.FragmentBlockAppsBinding
+import com.example.stayfree.ui.common.bindBackHeader
 import com.example.stayfree.util.PinGate
 import com.example.stayfree.util.PinPrompt
 import dagger.hilt.android.AndroidEntryPoint
@@ -35,6 +36,8 @@ class BlockAppsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        bindBackHeader(binding.backHeader)
 
         // Loosening (turning protection off, raising a limit) is PIN-gated;
         // tightening is always free.

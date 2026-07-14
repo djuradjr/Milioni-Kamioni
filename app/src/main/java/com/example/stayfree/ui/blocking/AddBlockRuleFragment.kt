@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.stayfree.R
 import com.example.stayfree.databinding.FragmentAddBlockRuleBinding
+import com.example.stayfree.ui.common.bindBackHeader
 import com.example.stayfree.util.AppInfoUtils
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -33,6 +34,8 @@ class AddBlockRuleFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        bindBackHeader(binding.backHeader)
 
         // Populate app picker
         val appNames = installedApps.map { it.appName }

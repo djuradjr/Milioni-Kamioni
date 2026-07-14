@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.stayfree.R
 import com.example.stayfree.data.local.preferences.AppPreferences
 import com.example.stayfree.databinding.FragmentPinSetupBinding
+import com.example.stayfree.ui.common.bindBackHeader
 import com.example.stayfree.util.PinHasher
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -34,6 +35,8 @@ class PinSetupFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        bindBackHeader(binding.backHeader)
 
         binding.btnConfirm.setOnClickListener {
             val pin = binding.etPin.text.toString()

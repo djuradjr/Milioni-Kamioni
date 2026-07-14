@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ImageButton xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/btn_back"
+    android:layout_width="48dp"
+    android:layout_height="48dp"
+    android:layout_marginStart="@dimen/spacing_xs"
+    android:layout_marginTop="@dimen/spacing_xs"
+    android:background="?attr/selectableItemBackgroundBorderless"
+    android:contentDescription="@string/cd_back"
+    android:src="@drawable/ic_chevron_left"
+    app:tint="?attr/colorOnSurface" />
