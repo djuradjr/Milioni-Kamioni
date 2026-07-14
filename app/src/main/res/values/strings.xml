@@ -115,6 +115,8 @@
     <string name="add_rule_require_pin">Require PIN to modify</string>
     <string name="unit_hours_short" translatable="false">h</string>
     <string name="unit_minutes_short" translatable="false">m</string>
+    <string name="add_rule_time_zero" translatable="false">0</string>
+    <string name="add_rule_time_required">Enter a time greater than 0</string>
     <string name="day_m">M</string>
     <string name="day_t">T</string>
     <string name="day_w">W</string>

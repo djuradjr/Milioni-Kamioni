@@ -48,12 +48,40 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center_vertical"
                 android:padding="@dimen/spacing_md">
-                <NumberPicker android:id="@+id/np_limit_hours" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/unit_hours_short" android:layout_gravity="center" />
-                <NumberPicker android:id="@+id/np_limit_minutes" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/unit_minutes_short" android:layout_gravity="center" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_limit_hours"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="@dimen/spacing_sm"
+                    app:suffixText="@string/unit_hours_short">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_limit_hours"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:maxLength="2"
+                        android:text="@string/add_rule_time_zero" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_limit_minutes"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:suffixText="@string/unit_minutes_short">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_limit_minutes"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:maxLength="2"
+                        android:text="@string/add_rule_time_zero" />
+                </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -67,15 +95,58 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="@dimen/spacing_md">
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/add_rule_session_duration" android:textColor="?attr/colorOnSurfaceVariant" />
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
-                    <NumberPicker android:id="@+id/np_session_hours" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" />
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/unit_hours_short" android:layout_gravity="center" />
-                    <NumberPicker android:id="@+id/np_session_minutes" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" />
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/unit_minutes_short" android:layout_gravity="center" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/add_rule_session_duration" android:textColor="?attr/colorOnSurfaceVariant" android:layout_marginBottom="@dimen/spacing_xs" />
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_session_hours"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="@dimen/spacing_sm"
+                        app:suffixText="@string/unit_hours_short">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_session_hours"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="number"
+                            android:maxLength="2"
+                            android:text="@string/add_rule_time_zero" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_session_minutes"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        app:suffixText="@string/unit_minutes_short">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_session_minutes"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="number"
+                            android:maxLength="2"
+                            android:text="@string/add_rule_time_zero" />
+                    </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/add_rule_break_duration" android:textColor="?attr/colorOnSurfaceVariant" android:layout_marginTop="@dimen/spacing_sm" />
-                <NumberPicker android:id="@+id/np_break_minutes" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/add_rule_break_duration" android:textColor="?attr/colorOnSurfaceVariant" android:layout_marginTop="@dimen/spacing_sm" android:layout_marginBottom="@dimen/spacing_xs" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_break_minutes"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:suffixText="@string/unit_minutes_short">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_break_minutes"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:maxLength="2"
+                        android:text="@string/add_rule_time_zero" />
+                </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 

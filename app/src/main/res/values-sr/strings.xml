@@ -107,6 +107,7 @@
     <string name="add_rule_block_type">Tip blokade</string>
     <string name="add_rule_session_duration">Trajanje sesije</string>
     <string name="add_rule_break_duration">Trajanje pauze (minuti)</string>
+    <string name="add_rule_time_required">Unesi vreme veće od 0</string>
     <string name="add_rule_require_pin">Traži PIN za izmenu</string>
     <string name="day_m">P</string>
     <string name="day_t">U</string>
