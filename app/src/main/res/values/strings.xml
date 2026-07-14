@@ -73,7 +73,6 @@
     <string name="blocking_focus_mode">Focus Mode</string>
     <string name="blocking_sleep_mode">Sleep Mode</string>
     <string name="blocking_websites">Websites</string>
-    <string name="blocking_in_app">In-App</string>
     <string name="blocking_app_rules">App Block Rules</string>
     <string name="app_detail_block_this_app">Block This App</string>
 
@@ -82,7 +81,6 @@
     <string name="blocking_focus_desc">Mute everything for a set time</string>
     <string name="blocking_sleep_desc">Quiet hours every night</string>
     <string name="blocking_websites_desc">Block sites in your browser</string>
-    <string name="blocking_in_app_desc">Reels, Shorts &amp; more</string>
     <string name="blocking_block_apps">Block Apps</string>
     <string name="blocking_block_apps_desc">Block entire apps</string>
     <string name="block_apps_empty">No apps available</string>
@@ -156,12 +154,9 @@
     <string name="btn_add">Add</string>
 
     <!-- Content blocking (Reels/Shorts overlay) -->
-    <string name="content_block_group_title">Block content (beta)</string>
-    <string name="content_block_group_desc">Cover Reels and Shorts with a calm reminder instead of blocking the whole app. Detection depends on the app version and may occasionally need an update.</string>
-    <string name="content_block_instagram_reels" translatable="false">Instagram Reels</string>
-    <string name="content_block_instagram_stories" translatable="false">Instagram Stories</string>
-    <string name="content_block_youtube_shorts" translatable="false">YouTube Shorts</string>
-    <string name="content_block_tiktok" translatable="false">TikTok</string>
+    <string name="block_content_toggle">Block %1$s</string>
+    <string name="block_app_full_block">Block entire app</string>
+    <string name="cd_expand_content">Content blocking options</string>
 
     <!-- Content hard-block screen -->
     <string name="content_block_title">%1$s blocked</string>

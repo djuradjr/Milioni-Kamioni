@@ -39,9 +39,6 @@
             android:id="@+id/action_blocking_to_website"
             app:destination="@id/websiteBlockFragment" />
         <action
-            android:id="@+id/action_blocking_to_inapp"
-            app:destination="@id/inAppBlockFragment" />
-        <action
             android:id="@+id/action_blocking_to_blockApps"
             app:destination="@id/blockAppsFragment" />
     </fragment>
@@ -70,11 +67,6 @@
         android:id="@+id/websiteBlockFragment"
         android:name="com.example.stayfree.ui.website.WebsiteBlockFragment"
         android:label="Website Blocking" />
-
-    <fragment
-        android:id="@+id/inAppBlockFragment"
-        android:name="com.example.stayfree.ui.inapp.InAppBlockFragment"
-        android:label="In-App Blocking" />
 
     <fragment
         android:id="@+id/blockAppsFragment"

@@ -25,8 +25,10 @@ or manifest/permission change), **bb-billing** (payments/premium work).
 - Block Brainrot is a **paid product** — NOT ad-supported. Do not add AdMob/rewarded
   ads; the AdMob template comments in `RewardGateActivity` are legacy reference only.
 - **2026-07-07: the timed-unlock model is REMOVED from code** — detected content
-  gets a branded hard-block screen (`ContentBlockActivity`): no unlock path, no
-  daily cap, Exit/Back → home. Premium via Google Play Billing is still planned —
+  gets a branded hard-block screen (`ContentBlockActivity`): no unlock path,
+  Exit/Back → home. Since 2026-07-14 each content target can carry a per-target
+  **daily allowance** (0 = block immediately); once spent, the same no-unlock
+  hard block fires. Premium via Google Play Billing is still planned —
   see `bb-billing`.
 - When billing lands, the `bb-security` skill's payments section is MANDATORY
   (paywall-bypass + data-leak tests, 3/3 each).
@@ -60,16 +62,19 @@ Flow: **`ContentSignatures.kt` → `StayFreeAccessibilityService.handleContentBl
   When detection breaks after an app update, **edit ONLY this file** (details in the
   module CLAUDE.md next to it).
 - `service/StayFreeAccessibilityService.kt` — `handleContentBlock`: detect surface
-  (visible + ≥60% screen height, OR whole-app) → past 4s on-open grace → (optional
-  Back) → launch the block screen. A match landing *inside* the grace schedules a
-  one-shot recheck at grace expiry — static surfaces (TikTok's login wall) emit no
-  further events, so without it the block would never fire. **Arming logic was
-  removed** (it stopped Reels/Shorts from ever firing — those apps restore straight
-  into the feed on open).
+  (visible + ≥60% screen height, OR whole-app) → past 4s on-open grace → per-target
+  daily allowance (0/missing = block now; otherwise a ~5s persisted ticker
+  accumulates on-surface time until it's spent) → (optional Back) → launch the
+  block screen. A match landing *inside* the grace schedules a one-shot recheck at
+  grace expiry — static surfaces (TikTok's login wall) emit no further events, so
+  without it the block would never fire. **Arming logic was removed** (it stopped
+  Reels/Shorts from ever firing — those apps restore straight into the feed on open).
 - `ui/content/ContentBlockActivity.kt` — the branded, immersive hard-block screen;
   Exit and Back both go home.
-- Enabled-target set lives in `data/local/preferences/AppPreferences.kt` (DataStore);
-  per-target toggles in `ui/inapp/InAppBlockFragment` + `fragment_in_app_block.xml`.
+- Enabled-target set + per-target limits/usage live in
+  `data/local/preferences/AppPreferences.kt` (DataStore); per-target toggles +
+  limit steppers in the app's expandable row on the Block Apps screen
+  (`ui/blockapps`).
 
 **4 targets verified working 3/3:** Instagram Reels (`clips_*`), Instagram Stories
 (`reel_viewer_*`), YouTube Shorts (`reel_watch_*`/`shorts`) — id-match; TikTok

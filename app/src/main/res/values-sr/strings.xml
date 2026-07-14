@@ -69,7 +69,6 @@
     <string name="blocking_focus_mode">Režim fokusa</string>
     <string name="blocking_sleep_mode">Režim spavanja</string>
     <string name="blocking_websites">Sajtovi</string>
-    <string name="blocking_in_app">U aplikaciji</string>
     <string name="blocking_app_rules">Pravila blokiranja</string>
     <string name="app_detail_block_this_app">Blokiraj ovu aplikaciju</string>
 
@@ -78,7 +77,6 @@
     <string name="blocking_focus_desc">Utišaj sve na određeno vreme</string>
     <string name="blocking_sleep_desc">Mirni sati svake noći</string>
     <string name="blocking_websites_desc">Blokiraj sajtove u pregledaču</string>
-    <string name="blocking_in_app_desc">Reels, Shorts i ostalo</string>
     <string name="blocking_block_apps">Blokiraj aplikacije</string>
     <string name="blocking_block_apps_desc">Blokiraj cele aplikacije</string>
     <string name="block_apps_empty">Nema dostupnih aplikacija</string>
@@ -146,8 +144,9 @@
     <string name="btn_add">Dodaj</string>
 
     <!-- Content blocking (Reels/Shorts overlay) -->
-    <string name="content_block_group_title">Blokiraj sadržaj (beta)</string>
-    <string name="content_block_group_desc">Prekrij Reels i Shorts mirnim podsetnikom umesto blokiranja cele aplikacije. Detekcija zavisi od verzije aplikacije i povremeno traži ažuriranje.</string>
+    <string name="block_content_toggle">Blokiraj %1$s</string>
+    <string name="block_app_full_block">Potpuni blok aplikacije</string>
+    <string name="cd_expand_content">Opcije blokiranja sadržaja</string>
 
     <!-- Content hard-block screen -->
     <string name="content_block_title">Blokirano: %1$s</string>

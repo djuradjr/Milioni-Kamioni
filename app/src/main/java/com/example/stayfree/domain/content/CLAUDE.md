@@ -13,8 +13,14 @@
   YT Shorts `reel_watch_*`/`shorts`.
 - Adding a target: capture real ids first — `uiautomator dump` fails on autoplay
   video, so use `screencap` or a temporary `Log.d` tree-walk in
-  `handleContentBlock` (remove before commit). Then add the entry here and expose
-  the toggle in `ui/inapp/InAppBlockFragment`.
+  `handleContentBlock` (remove before commit). Then add the entry here — the
+  toggle + limit stepper appear automatically in the app's expandable row on the
+  Block Apps screen (`ui/blockapps`, via `ContentSignatures.allByPackage`).
+- Each target carries an optional **daily allowance** (minutes, DataStore
+  `content_target_limits_json`; 0/missing = block immediately). The service
+  accumulates on-surface time in ~5s persisted ticks
+  (`content_target_usage_json`, reset on effective-date change) and hard-blocks
+  once the allowance is spent — the block screen itself still has no unlock path.
 - Verification bar (non-negotiable): **3/3 in a row** on the Pixel_9 emulator
   (enter surface → gate fires → clear from recents → repeat), confirmed via
   `logcat -s MoreMoneyA11y` (`Content surface: <Name>`). After EVERY reinstall

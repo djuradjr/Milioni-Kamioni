@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:minHeight="48dp">
+
+        <TextView
+            android:id="@+id/tv_target_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textAppearance="?attr/textAppearanceBodyLarge" />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/switch_target"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <!-- Per-target daily allowance stepper (same pattern as the whole-app card_limit);
+         visible only while the target switch is ON. 0 = block immediately. -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_target_limit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_xs"
+        android:visibility="gone"
+        app:cardBackgroundColor="?attr/colorSurfaceContainerHigh"
+        app:cardCornerRadius="@dimen/radius_sm"
+        app:cardElevation="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="@dimen/spacing_md"
+            android:paddingVertical="@dimen/spacing_xs">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/block_app_limit_label"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant" />
+
+            <ImageButton
+                android:id="@+id/btn_target_limit_down"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/cd_limit_decrease"
+                android:src="@drawable/ic_chevron_left"
+                app:tint="?attr/colorOnSurface" />
+
+            <TextView
+                android:id="@+id/tv_target_limit_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="64dp"
+                android:gravity="center"
+                android:textAppearance="?attr/textAppearanceTitleSmall" />
+
+            <ImageButton
+                android:id="@+id/btn_target_limit_up"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/cd_limit_increase"
+                android:src="@drawable/ic_chevron_right"
+                app:tint="?attr/colorOnSurface" />
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+</LinearLayout>

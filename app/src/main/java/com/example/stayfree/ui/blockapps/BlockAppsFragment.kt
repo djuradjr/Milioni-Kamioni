@@ -4,13 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.stayfree.databinding.FragmentBlockAppsBinding
-import com.example.stayfree.domain.content.ContentSignatures
 import com.example.stayfree.util.PinGate
 import com.example.stayfree.util.PinPrompt
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,6 +36,8 @@ class BlockAppsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Loosening (turning protection off, raising a limit) is PIN-gated;
+        // tightening is always free.
         adapter = BlockAppsAdapter(
             onToggle = { pkg, blocked ->
                 if (blocked) viewModel.setBlocked(pkg, true)
@@ -48,6 +48,16 @@ class BlockAppsFragment : Fragment() {
             onLimitChange = { pkg, minutes, increase ->
                 if (!increase) viewModel.setLimit(pkg, minutes)
                 else withPinGate { viewModel.setLimit(pkg, minutes) }
+            },
+            onContentToggle = { id, enabled ->
+                if (enabled) viewModel.setContentEnabled(id, true)
+                else withPinGate(onDenied = { adapter.notifyDataSetChanged() }) {
+                    viewModel.setContentEnabled(id, false)
+                }
+            },
+            onContentLimitChange = { id, minutes, increase ->
+                if (!increase) viewModel.setContentLimit(id, minutes)
+                else withPinGate { viewModel.setContentLimit(id, minutes) }
             }
         )
         binding.rvBlockApps.apply {
@@ -55,49 +65,12 @@ class BlockAppsFragment : Fragment() {
             this.adapter = this@BlockAppsFragment.adapter
         }
 
-        // Content-block toggles (only react to real user taps, not programmatic checks)
-        binding.switchIgReels.setOnCheckedChangeListener { btn, checked ->
-            onContentToggle(btn, ContentSignatures.INSTAGRAM_REELS, checked)
-        }
-        binding.switchIgStories.setOnCheckedChangeListener { btn, checked ->
-            onContentToggle(btn, ContentSignatures.INSTAGRAM_STORIES, checked)
-        }
-        binding.switchYtShorts.setOnCheckedChangeListener { btn, checked ->
-            onContentToggle(btn, ContentSignatures.YOUTUBE_SHORTS, checked)
-        }
-        binding.switchTiktok.setOnCheckedChangeListener { btn, checked ->
-            onContentToggle(btn, ContentSignatures.TIKTOK, checked)
-        }
-
         viewLifecycleOwner.lifecycleScope.launch {
-            launch {
-                viewModel.items.collectLatest { list ->
-                    adapter.submitList(list)
-                    binding.tvEmpty.visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
-                    binding.rvBlockApps.visibility = if (list.isEmpty()) View.GONE else View.VISIBLE
-                }
+            viewModel.items.collectLatest { list ->
+                adapter.submitList(list)
+                binding.tvEmpty.visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
+                binding.rvBlockApps.visibility = if (list.isEmpty()) View.GONE else View.VISIBLE
             }
-            launch {
-                viewModel.contentBlockEnabledIds.collectLatest { enabled ->
-                    binding.switchIgReels.isChecked = ContentSignatures.INSTAGRAM_REELS in enabled
-                    binding.switchIgStories.isChecked = ContentSignatures.INSTAGRAM_STORIES in enabled
-                    binding.switchYtShorts.isChecked = ContentSignatures.YOUTUBE_SHORTS in enabled
-                    binding.switchTiktok.isChecked = ContentSignatures.TIKTOK in enabled
-                }
-            }
-        }
-    }
-
-    // Enabling protection is always free; disabling it (or raising a limit) is
-    // PIN-gated so the block can't be talked out of in a weak moment.
-    private fun onContentToggle(btn: CompoundButton, id: String, checked: Boolean) {
-        if (!btn.isPressed) return
-        if (checked) {
-            viewModel.setContentEnabled(id, true)
-            return
-        }
-        withPinGate(onDenied = { btn.isChecked = true }) {
-            viewModel.setContentEnabled(id, false)
         }
     }
 

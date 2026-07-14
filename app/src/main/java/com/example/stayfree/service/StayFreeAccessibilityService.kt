@@ -4,6 +4,7 @@ import android.accessibilityservice.AccessibilityService
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Rect
+import android.os.PowerManager
 import android.provider.Settings
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
@@ -14,6 +15,7 @@ import com.example.stayfree.data.repository.InAppBlockRepository
 import com.example.stayfree.data.repository.UsageRepository
 import com.example.stayfree.data.repository.WebsiteBlockRepository
 import com.example.stayfree.domain.BlockRuleEvaluator
+import com.example.stayfree.domain.content.ContentBlockTarget
 import com.example.stayfree.domain.content.ContentSignatures
 import com.example.stayfree.domain.model.BlockType
 import com.example.stayfree.ui.blocking.FocusModeState
@@ -57,6 +59,11 @@ class StayFreeAccessibilityService : AccessibilityService() {
     @Volatile private var blockAppsEnabledPkgs: Set<String> = emptySet()
     // Daily allowance in minutes per blocked app (0 = block immediately).
     @Volatile private var blockAppLimitsMin: Map<String, Int> = emptyMap()
+    // Daily allowance in minutes per content target (0/missing = block immediately).
+    @Volatile private var contentTargetLimitsMin: Map<String, Int> = emptyMap()
+    // Ticker accumulating on-surface time for the limit-bearing target currently on screen.
+    private var surfaceSessionJob: Job? = null
+    @Volatile private var surfaceSessionTargetId: String? = null
     private var lastContentBlockAt: Long = 0L
     // One-shot recheck scheduled when a match lands inside the on-open grace —
     // static surfaces (e.g. TikTok's login wall) emit no further events, so
@@ -86,6 +93,10 @@ class StayFreeAccessibilityService : AccessibilityService() {
         // Let GLOBAL_ACTION_BACK settle (host leaves the Shorts player) before we
         // cover the screen with the block screen.
         private const val BACK_SETTLE_MS = 300L
+        // Accumulation tick for limited surfaces. Static surfaces emit no events,
+        // so without a ticker a limit could never expire mid-session; each tick
+        // also persists progress so it survives service/app restarts.
+        private const val SURFACE_TICK_MS = 5_000L
 
         // Browser URL bar view IDs
         private val BROWSER_URL_VIEW_IDS = mapOf(
@@ -122,6 +133,9 @@ class StayFreeAccessibilityService : AccessibilityService() {
         }
         serviceScope.launch {
             prefs.blockAppLimitsMinutes.collect { blockAppLimitsMin = it }
+        }
+        serviceScope.launch {
+            prefs.contentTargetLimitsMinutes.collect { contentTargetLimitsMin = it }
         }
     }
 
@@ -196,14 +210,14 @@ class StayFreeAccessibilityService : AccessibilityService() {
     }
 
     /**
-     * Per-content blocking (Reels/Shorts/Stories/TikTok): the instant a blocked
-     * surface is detected we press Back to leave it, then cover the host's feed
-     * with the hard-block screen. Cheap-skips any package without an enabled
-     * content target so the tree walk only runs inside Instagram/YouTube. A host
-     * app can expose several surfaces (Instagram = Reels + Stories), so we test
-     * every enabled target.
+     * Per-content blocking (Reels/Shorts/Stories/TikTok). Cheap-skips any package
+     * without an enabled content target so the tree walk only runs inside
+     * Instagram/YouTube. A host app can expose several surfaces (Instagram =
+     * Reels + Stories), so we test every enabled target. A matched target with a
+     * daily allowance first accumulates on-surface time; with no allowance (or a
+     * spent one) the hard-block fires right away.
      */
-    private fun handleContentBlock(pkg: String) {
+    private suspend fun handleContentBlock(pkg: String) {
         val targets = ContentSignatures.allByPackage(pkg).filter { it.id in enabledContentIds }
         if (targets.isEmpty()) return
 
@@ -212,40 +226,13 @@ class StayFreeAccessibilityService : AccessibilityService() {
         val now = System.currentTimeMillis()
         if (now - lastContentBlockAt < CONTENT_BLOCK_COOLDOWN_MS) return
 
-        // Whole-app targets (TikTok) match whenever the app is foreground — no tree
-        // walk, since every screen is short-form and ids are obfuscated/unstable.
-        var matched = targets.firstOrNull { it.matchWholeApp }
-        if (matched == null) {
-            val root = rootInActiveWindow ?: return
-            val screenH = resources.displayMetrics.heightPixels
-            val bounds = Rect()
-            matched = try {
-                targets.firstOrNull { target ->
-                    anyNodeMatches(root) { node ->
-                        val id = node.viewIdResourceName ?: return@anyNodeMatches false
-                        if (target.viewIdSignatures.none { id.contains(it, ignoreCase = true) }) {
-                            return@anyNodeMatches false
-                        }
-                        // The player view is pre-inflated in the host's view hierarchy,
-                        // so id presence alone fires on app open. Require it to be
-                        // actually presented: visible AND covering most of the screen
-                        // (the Shorts/Reels/Stories player is full-screen).
-                        if (!node.isVisibleToUser) return@anyNodeMatches false
-                        node.getBoundsInScreen(bounds)
-                        bounds.height() >= screenH * 0.6
-                    }
-                }
-            } finally {
-                root.recycle()
-            }
-        }
-
         // Not on any blocked surface (incl. the feed, where the player view is
         // pre-inflated but NOT visibleToUser) — nothing to do.
-        if (matched == null) return
+        val matched = findMatchedTarget(targets) ?: return
+
         // A blocked surface is genuinely on screen (visible + full-height). Wait out
         // a short on-open grace so a cold launch's transient flash of the
-        // pre-inflated player doesn't fire; past that, block whenever the user is on
+        // pre-inflated player doesn't fire; past that, act whenever the user is on
         // the surface — including apps that restore straight into Reels/Shorts on open.
         val sinceOpen = now - foregroundSince
         if (sinceOpen < CONTENT_OPEN_GRACE_MS) {
@@ -257,30 +244,106 @@ class StayFreeAccessibilityService : AccessibilityService() {
             return
         }
 
-        lastContentBlockAt = now
-        Log.d(TAG, "Content surface: ${matched.displayName} in $pkg")
+        val limitMin = contentTargetLimitsMin[matched.id] ?: 0
+        if (limitMin > 0) {
+            val usedMs = prefs.getContentTargetUsageMs(matched.id, effectiveDate())
+            if (usedMs < limitMin * 60_000L) {
+                startSurfaceSession(matched, pkg)
+                return
+            }
+        }
+        launchContentBlock(matched)
+    }
+
+    /**
+     * Whole-app targets (TikTok) match whenever the app is foreground — no tree
+     * walk, since every screen is short-form and ids are obfuscated/unstable.
+     * Id targets must be actually presented: the player view is pre-inflated in
+     * the host's view hierarchy, so id presence alone would fire on app open —
+     * require visible AND covering most of the screen (the player is full-screen).
+     */
+    private fun findMatchedTarget(targets: List<ContentBlockTarget>): ContentBlockTarget? {
+        targets.firstOrNull { it.matchWholeApp }?.let { return it }
+        val root = rootInActiveWindow ?: return null
+        val screenH = resources.displayMetrics.heightPixels
+        val bounds = Rect()
+        return try {
+            targets.firstOrNull { target ->
+                anyNodeMatches(root) { node ->
+                    val id = node.viewIdResourceName ?: return@anyNodeMatches false
+                    if (target.viewIdSignatures.none { id.contains(it, ignoreCase = true) }) {
+                        return@anyNodeMatches false
+                    }
+                    if (!node.isVisibleToUser) return@anyNodeMatches false
+                    node.getBoundsInScreen(bounds)
+                    bounds.height() >= screenH * 0.6
+                }
+            }
+        } finally {
+            root.recycle()
+        }
+    }
+
+    /**
+     * Accumulates on-surface time for a limit-bearing target. Persists every tick
+     * (survives service/app restarts) and fires the block the moment today's
+     * allowance runs out mid-session. Ends silently when the user leaves the
+     * surface/app, the screen turns off, or the target gets disabled.
+     */
+    private fun startSurfaceSession(target: ContentBlockTarget, pkg: String) {
+        if (surfaceSessionTargetId == target.id && surfaceSessionJob?.isActive == true) return
+        surfaceSessionJob?.cancel()
+        surfaceSessionTargetId = target.id
+        surfaceSessionJob = serviceScope.launch(Dispatchers.Main) {
+            val powerManager = getSystemService(PowerManager::class.java)
+            var lastTick = System.currentTimeMillis()
+            while (isActive) {
+                delay(SURFACE_TICK_MS)
+                val stillOn = currentForegroundPackage == pkg &&
+                    powerManager.isInteractive &&
+                    target.id in enabledContentIds &&
+                    findMatchedTarget(listOf(target)) != null
+                if (!stillOn) break
+                val now = System.currentTimeMillis()
+                val totalMs = prefs.addContentTargetUsage(target.id, effectiveDate(), now - lastTick)
+                lastTick = now
+                val limitMin = contentTargetLimitsMin[target.id] ?: 0
+                if (totalMs >= limitMin * 60_000L) {
+                    launchContentBlock(target)
+                    break
+                }
+            }
+            surfaceSessionTargetId = null
+        }
+    }
+
+    /**
+     * The hard-block itself: press Back — while the host is still foreground — to
+     * leave the player/viewer. The host then saves a NON-blocked screen as its last
+     * state (so clearing recents + reopening doesn't restore straight back in)
+     * and the user lands on the feed behind our screen. (We avoid
+     * GLOBAL_ACTION_HOME: it races the launcher on top of us and triggers
+     * YouTube's auto-PiP floating player.) Skipped for whole-app targets
+     * (TikTok) which have no safe screen behind the feed — there our
+     * full-screen block simply covers the app instead.
+     */
+    private fun launchContentBlock(target: ContentBlockTarget) {
+        lastContentBlockAt = System.currentTimeMillis()
+        Log.d(TAG, "Content surface: ${target.displayName} in ${target.packageName}")
 
         if (!Settings.canDrawOverlays(this)) {
             Log.w(TAG, "No overlay permission — cannot show block screen")
             return
         }
-        // Press Back — while the host is still foreground — to leave the
-        // player/viewer. The host then saves a NON-blocked screen as its last
-        // state (so clearing recents + reopening doesn't restore straight back in)
-        // and the user lands on the feed behind our screen. (We avoid
-        // GLOBAL_ACTION_HOME: it races the launcher on top of us and triggers
-        // YouTube's auto-PiP floating player.) Skipped for whole-app targets
-        // (TikTok) which have no safe screen behind the feed — there our
-        // full-screen block simply covers the app instead.
         serviceScope.launch(Dispatchers.Main) {
-            if (matched.pressBackBeforeBlock) {
+            if (target.pressBackBeforeBlock) {
                 performGlobalAction(GLOBAL_ACTION_BACK)
                 delay(BACK_SETTLE_MS)
             }
             try {
                 startActivity(
                     ContentBlockActivity.newIntent(
-                        this@StayFreeAccessibilityService, matched.displayName
+                        this@StayFreeAccessibilityService, target.displayName
                     )
                 )
             } catch (e: Exception) {
@@ -288,6 +351,9 @@ class StayFreeAccessibilityService : AccessibilityService() {
             }
         }
     }
+
+    private suspend fun effectiveDate(): String =
+        TimeUtils.getEffectiveDate(prefs.dailyResetTimeMinutes.first())
 
     /**
      * Whole-app block decision (Block Apps screen). Returns the overlay reason,

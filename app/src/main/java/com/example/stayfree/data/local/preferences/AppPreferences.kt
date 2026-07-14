@@ -54,6 +54,13 @@ class AppPreferences @Inject constructor(
         // 0 minutes = block immediately; missing entry = DEFAULT_BLOCK_APP_LIMIT_MINUTES.
         val BLOCK_APP_LIMITS = stringPreferencesKey("block_app_limits_json")
         const val DEFAULT_BLOCK_APP_LIMIT_MINUTES = 30
+        // Per-content-target daily allowance: JSON map {targetId: minutes}.
+        // 0 / missing = block immediately (the original hard-block behavior).
+        val CONTENT_TARGET_LIMITS = stringPreferencesKey("content_target_limits_json")
+        // Accumulated on-surface time per target for ONE effective day:
+        // {"date":"yyyy-MM-dd","usage":{targetId: ms}}. Written by the a11y
+        // service; a date mismatch on write/read resets the day transparently.
+        val CONTENT_TARGET_USAGE = stringPreferencesKey("content_target_usage_json")
     }
 
     val dailyResetTimeMinutes: Flow<Int> = dataStore.data.map { it[DAILY_RESET_TIME_MINUTES] ?: 0 }
@@ -81,6 +88,9 @@ class AppPreferences @Inject constructor(
     /** Daily allowance in minutes per blocked app (0 = block immediately). */
     val blockAppLimitsMinutes: Flow<Map<String, Int>> =
         dataStore.data.map { parseLimits(it[BLOCK_APP_LIMITS]) }
+    /** Daily allowance in minutes per content target (0 = block immediately). */
+    val contentTargetLimitsMinutes: Flow<Map<String, Int>> =
+        dataStore.data.map { parseLimits(it[CONTENT_TARGET_LIMITS]) }
 
     suspend fun setDailyResetTime(minutes: Int) {
         dataStore.edit { it[DAILY_RESET_TIME_MINUTES] = minutes }
@@ -199,6 +209,52 @@ class AppPreferences @Inject constructor(
             }
             obj.put(packageName, minutes.coerceAtLeast(0))
             prefs[BLOCK_APP_LIMITS] = obj.toString()
+        }
+    }
+
+    suspend fun setContentTargetLimitMinutes(id: String, minutes: Int) {
+        dataStore.edit { prefs ->
+            val obj = try {
+                JSONObject(prefs[CONTENT_TARGET_LIMITS] ?: "{}")
+            } catch (e: Exception) {
+                JSONObject()
+            }
+            obj.put(id, minutes.coerceAtLeast(0))
+            prefs[CONTENT_TARGET_LIMITS] = obj.toString()
+        }
+    }
+
+    /**
+     * Adds [deltaMs] to the target's on-surface time for the effective day [date]
+     * and returns the new total. A stored different date means the day rolled
+     * over — the whole map is dropped before adding (the daily reset).
+     */
+    suspend fun addContentTargetUsage(id: String, date: String, deltaMs: Long): Long {
+        var newTotal = 0L
+        dataStore.edit { prefs ->
+            val obj = try {
+                JSONObject(prefs[CONTENT_TARGET_USAGE] ?: "{}")
+            } catch (e: Exception) {
+                JSONObject()
+            }
+            val usage = if (obj.optString("date") == date) {
+                obj.optJSONObject("usage") ?: JSONObject()
+            } else JSONObject()
+            newTotal = usage.optLong(id) + deltaMs.coerceAtLeast(0L)
+            usage.put(id, newTotal)
+            prefs[CONTENT_TARGET_USAGE] = JSONObject().put("date", date).put("usage", usage).toString()
+        }
+        return newTotal
+    }
+
+    suspend fun getContentTargetUsageMs(id: String, date: String): Long {
+        val json = dataStore.data.first()[CONTENT_TARGET_USAGE] ?: return 0L
+        return try {
+            val obj = JSONObject(json)
+            if (obj.optString("date") != date) 0L
+            else obj.optJSONObject("usage")?.optLong(id) ?: 0L
+        } catch (e: Exception) {
+            0L
         }
     }
 
