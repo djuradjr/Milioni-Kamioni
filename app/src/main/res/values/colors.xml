@@ -53,6 +53,13 @@
     <color name="dash_text_secondary">#E6FFE9DF</color>
     <color name="dash_chart_track">#26FFFFFF</color>
     <color name="dash_chart_bar">#FFFFFF</color>
-    <color name="dash_chart_peak">#FFD180</color>
     <color name="dash_value_accent">#FFE0B2</color>
+
+    <!-- Navy line chart on a white card (identical in both modes — brand surface,
+         so it does NOT track the night-remapped `ink`). -->
+    <color name="dash_line_card">#FFFFFF</color>
+    <color name="dash_line_color">#1B2B4B</color>
+    <color name="dash_line_grid">#14000000</color>
+    <color name="dash_line_axis">#94A0B4</color>
+    <color name="dash_line_caption">#6B7686</color>
 </resources>

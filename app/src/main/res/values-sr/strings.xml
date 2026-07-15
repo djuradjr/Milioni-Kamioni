@@ -42,6 +42,10 @@
 
     <!-- Dashboard -->
     <string name="dashboard_total_screen_time">Ukupno vreme korišćenja</string>
+    <string name="dashboard_avg_screen_time">Prosečno vreme korišćenja</string>
+    <string name="dashboard_period_total">Ukupno %1$s</string>
+    <string name="dashboard_period_last_week">Poslednjih 7 dana</string>
+    <string name="dashboard_period_last_month">Poslednjih 30 dana</string>
     <string name="dashboard_unlocks">Otključavanja</string>
     <string name="dashboard_active_blocks">Aktivne blokade</string>
     <string name="dashboard_today">Danas</string>

@@ -34,4 +34,12 @@
     <!-- Sleep/ink cards must stay distinct from the ink-based background -->
     <color name="ink">#2E4570</color>
     <color name="ink_light">#3E5A8F</color>
+
+    <!-- Navy line chart stays a white card with a deep-navy line in dark mode too
+         (brand surface — same values as the light palette, unlike `ink`). -->
+    <color name="dash_line_card">#FFFFFF</color>
+    <color name="dash_line_color">#1B2B4B</color>
+    <color name="dash_line_grid">#14000000</color>
+    <color name="dash_line_axis">#94A0B4</color>
+    <color name="dash_line_caption">#6B7686</color>
 </resources>

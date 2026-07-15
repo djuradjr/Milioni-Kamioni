@@ -69,6 +69,18 @@ object TimeUtils {
         return SimpleDateFormat("EEE, d MMM", Locale.US).format(Date(startMs))
     }
 
+    /** Narrow weekday initial (e.g. "M", "T") for a "yyyy-MM-dd" string. */
+    fun dayInitial(date: String): String {
+        val startMs = getDayStartMs(date) ?: return ""
+        return SimpleDateFormat("EEEEE", Locale.US).format(Date(startMs))
+    }
+
+    /** Day-of-month number (e.g. "4", "18") for a "yyyy-MM-dd" string. */
+    fun dayOfMonth(date: String): String {
+        val startMs = getDayStartMs(date) ?: return ""
+        return SimpleDateFormat("d", Locale.US).format(Date(startMs))
+    }
+
     /** Format milliseconds to human-readable "Xh Ym" or "Ym Zs" */
     fun formatDuration(ms: Long): String {
         val totalSeconds = ms / 1000

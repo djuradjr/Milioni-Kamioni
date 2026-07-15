@@ -7,4 +7,13 @@
         <attr name="barHighlightColor" format="color" />
         <attr name="barLabelColor" format="color" />
     </declare-styleable>
+
+    <declare-styleable name="UsageLineChartView">
+        <attr name="lineColor" format="color" />
+        <attr name="gridColor" format="color" />
+        <attr name="axisTextColor" format="color" />
+        <attr name="captionTextColor" format="color" />
+        <!-- Draw a hollow marker on every point (weekly) vs only the tapped one. -->
+        <attr name="markersAllPoints" format="boolean" />
+    </declare-styleable>
 </resources>

@@ -45,6 +45,10 @@
 
     <!-- Dashboard -->
     <string name="dashboard_total_screen_time">Total Screen Time</string>
+    <string name="dashboard_avg_screen_time">Average Screen Time</string>
+    <string name="dashboard_period_total">Total %1$s</string>
+    <string name="dashboard_period_last_week">Last 7 days</string>
+    <string name="dashboard_period_last_month">Last 30 days</string>
     <string name="dashboard_unlocks">Unlocks</string>
     <string name="dashboard_active_blocks">Active Blocks</string>
     <string name="dashboard_today">Today</string>

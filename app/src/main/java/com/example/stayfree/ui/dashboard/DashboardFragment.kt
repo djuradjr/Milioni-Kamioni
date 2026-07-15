@@ -39,8 +39,9 @@ class DashboardFragment : Fragment() {
     private var lastShownDate: String? = null
     private var lastPeriod: StatsPeriod? = null
 
-    /** Apps currently shown in the period chart, for the tap tooltip. */
-    private var chartApps: List<AppUsage> = emptyList()
+    /** Length of the current per-day chart series (7 or 30) — maps a chart index
+     *  back to its calendar date for the x-axis and tooltip. */
+    private var periodDayCount: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -112,17 +113,34 @@ class DashboardFragment : Fragment() {
     }
 
     private fun setupCharts() {
-        binding.chartHourly.tooltipFormatter = { hour, minutes ->
-            String.format(
-                Locale.US, "%02d:00 · %s",
-                hour, TimeUtils.formatDuration((minutes * 60_000f).toLong())
-            )
+        val minutesToDuration: (Float) -> String = { minutes ->
+            TimeUtils.formatDuration((minutes * 60_000f).toLong())
         }
-        binding.chartPeriod.tooltipFormatter = { index, _ ->
-            chartApps.getOrNull(index)?.let {
-                "${it.appName} · ${TimeUtils.formatDuration(it.totalTimeMs)}"
-            } ?: ""
+        // Daily: 24 hourly points, clock ticks at 0/6/12/18, tooltip caption = hour.
+        binding.chartHourly.apply {
+            tooltipValueFormatter = minutesToDuration
+            tooltipCaptionFormatter = { hour -> String.format(Locale.US, "%02d:00", hour) }
+            xLabelFormatter = { hour -> if (hour % 6 == 0) hour.toString() else "" }
         }
+        // Weekly/Monthly: per-day points; ticks are day initials (7d) or dates (30d).
+        binding.chartPeriod.apply {
+            tooltipValueFormatter = minutesToDuration
+            tooltipCaptionFormatter = { index -> TimeUtils.formatDisplayDate(dateForPeriodIndex(index)) }
+            xLabelFormatter = { index ->
+                val date = dateForPeriodIndex(index)
+                if (viewModel.period.value == StatsPeriod.WEEKLY) {
+                    TimeUtils.dayInitial(date)
+                } else if (index % 5 == 0 || index == periodDayCount - 1) {
+                    TimeUtils.dayOfMonth(date)
+                } else ""
+            }
+        }
+    }
+
+    /** Maps a per-day chart index (oldest→today) back to its "yyyy-MM-dd" date. */
+    private fun dateForPeriodIndex(index: Int): String {
+        val daysAgo = (periodDayCount - 1 - index).coerceAtLeast(0)
+        return TimeUtils.getDateStringDaysAgo(daysAgo)
     }
 
     private fun observeData() {
@@ -132,6 +150,12 @@ class DashboardFragment : Fragment() {
                     val daily = period == StatsPeriod.DAILY
                     binding.dailyContent.visibility = if (daily) View.VISIBLE else View.GONE
                     binding.periodContent.visibility = if (daily) View.GONE else View.VISIBLE
+                    if (!daily) {
+                        binding.tvPeriodPill.setText(
+                            if (period == StatsPeriod.WEEKLY) R.string.dashboard_period_last_week
+                            else R.string.dashboard_period_last_month
+                        )
+                    }
                     animatePeriodChange(period)
                 }
             }
@@ -168,8 +192,7 @@ class DashboardFragment : Fragment() {
             }
             launch {
                 viewModel.hourlyUsage.collectLatest { buckets ->
-                    val peak = buckets.maxOrNull()?.takeIf { it > 0 }?.let { buckets.indexOf(it) } ?: -1
-                    binding.chartHourly.setData(buckets.map { it / 60_000f }, peak)
+                    binding.chartHourly.setData(buckets.map { it / 60_000f })
                 }
             }
             launch {
@@ -182,8 +205,14 @@ class DashboardFragment : Fragment() {
                 }
             }
             launch {
-                viewModel.periodTotalScreenTime.collectLatest { ms ->
+                viewModel.periodAverageScreenTime.collectLatest { ms ->
                     CountUp.animate(binding.tvPeriodTotalTime, ms) { TimeUtils.formatDuration(it) }
+                }
+            }
+            launch {
+                viewModel.periodTotalScreenTime.collectLatest { ms ->
+                    binding.tvPeriodTotalSum.text =
+                        getString(R.string.dashboard_period_total, TimeUtils.formatDuration(ms))
                 }
             }
             launch {
@@ -199,8 +228,13 @@ class DashboardFragment : Fragment() {
             launch {
                 viewModel.periodAppUsage.collectLatest { list ->
                     periodAppsAdapter.submitList(list)
-                    chartApps = list.take(7)
-                    binding.chartPeriod.setData(chartApps.map { it.totalTimeMs.toFloat() / 60_000f })
+                }
+            }
+            launch {
+                viewModel.periodDailyUsage.collectLatest { daily ->
+                    periodDayCount = daily.size
+                    binding.chartPeriod.markersAllPoints = viewModel.period.value == StatsPeriod.WEEKLY
+                    binding.chartPeriod.setData(daily.map { it / 60_000f })
                 }
             }
         }

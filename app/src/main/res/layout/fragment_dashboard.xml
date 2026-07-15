@@ -101,16 +101,14 @@
                     android:letterSpacing="0.15"
                     android:layout_marginBottom="@dimen/spacing_lg" />
 
-                <!-- Peak time card with hourly chart -->
+                <!-- Peak time card with hourly line chart -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/spacing_md"
-                    app:cardBackgroundColor="@color/dash_card"
+                    app:cardBackgroundColor="@color/dash_line_card"
                     app:cardCornerRadius="@dimen/radius_lg"
-                    app:cardElevation="0dp"
-                    app:strokeWidth="1dp"
-                    app:strokeColor="@color/dash_card_stroke">
+                    app:cardElevation="3dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -132,7 +130,7 @@
                                 android:text="@string/dashboard_peak_time"
                                 android:textAppearance="?attr/textAppearanceTitleMedium"
                                 android:textStyle="bold"
-                                android:textColor="@color/on_primary" />
+                                android:textColor="@color/dash_line_color" />
 
                             <TextView
                                 android:id="@+id/tv_peak_time"
@@ -140,18 +138,14 @@
                                 android:layout_height="wrap_content"
                                 android:textAppearance="?attr/textAppearanceTitleMedium"
                                 android:textStyle="bold"
-                                android:textColor="@color/dash_value_accent" />
+                                android:textColor="@color/dash_line_color" />
                         </LinearLayout>
 
-                        <com.example.stayfree.ui.common.BarChartView
+                        <com.example.stayfree.ui.common.UsageLineChartView
                             android:id="@+id/chart_hourly"
                             android:layout_width="match_parent"
-                            android:layout_height="150dp"
-                            app:showHourLabels="true"
-                            app:barColor="@color/dash_chart_bar"
-                            app:barTrackColor="@color/dash_chart_track"
-                            app:barHighlightColor="@color/dash_chart_peak"
-                            app:barLabelColor="@color/dash_text_secondary" />
+                            android:layout_height="160dp"
+                            app:markersAllPoints="false" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
@@ -299,7 +293,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/dashboard_total_screen_time"
+                            android:text="@string/dashboard_avg_screen_time"
                             android:textAppearance="?attr/textAppearanceLabelLarge"
                             android:textColor="@color/dash_text_secondary"
                             android:textAllCaps="true"
@@ -312,6 +306,13 @@
                             android:textAppearance="?attr/textAppearanceDisplaySmall"
                             android:textStyle="bold"
                             android:textColor="@color/on_primary" />
+
+                        <TextView
+                            android:id="@+id/tv_period_total_sum"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?attr/textAppearanceBodyMedium"
+                            android:textColor="@color/dash_text_secondary" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -343,16 +344,14 @@
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Per-app activity chart -->
+                <!-- Per-day activity line chart -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/spacing_md"
-                    app:cardBackgroundColor="@color/dash_card"
+                    app:cardBackgroundColor="@color/dash_line_card"
                     app:cardCornerRadius="@dimen/radius_lg"
-                    app:cardElevation="0dp"
-                    app:strokeWidth="1dp"
-                    app:strokeColor="@color/dash_card_stroke">
+                    app:cardElevation="3dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -360,23 +359,39 @@
                         android:orientation="vertical"
                         android:padding="@dimen/spacing_md">
 
-                        <TextView
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/stats_activity"
-                            android:textAppearance="?attr/textAppearanceTitleMedium"
-                            android:textStyle="bold"
-                            android:textColor="@color/on_primary"
-                            android:layout_marginBottom="@dimen/spacing_sm" />
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="@dimen/spacing_sm">
 
-                        <com.example.stayfree.ui.common.BarChartView
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/stats_activity"
+                                android:textAppearance="?attr/textAppearanceTitleMedium"
+                                android:textStyle="bold"
+                                android:textColor="@color/dash_line_color" />
+
+                            <TextView
+                                android:id="@+id/tv_period_pill"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/bg_pill_navy"
+                                android:paddingHorizontal="@dimen/spacing_sm"
+                                android:paddingVertical="4dp"
+                                android:textAppearance="?attr/textAppearanceLabelMedium"
+                                android:textStyle="bold"
+                                android:textColor="@color/dash_line_color" />
+                        </LinearLayout>
+
+                        <com.example.stayfree.ui.common.UsageLineChartView
                             android:id="@+id/chart_period"
                             android:layout_width="match_parent"
-                            android:layout_height="160dp"
-                            app:barColor="@color/dash_chart_bar"
-                            app:barTrackColor="@color/dash_chart_track"
-                            app:barHighlightColor="@color/dash_chart_peak"
-                            app:barLabelColor="@color/dash_text_secondary" />
+                            android:layout_height="170dp"
+                            app:markersAllPoints="true" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
