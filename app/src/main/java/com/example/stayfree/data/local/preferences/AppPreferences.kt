@@ -61,6 +61,12 @@ class AppPreferences @Inject constructor(
         // {"date":"yyyy-MM-dd","usage":{targetId: ms}}. Written by the a11y
         // service; a date mismatch on write/read resets the day transparently.
         val CONTENT_TARGET_USAGE = stringPreferencesKey("content_target_usage_json")
+        // Screen-time goal for the dashboard "Daily goal" card, in minutes.
+        val DAILY_GOAL_MINUTES = intPreferencesKey("daily_goal_minutes")
+        const val DEFAULT_DAILY_GOAL_MINUTES = 240
+        // Content blocks fired for ONE effective day: {"date":"yyyy-MM-dd","count":N}.
+        // Same rolling-day reset as CONTENT_TARGET_USAGE.
+        val CONTENT_BLOCK_COUNT = stringPreferencesKey("content_block_count_json")
     }
 
     val dailyResetTimeMinutes: Flow<Int> = dataStore.data.map { it[DAILY_RESET_TIME_MINUTES] ?: 0 }
@@ -91,6 +97,18 @@ class AppPreferences @Inject constructor(
     /** Daily allowance in minutes per content target (0 = block immediately). */
     val contentTargetLimitsMinutes: Flow<Map<String, Int>> =
         dataStore.data.map { parseLimits(it[CONTENT_TARGET_LIMITS]) }
+    val dailyGoalMinutes: Flow<Int> =
+        dataStore.data.map { it[DAILY_GOAL_MINUTES] ?: DEFAULT_DAILY_GOAL_MINUTES }
+    /** (effectiveDate, count) of content blocks fired that day. */
+    val contentBlockCount: Flow<Pair<String, Int>> = dataStore.data.map {
+        val json = it[CONTENT_BLOCK_COUNT] ?: return@map "" to 0
+        try {
+            val obj = JSONObject(json)
+            obj.optString("date") to obj.optInt("count")
+        } catch (e: Exception) {
+            "" to 0
+        }
+    }
 
     suspend fun setDailyResetTime(minutes: Int) {
         dataStore.edit { it[DAILY_RESET_TIME_MINUTES] = minutes }
@@ -245,6 +263,24 @@ class AppPreferences @Inject constructor(
             prefs[CONTENT_TARGET_USAGE] = JSONObject().put("date", date).put("usage", usage).toString()
         }
         return newTotal
+    }
+
+    suspend fun setDailyGoalMinutes(minutes: Int) {
+        dataStore.edit { it[DAILY_GOAL_MINUTES] = minutes.coerceAtLeast(1) }
+    }
+
+    /** Bumps today's content-block counter; a stored different date resets it first. */
+    suspend fun incrementContentBlockCount(date: String) {
+        dataStore.edit { prefs ->
+            val current = try {
+                val obj = JSONObject(prefs[CONTENT_BLOCK_COUNT] ?: "{}")
+                if (obj.optString("date") == date) obj.optInt("count") else 0
+            } catch (e: Exception) {
+                0
+            }
+            prefs[CONTENT_BLOCK_COUNT] =
+                JSONObject().put("date", date).put("count", current + 1).toString()
+        }
     }
 
     suspend fun getContentTargetUsageMs(id: String, date: String): Long {

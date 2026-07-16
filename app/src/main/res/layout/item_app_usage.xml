@@ -7,17 +7,16 @@
     android:layout_marginVertical="@dimen/spacing_xs"
     android:stateListAnimator="@animator/press_scale"
     android:foreground="?attr/selectableItemBackground"
-    app:cardBackgroundColor="@color/dash_card"
-    app:cardCornerRadius="@dimen/radius_md"
-    app:cardElevation="0dp"
-    app:strokeWidth="1dp"
-    app:strokeColor="@color/dash_card_stroke">
+    app:cardBackgroundColor="@color/dash_navy_card"
+    app:cardCornerRadius="@dimen/radius_dash"
+    app:cardElevation="4dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="@dimen/spacing_md"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="10dp"
         android:gravity="center_vertical">
 
         <ImageView
@@ -38,7 +37,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?attr/textAppearanceTitleSmall"
-                android:textColor="@color/on_primary"
+                android:textColor="@color/dash_navy_text"
                 android:maxLines="1"
                 android:ellipsize="end" />
 
@@ -47,7 +46,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?attr/textAppearanceBodySmall"
-                android:textColor="@color/dash_text_secondary" />
+                android:textColor="@color/dash_navy_muted" />
 
             <com.google.android.material.progressindicator.LinearProgressIndicator
                 android:id="@+id/progress_usage"
@@ -57,8 +56,8 @@
                 app:trackThickness="5dp"
                 app:trackCornerRadius="3dp"
                 app:trackStopIndicatorSize="0dp"
-                app:indicatorColor="@color/dash_chart_bar"
-                app:trackColor="@color/dash_chart_track"
+                app:indicatorColor="@color/dash_amber"
+                app:trackColor="@color/dash_track_white"
                 android:max="100" />
         </LinearLayout>
 
@@ -69,14 +68,14 @@
             android:layout_marginStart="@dimen/spacing_md"
             android:textAppearance="?attr/textAppearanceTitleSmall"
             android:textStyle="bold"
-            android:textColor="@color/dash_value_accent" />
+            android:textColor="@color/dash_amber" />
 
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_marginStart="@dimen/spacing_sm"
             android:src="@drawable/ic_chevron_right"
-            app:tint="@color/dash_text_secondary"
+            app:tint="@color/dash_navy_muted"
             android:importantForAccessibility="no" />
 
     </LinearLayout>

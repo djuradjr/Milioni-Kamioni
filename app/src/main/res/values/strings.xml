@@ -44,25 +44,28 @@
     <string name="btn_override">Override (PIN required)</string>
 
     <!-- Dashboard -->
-    <string name="dashboard_total_screen_time">Total Screen Time</string>
     <string name="dashboard_avg_screen_time">Average Screen Time</string>
     <string name="dashboard_period_total">Total %1$s</string>
     <string name="dashboard_period_last_week">Last 7 days</string>
     <string name="dashboard_period_last_month">Last 30 days</string>
     <string name="dashboard_unlocks">Unlocks</string>
-    <string name="dashboard_active_blocks">Active Blocks</string>
-    <string name="dashboard_today">Today</string>
-    <string name="dashboard_screen_time_label">Screen time</string>
-    <string name="dashboard_peak_time">Peak time</string>
+    <string name="dashboard_intercepted">Intercepted</string>
+    <string name="dashboard_hero_label">Screen time · %1$s</string>
+    <string name="dashboard_peak_time">Peak</string>
     <string name="dashboard_most_used_apps">Most used apps</string>
     <string name="dashboard_prev_day">Previous day</string>
     <string name="dashboard_next_day">Next day</string>
     <string name="dashboard_no_peak" translatable="false">—</string>
+    <string name="dashboard_goal_title">Daily goal: under %1$s</string>
+    <string name="dashboard_goal_percent" translatable="false">%1$d%%</string>
+    <string name="dashboard_goal_remaining">Hold out %1$s more and the day is yours</string>
+    <string name="dashboard_goal_over">Goal exceeded by %1$s — fresh start tomorrow</string>
+    <string name="dashboard_goal_dialog_title">Daily goal</string>
 
     <!-- Stats -->
-    <string name="stats_daily">Daily</string>
-    <string name="stats_weekly">Weekly</string>
-    <string name="stats_monthly">Monthly</string>
+    <string name="stats_daily">Day</string>
+    <string name="stats_weekly">Week</string>
+    <string name="stats_monthly">Month</string>
     <string name="stats_activity">Activity</string>
     <string name="stats_unlocks_count">%1$d unlocks</string>
     <string name="stats_unlocks_today">%1$d unlocks today</string>

@@ -8,6 +8,7 @@
     <dimen name="spacing_xxl">40dp</dimen>
     <dimen name="radius_sm">12dp</dimen>
     <dimen name="radius_md">16dp</dimen>
+    <dimen name="radius_dash">18dp</dimen>
     <dimen name="radius_lg">28dp</dimen>
     <dimen name="icon_md">40dp</dimen>
     <dimen name="elevation_card">3dp</dimen>

@@ -6,21 +6,32 @@
     android:orientation="vertical"
     android:background="@drawable/bg_dashboard_gradient">
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tab_layout"
+    <!-- Segmented period switch: navy pill track, amber active segment -->
+    <LinearLayout
+        android:id="@+id/seg_periods"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        app:tabMode="fixed"
-        app:tabIndicatorColor="@color/on_primary"
-        app:tabIndicatorHeight="3dp"
-        app:tabSelectedTextColor="@color/on_primary"
-        app:tabTextColor="@color/dash_text_secondary"
-        app:tabRippleColor="@color/dash_card">
-        <com.google.android.material.tabs.TabItem android:text="@string/stats_daily" />
-        <com.google.android.material.tabs.TabItem android:text="@string/stats_weekly" />
-        <com.google.android.material.tabs.TabItem android:text="@string/stats_monthly" />
-    </com.google.android.material.tabs.TabLayout>
+        android:orientation="horizontal"
+        android:layout_marginHorizontal="@dimen/spacing_md"
+        android:layout_marginTop="@dimen/spacing_sm"
+        android:padding="3dp"
+        android:background="@drawable/bg_seg_track">
+
+        <TextView
+            android:id="@+id/seg_day"
+            style="@style/Widget.App.DashSegment"
+            android:text="@string/stats_daily" />
+
+        <TextView
+            android:id="@+id/seg_week"
+            style="@style/Widget.App.DashSegment"
+            android:text="@string/stats_weekly" />
+
+        <TextView
+            android:id="@+id/seg_month"
+            style="@style/Widget.App.DashSegment"
+            android:text="@string/stats_monthly" />
+    </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -41,46 +52,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- Date navigation: ‹ TODAY › -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="@dimen/spacing_md">
-
-                    <ImageButton
-                        android:id="@+id/btn_prev_day"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:src="@drawable/ic_chevron_left"
-                        app:tint="@color/on_primary"
-                        android:contentDescription="@string/dashboard_prev_day" />
-
-                    <TextView
-                        android:id="@+id/tv_selected_date"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:textAppearance="?attr/textAppearanceTitleMedium"
-                        android:textColor="@color/on_primary"
-                        android:textStyle="bold"
-                        android:textAllCaps="true"
-                        android:letterSpacing="0.08" />
-
-                    <ImageButton
-                        android:id="@+id/btn_next_day"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:src="@drawable/ic_chevron_right"
-                        app:tint="@color/on_primary"
-                        android:contentDescription="@string/dashboard_next_day" />
-                </LinearLayout>
-
-                <!-- Hero: big centered screen time -->
+                <!-- Hero: big time + date label with day navigation chevrons -->
                 <TextView
                     android:id="@+id/tv_total_screen_time"
                     android:layout_width="match_parent"
@@ -90,114 +62,208 @@
                     android:textColor="@color/on_primary"
                     android:textStyle="bold" />
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="@string/dashboard_screen_time_label"
-                    android:textAppearance="?attr/textAppearanceLabelLarge"
-                    android:textColor="@color/dash_text_secondary"
-                    android:textAllCaps="true"
-                    android:letterSpacing="0.15"
-                    android:layout_marginBottom="@dimen/spacing_lg" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="@dimen/spacing_md">
 
-                <!-- Peak time card with hourly line chart -->
+                    <ImageButton
+                        android:id="@+id/btn_prev_day"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_chevron_left"
+                        app:tint="@color/dash_hero_label"
+                        android:contentDescription="@string/dashboard_prev_day" />
+
+                    <TextView
+                        android:id="@+id/tv_hero_label"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/dash_hero_label"
+                        android:textAllCaps="true"
+                        android:letterSpacing="0.18" />
+
+                    <ImageButton
+                        android:id="@+id/btn_next_day"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_chevron_right"
+                        app:tint="@color/dash_hero_label"
+                        android:contentDescription="@string/dashboard_next_day" />
+                </LinearLayout>
+
+                <!-- Daily goal card (tap to edit the goal) -->
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_goal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/spacing_md"
-                    app:cardBackgroundColor="@color/dash_line_card"
-                    app:cardCornerRadius="@dimen/radius_lg"
-                    app:cardElevation="3dp">
+                    android:layout_marginBottom="@dimen/spacing_sm"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    app:cardBackgroundColor="@color/dash_navy_card"
+                    app:cardCornerRadius="@dimen/radius_dash"
+                    app:cardElevation="4dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="@dimen/spacing_md">
+                        android:paddingHorizontal="14dp"
+                        android:paddingVertical="12dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:id="@+id/tv_goal_title"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:textAppearance="?attr/textAppearanceLabelLarge"
+                                android:textColor="@color/dash_navy_muted" />
+
+                            <TextView
+                                android:id="@+id/tv_goal_pct"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?attr/textAppearanceLabelLarge"
+                                android:textStyle="bold"
+                                android:textColor="@color/dash_amber" />
+                        </LinearLayout>
+
+                        <ProgressBar
+                            android:id="@+id/progress_goal"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="8dp"
+                            android:layout_marginTop="@dimen/spacing_sm"
+                            android:progressDrawable="@drawable/bg_goal_progress"
+                            android:max="100" />
+
+                        <TextView
+                            android:id="@+id/tv_goal_sub"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_sm"
+                            android:textAppearance="?attr/textAppearanceBodySmall"
+                            android:textColor="@color/dash_navy_muted" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Peak card with hourly amber line chart -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_sm"
+                    app:cardBackgroundColor="@color/dash_navy_card"
+                    app:cardCornerRadius="@dimen/radius_dash"
+                    app:cardElevation="4dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingHorizontal="14dp"
+                        android:paddingVertical="12dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
                             android:gravity="center_vertical"
-                            android:layout_marginBottom="@dimen/spacing_md">
+                            android:layout_marginBottom="@dimen/spacing_sm">
 
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/dashboard_peak_time"
-                                android:textAppearance="?attr/textAppearanceTitleMedium"
+                                android:textAppearance="?attr/textAppearanceTitleSmall"
                                 android:textStyle="bold"
-                                android:textColor="@color/dash_line_color" />
+                                android:textColor="@color/dash_navy_muted" />
 
                             <TextView
                                 android:id="@+id/tv_peak_time"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textAppearance="?attr/textAppearanceTitleMedium"
+                                android:textAppearance="?attr/textAppearanceTitleSmall"
                                 android:textStyle="bold"
-                                android:textColor="@color/dash_line_color" />
+                                android:textColor="@color/dash_amber" />
                         </LinearLayout>
 
                         <com.example.stayfree.ui.common.UsageLineChartView
                             android:id="@+id/chart_hourly"
                             android:layout_width="match_parent"
                             android:layout_height="160dp"
+                            app:lineColor="@color/dash_amber"
+                            app:gridColor="@color/dash_grid_white"
+                            app:axisTextColor="@color/dash_navy_muted"
+                            app:tooltipValueColor="@color/dash_line_color"
+                            app:markerSolidColor="@android:color/white"
+                            app:markPeak="true"
                             app:markersAllPoints="false" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Stats row: unlocks + active blocks -->
+                <!-- Stats row: intercepted today + unlocks -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginBottom="@dimen/spacing_lg">
+                    android:layout_marginBottom="@dimen/spacing_md">
 
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:layout_marginEnd="@dimen/spacing_sm"
-                        app:cardBackgroundColor="@color/dash_card"
-                        app:cardCornerRadius="@dimen/radius_lg"
-                        app:cardElevation="0dp"
-                        app:strokeWidth="1dp"
-                        app:strokeColor="@color/dash_card_stroke">
+                        android:layout_marginEnd="5dp"
+                        app:cardBackgroundColor="@color/dash_navy_card"
+                        app:cardCornerRadius="@dimen/radius_dash"
+                        app:cardElevation="4dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:gravity="center"
-                            android:padding="@dimen/spacing_md">
+                            android:padding="12dp">
 
                             <ImageView
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:src="@drawable/ic_lock"
-                                app:tint="@color/on_primary"
-                                android:layout_marginBottom="@dimen/spacing_sm"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@drawable/ic_shield"
+                                app:tint="@color/dash_amber"
                                 android:importantForAccessibility="no" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/dashboard_unlocks"
-                                android:textAppearance="?attr/textAppearanceLabelMedium"
-                                android:textColor="@color/dash_text_secondary"
+                                android:layout_marginTop="6dp"
+                                android:text="@string/dashboard_intercepted"
+                                android:textAppearance="?attr/textAppearanceLabelSmall"
+                                android:textColor="@color/dash_navy_muted"
                                 android:textAllCaps="true"
-                                android:letterSpacing="0.1" />
+                                android:letterSpacing="0.12" />
 
                             <TextView
-                                android:id="@+id/tv_unlocks"
+                                android:id="@+id/tv_intercepted"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textAppearance="?attr/textAppearanceHeadlineMedium"
                                 android:textStyle="bold"
-                                android:textColor="@color/on_primary" />
+                                android:textColor="@color/dash_navy_text" />
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
 
@@ -205,44 +271,42 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:layout_marginStart="@dimen/spacing_sm"
-                        app:cardBackgroundColor="@color/dash_card"
-                        app:cardCornerRadius="@dimen/radius_lg"
-                        app:cardElevation="0dp"
-                        app:strokeWidth="1dp"
-                        app:strokeColor="@color/dash_card_stroke">
+                        android:layout_marginStart="5dp"
+                        app:cardBackgroundColor="@color/dash_navy_card"
+                        app:cardCornerRadius="@dimen/radius_dash"
+                        app:cardElevation="4dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:gravity="center"
-                            android:padding="@dimen/spacing_md">
+                            android:padding="12dp">
 
                             <ImageView
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:src="@drawable/ic_shield"
-                                app:tint="@color/on_primary"
-                                android:layout_marginBottom="@dimen/spacing_sm"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@drawable/ic_lock"
+                                app:tint="@color/dash_amber"
                                 android:importantForAccessibility="no" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/dashboard_active_blocks"
-                                android:textAppearance="?attr/textAppearanceLabelMedium"
-                                android:textColor="@color/dash_text_secondary"
+                                android:layout_marginTop="6dp"
+                                android:text="@string/dashboard_unlocks"
+                                android:textAppearance="?attr/textAppearanceLabelSmall"
+                                android:textColor="@color/dash_navy_muted"
                                 android:textAllCaps="true"
-                                android:letterSpacing="0.1" />
+                                android:letterSpacing="0.12" />
 
                             <TextView
-                                android:id="@+id/tv_active_blocks"
+                                android:id="@+id/tv_unlocks"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textAppearance="?attr/textAppearanceHeadlineMedium"
                                 android:textStyle="bold"
-                                android:textColor="@color/on_primary" />
+                                android:textColor="@color/dash_navy_text" />
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
@@ -252,7 +316,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/dashboard_most_used_apps"
-                    android:textAppearance="?attr/textAppearanceTitleLarge"
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
                     android:textStyle="bold"
                     android:textColor="@color/on_primary"
                     android:layout_marginBottom="@dimen/spacing_sm" />
@@ -273,29 +337,27 @@
                 android:orientation="vertical"
                 android:visibility="gone">
 
-                <!-- Hero: period total + unlocks + trend badge -->
+                <!-- Hero: period average + unlocks + trend badge -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/spacing_md"
-                    app:cardBackgroundColor="@color/dash_card"
-                    app:cardCornerRadius="@dimen/radius_lg"
-                    app:cardElevation="0dp"
-                    app:strokeWidth="1dp"
-                    app:strokeColor="@color/dash_card_stroke">
+                    android:layout_marginBottom="@dimen/spacing_sm"
+                    app:cardBackgroundColor="@color/dash_navy_card"
+                    app:cardCornerRadius="@dimen/radius_dash"
+                    app:cardElevation="4dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="@dimen/spacing_lg">
+                        android:padding="@dimen/spacing_md">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/dashboard_avg_screen_time"
-                            android:textAppearance="?attr/textAppearanceLabelLarge"
-                            android:textColor="@color/dash_text_secondary"
+                            android:textAppearance="?attr/textAppearanceLabelMedium"
+                            android:textColor="@color/dash_navy_muted"
                             android:textAllCaps="true"
                             android:letterSpacing="0.1" />
 
@@ -305,14 +367,14 @@
                             android:layout_height="wrap_content"
                             android:textAppearance="?attr/textAppearanceDisplaySmall"
                             android:textStyle="bold"
-                            android:textColor="@color/on_primary" />
+                            android:textColor="@color/dash_navy_text" />
 
                         <TextView
                             android:id="@+id/tv_period_total_sum"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="?attr/textAppearanceBodyMedium"
-                            android:textColor="@color/dash_text_secondary" />
+                            android:textColor="@color/dash_navy_muted" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -327,7 +389,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:textAppearance="?attr/textAppearanceBodyMedium"
-                                android:textColor="@color/dash_text_secondary" />
+                                android:textColor="@color/dash_navy_muted" />
 
                             <TextView
                                 android:id="@+id/tv_trend"
@@ -348,16 +410,17 @@
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/spacing_md"
-                    app:cardBackgroundColor="@color/dash_line_card"
-                    app:cardCornerRadius="@dimen/radius_lg"
-                    app:cardElevation="3dp">
+                    android:layout_marginBottom="@dimen/spacing_sm"
+                    app:cardBackgroundColor="@color/dash_navy_card"
+                    app:cardCornerRadius="@dimen/radius_dash"
+                    app:cardElevation="4dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="@dimen/spacing_md">
+                        android:paddingHorizontal="14dp"
+                        android:paddingVertical="12dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -371,26 +434,32 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/stats_activity"
-                                android:textAppearance="?attr/textAppearanceTitleMedium"
+                                android:textAppearance="?attr/textAppearanceTitleSmall"
                                 android:textStyle="bold"
-                                android:textColor="@color/dash_line_color" />
+                                android:textColor="@color/dash_navy_muted" />
 
                             <TextView
                                 android:id="@+id/tv_period_pill"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:background="@drawable/bg_pill_navy"
+                                android:background="@drawable/bg_badge_glass"
                                 android:paddingHorizontal="@dimen/spacing_sm"
                                 android:paddingVertical="4dp"
                                 android:textAppearance="?attr/textAppearanceLabelMedium"
                                 android:textStyle="bold"
-                                android:textColor="@color/dash_line_color" />
+                                android:textColor="@color/dash_amber" />
                         </LinearLayout>
 
                         <com.example.stayfree.ui.common.UsageLineChartView
                             android:id="@+id/chart_period"
                             android:layout_width="match_parent"
                             android:layout_height="170dp"
+                            app:lineColor="@color/dash_amber"
+                            app:gridColor="@color/dash_grid_white"
+                            app:axisTextColor="@color/dash_navy_muted"
+                            app:tooltipValueColor="@color/dash_line_color"
+                            app:markerSolidColor="@android:color/white"
+                            app:markPeak="true"
                             app:markersAllPoints="true" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
@@ -399,7 +468,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/dashboard_most_used_apps"
-                    android:textAppearance="?attr/textAppearanceTitleLarge"
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
                     android:textStyle="bold"
                     android:textColor="@color/on_primary"
                     android:layout_marginBottom="@dimen/spacing_sm" />

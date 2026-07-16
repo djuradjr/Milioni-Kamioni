@@ -69,6 +69,12 @@ object TimeUtils {
         return SimpleDateFormat("EEE, d MMM", Locale.US).format(Date(startMs))
     }
 
+    /** Hero-label date in the device language, e.g. "sreda 16. jul". Returns the input if unparsable. */
+    fun formatHeroDate(date: String): String {
+        val startMs = getDayStartMs(date) ?: return date
+        return SimpleDateFormat("EEEE d. MMM", Locale.getDefault()).format(Date(startMs))
+    }
+
     /** Narrow weekday initial (e.g. "M", "T") for a "yyyy-MM-dd" string. */
     fun dayInitial(date: String): String {
         val startMs = getDayStartMs(date) ?: return ""

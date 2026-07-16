@@ -41,18 +41,34 @@
     </style>
 
     <style name="Widget.App.BottomNav" parent="Widget.Material3.BottomNavigationView">
-        <!-- Plain white bar: elevation stays 0 because M3 would otherwise blend an
-             orange surface-tint overlay into the background (looks pink). -->
-        <item name="android:background">@color/surface</item>
-        <item name="backgroundTint">@color/surface</item>
+        <!-- Navy brand bar (identical in both modes): amber active, no pill —
+             elevation stays 0 so M3 doesn't blend a surface-tint overlay in. -->
+        <item name="android:background">@color/dash_nav_bg</item>
+        <item name="backgroundTint">@color/dash_nav_bg</item>
         <item name="elevation">0dp</item>
         <item name="itemActiveIndicatorStyle">@style/Widget.App.BottomNav.Indicator</item>
         <item name="itemIconTint">@color/bottom_nav_icon_tint</item>
         <item name="itemTextColor">@color/bottom_nav_text_tint</item>
+        <item name="itemRippleColor">@color/dash_track_white</item>
     </style>
 
     <style name="Widget.App.BottomNav.Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
-        <item name="android:color">@color/primary</item>
+        <item name="android:color">@android:color/transparent</item>
+    </style>
+
+    <!-- Dashboard segmented switch: one segment inside the navy pill track -->
+    <style name="Widget.App.DashSegment" parent="">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingVertical">8dp</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:letterSpacing">0.06</item>
+        <item name="android:textColor">@color/dash_seg_inactive</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
     </style>
 
     <style name="ShapeAppearance.App.Pill" parent="">

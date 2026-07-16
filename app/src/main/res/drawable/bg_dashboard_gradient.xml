@@ -4,5 +4,7 @@
         android:type="linear"
         android:angle="270"
         android:startColor="@color/dash_bg_top"
+        android:centerColor="@color/dash_bg_mid"
+        android:centerY="0.48"
         android:endColor="@color/dash_bg_bottom" />
 </shape>

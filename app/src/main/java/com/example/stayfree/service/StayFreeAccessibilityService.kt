@@ -335,6 +335,8 @@ class StayFreeAccessibilityService : AccessibilityService() {
             Log.w(TAG, "No overlay permission — cannot show block screen")
             return
         }
+        // Separate coroutine: the counter write must not delay the Back+block path.
+        serviceScope.launch { prefs.incrementContentBlockCount(effectiveDate()) }
         serviceScope.launch(Dispatchers.Main) {
             if (target.pressBackBeforeBlock) {
                 performGlobalAction(GLOBAL_ACTION_BACK)

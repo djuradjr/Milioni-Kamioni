@@ -35,8 +35,21 @@
     <color name="ink">#2E4570</color>
     <color name="ink_light">#3E5A8F</color>
 
-    <!-- Navy line chart stays a white card with a deep-navy line in dark mode too
-         (brand surface — same values as the light palette, unlike `ink`). -->
+    <!-- Ink dashboard brand surfaces stay identical in dark mode (unlike `ink`) -->
+    <color name="dash_bg_top">#FF7043</color>
+    <color name="dash_bg_mid">#F4511E</color>
+    <color name="dash_bg_bottom">#C63A10</color>
+    <color name="dash_navy_card">#1B2B4B</color>
+    <color name="dash_navy_text">#EDF0F7</color>
+    <color name="dash_navy_muted">#9AA7C2</color>
+    <color name="dash_amber">#FFC24D</color>
+    <color name="dash_amber_light">#FFD98A</color>
+    <color name="dash_grid_white">#21FFFFFF</color>
+    <color name="dash_track_white">#24FFFFFF</color>
+    <color name="dash_seg_inactive">#99FFFFFF</color>
+    <color name="dash_hero_label">#C7FFFFFF</color>
+    <color name="dash_nav_bg">#16233F</color>
+    <color name="dash_nav_inactive">#6B7A9C</color>
     <color name="dash_line_card">#FFFFFF</color>
     <color name="dash_line_color">#1B2B4B</color>
     <color name="dash_line_grid">#14000000</color>

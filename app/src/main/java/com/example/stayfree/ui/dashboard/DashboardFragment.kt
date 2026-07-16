@@ -1,11 +1,13 @@
 package com.example.stayfree.ui.dashboard
 
+import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.WindowCompat
@@ -15,11 +17,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.stayfree.R
+import com.example.stayfree.databinding.DialogDailyGoalBinding
 import com.example.stayfree.databinding.FragmentDashboardBinding
 import com.example.stayfree.domain.model.AppUsage
 import com.example.stayfree.ui.common.CountUp
 import com.example.stayfree.util.TimeUtils
-import com.google.android.material.tabs.TabLayout
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -57,29 +60,77 @@ class DashboardFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupTabs()
+        setupSegments()
         setupRecyclerViews()
         setupDateNav()
+        setupGoalCard()
         setupCharts()
         observeData()
     }
 
-    private fun setupTabs() {
-        // Re-select the VM's period before attaching the listener, so a config
-        // change doesn't leave tab 0 highlighted while period content is shown.
-        binding.tabLayout.getTabAt(viewModel.period.value.ordinal)?.select()
-        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                tab.view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-                viewModel.setPeriod(when (tab.position) {
-                    0 -> StatsPeriod.DAILY
-                    1 -> StatsPeriod.WEEKLY
-                    else -> StatsPeriod.MONTHLY
-                })
+    private fun segmentViews(): Map<StatsPeriod, TextView> = mapOf(
+        StatsPeriod.DAILY to binding.segDay,
+        StatsPeriod.WEEKLY to binding.segWeek,
+        StatsPeriod.MONTHLY to binding.segMonth
+    )
+
+    private fun setupSegments() {
+        segmentViews().forEach { (period, segment) ->
+            segment.setOnClickListener {
+                it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+                viewModel.setPeriod(period)
             }
-            override fun onTabUnselected(tab: TabLayout.Tab) {}
-            override fun onTabReselected(tab: TabLayout.Tab) {}
-        })
+        }
+    }
+
+    /** Amber active segment on the navy track; the rest stay transparent. */
+    private fun applySegmentState(selected: StatsPeriod) {
+        segmentViews().forEach { (period, segment) ->
+            val active = period == selected
+            segment.setBackgroundResource(if (active) R.drawable.bg_seg_active else 0)
+            segment.setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    if (active) R.color.dash_navy_card else R.color.dash_seg_inactive
+                )
+            )
+            segment.translationZ = if (active) 2f * resources.displayMetrics.density else 0f
+        }
+    }
+
+    private fun setupGoalCard() {
+        binding.cardGoal.setOnClickListener {
+            val goal = viewModel.goalUi.value ?: return@setOnClickListener
+            showGoalDialog(goal.goalMinutes)
+        }
+    }
+
+    private fun showGoalDialog(goalMinutes: Int) {
+        val dialogBinding = DialogDailyGoalBinding.inflate(layoutInflater)
+        dialogBinding.etGoalHours.setText((goalMinutes / 60).toString())
+        dialogBinding.etGoalMinutes.setText((goalMinutes % 60).toString())
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.dashboard_goal_dialog_title)
+            .setView(dialogBinding.root)
+            .setPositiveButton(R.string.btn_save) { _, _ ->
+                val hours = dialogBinding.etGoalHours.text.toString().toIntOrNull() ?: 0
+                val minutes = dialogBinding.etGoalMinutes.text.toString().toIntOrNull() ?: 0
+                val total = hours * 60 + minutes
+                if (total > 0) viewModel.setDailyGoal(total)
+            }
+            .setNegativeButton(R.string.btn_cancel, null)
+            .show()
+    }
+
+    /** "4h", "4h 30m" or "45m" — goal copy without the seconds noise. */
+    private fun formatMinutesCompact(totalMinutes: Int): String {
+        val h = totalMinutes / 60
+        val m = totalMinutes % 60
+        return when {
+            h > 0 && m == 0 -> "${h}h"
+            h > 0 -> "${h}h ${m}m"
+            else -> "${m}m"
+        }
     }
 
     private fun setupRecyclerViews() {
@@ -147,6 +198,7 @@ class DashboardFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             launch {
                 viewModel.period.collectLatest { period ->
+                    applySegmentState(period)
                     val daily = period == StatsPeriod.DAILY
                     binding.dailyContent.visibility = if (daily) View.VISIBLE else View.GONE
                     binding.periodContent.visibility = if (daily) View.GONE else View.VISIBLE
@@ -175,16 +227,41 @@ class DashboardFragment : Fragment() {
                 }
             }
             launch {
-                viewModel.activeBlockCount.collectLatest { count ->
-                    CountUp.animate(binding.tvActiveBlocks, count.toLong()) { it.toString() }
+                viewModel.interceptedCount.collectLatest { count ->
+                    CountUp.animate(binding.tvIntercepted, count.toLong()) { it.toString() }
+                }
+            }
+            launch {
+                viewModel.goalUi.collectLatest { goal ->
+                    if (goal == null) return@collectLatest
+                    binding.tvGoalTitle.text =
+                        getString(R.string.dashboard_goal_title, formatMinutesCompact(goal.goalMinutes))
+                    binding.tvGoalPct.text = getString(R.string.dashboard_goal_percent, goal.percent)
+                    ObjectAnimator.ofInt(
+                        binding.progressGoal, "progress", goal.percent.coerceIn(0, 100)
+                    ).apply {
+                        duration = 700
+                        interpolator = DecelerateInterpolator()
+                    }.start()
+                    val remainingMin = (goal.remainingMs / 60_000L).toInt()
+                    binding.tvGoalSub.text = if (goal.remainingMs > 0) {
+                        getString(
+                            R.string.dashboard_goal_remaining,
+                            formatMinutesCompact(remainingMin.coerceAtLeast(1))
+                        )
+                    } else {
+                        getString(
+                            R.string.dashboard_goal_over,
+                            formatMinutesCompact((-remainingMin).coerceAtLeast(1))
+                        )
+                    }
                 }
             }
             launch {
                 viewModel.selectedDate.collectLatest { date ->
                     val today = date == TimeUtils.getTodayString()
-                    binding.tvSelectedDate.text =
-                        if (today) getString(R.string.dashboard_today)
-                        else TimeUtils.formatDisplayDate(date)
+                    binding.tvHeroLabel.text =
+                        getString(R.string.dashboard_hero_label, TimeUtils.formatHeroDate(date))
                     binding.btnNextDay.isEnabled = !today
                     binding.btnNextDay.alpha = if (today) 0.3f else 1f
                     animateDayChange(date)

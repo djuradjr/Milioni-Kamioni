@@ -3,7 +3,6 @@ package com.example.stayfree.ui.dashboard
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.stayfree.data.local.preferences.AppPreferences
-import com.example.stayfree.data.repository.BlockingRepository
 import com.example.stayfree.data.repository.UsageRepository
 import com.example.stayfree.domain.model.AppUsage
 import com.example.stayfree.util.TimeUtils
@@ -17,10 +16,12 @@ enum class StatsPeriod { DAILY, WEEKLY, MONTHLY }
 /** Current vs previous period totals for the trend badge. */
 data class PeriodComparison(val currentMs: Long, val previousMs: Long)
 
+/** Daily-goal card state; [percent] is uncapped (113% = goal exceeded). */
+data class GoalUi(val goalMinutes: Int, val percent: Int, val remainingMs: Long)
+
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
     private val usageRepository: UsageRepository,
-    private val blockingRepository: BlockingRepository,
     private val prefs: AppPreferences
 ) : ViewModel() {
 
@@ -45,9 +46,25 @@ class DashboardViewModel @Inject constructor(
         .map { it.take(5) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    val activeBlockCount: StateFlow<Int> = blockingRepository.getActiveRules()
-        .map { it.size }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
+    val goalUi: StateFlow<GoalUi?> = combine(totalScreenTime, prefs.dailyGoalMinutes) { totalMs, raw ->
+        val goalMin = raw.coerceAtLeast(1)
+        val goalMs = goalMin * 60_000L
+        GoalUi(
+            goalMinutes = goalMin,
+            percent = (totalMs * 100 / goalMs).toInt(),
+            remainingMs = goalMs - totalMs
+        )
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+
+    /** Content blocks fired on the selected date (persisted for today only). */
+    val interceptedCount: StateFlow<Int> =
+        combine(prefs.contentBlockCount, selectedDate) { (date, count), selected ->
+            if (date == selected) count else 0
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
+
+    fun setDailyGoal(minutes: Int) {
+        viewModelScope.launch { prefs.setDailyGoalMinutes(minutes) }
+    }
 
     /** Foreground ms per clock hour (24 buckets) for the hourly chart. */
     val hourlyUsage: StateFlow<List<Long>> = selectedDate

@@ -20,7 +20,8 @@ import kotlin.math.max
 import kotlin.math.roundToInt
 
 /**
- * Navy line + area chart on a white card, styled after the dashboard reference.
+ * Line + area chart, themable via XML attrs (navy-on-white by default,
+ * amber-on-navy on the dashboard).
  * Feeds on per-point values expressed in **minutes** ([setData]); draws a nice
  * rounded Y axis, sparse X ticks and hollow markers, and shows a tap tooltip
  * with a bold value plus a caption line.
@@ -42,6 +43,10 @@ class UsageLineChartView @JvmOverloads constructor(
     private val gridColor: Int
     private val axisColor: Int
     private val captionColor: Int
+
+    /** Solid ring-less markers (dark-card style); 0 = legacy fill+ring markers. */
+    private val markerSolidColor: Int
+    private val markPeak: Boolean
 
     /** Marker on every point (weekly) vs only the tapped one (dense 24h/30d).
      *  Initialised from `app:markersAllPoints`, overridable per mode at runtime. */
@@ -101,7 +106,8 @@ class UsageLineChartView @JvmOverloads constructor(
     }
 
     // Internal drawing gutters (independent of android:padding).
-    private val gutterLeft = dp(30f)
+    // Left fits the widest axis label ("1h30m") at 10dp text.
+    private val gutterLeft = dp(40f)
     private val insetTop = dp(12f)
     private val insetRight = dp(10f)
     private val gutterBottom = dp(18f)
@@ -125,13 +131,18 @@ class UsageLineChartView @JvmOverloads constructor(
             ContextCompat.getColor(context, R.color.dash_line_caption)
         )
         markersAllPoints = a.getBoolean(R.styleable.UsageLineChartView_markersAllPoints, false)
+        markerSolidColor = a.getColor(R.styleable.UsageLineChartView_markerSolidColor, 0)
+        markPeak = a.getBoolean(R.styleable.UsageLineChartView_markPeak, false)
+        val tooltipValueColor = a.getColor(R.styleable.UsageLineChartView_tooltipValueColor, lineColor)
         a.recycle()
 
         linePaint.color = lineColor
         linePaint.strokeWidth = dp(2.5f)
         gridPaint.color = gridColor
         gridPaint.strokeWidth = dp(1f)
-        markerFillPaint.color = ContextCompat.getColor(context, R.color.dash_line_card)
+        markerFillPaint.color =
+            if (markerSolidColor != 0) markerSolidColor
+            else ContextCompat.getColor(context, R.color.dash_line_card)
         markerRingPaint.color = lineColor
         markerRingPaint.strokeWidth = dp(2f)
         highlightPaint.color = withAlpha(lineColor, 0x33)
@@ -139,7 +150,7 @@ class UsageLineChartView @JvmOverloads constructor(
         axisPaint.color = axisColor
         xLabelPaint.color = axisColor
         tooltipBgPaint.color = ContextCompat.getColor(context, R.color.dash_line_card)
-        tooltipValuePaint.color = lineColor
+        tooltipValuePaint.color = tooltipValueColor
         tooltipCaptionPaint.color = captionColor
         // Software layer so the tooltip's drop shadow renders.
         setLayerType(LAYER_TYPE_SOFTWARE, null)
@@ -225,14 +236,17 @@ class UsageLineChartView @JvmOverloads constructor(
         }
         canvas.drawPath(linePath, linePaint)
 
+        val peakIndex = if (markPeak) peakIndex() else -1
         for (i in 0 until count) {
             val emphasise = i == selectedIndex
-            if (!markersAllPoints && !emphasise) continue
+            if (!markersAllPoints && !emphasise && i != peakIndex) continue
             val x = xAt(i); val y = yAnim(values[i])
-            val r = if (emphasise) dp(5f) else dp(4f)
+            val r = if (emphasise || i == peakIndex) dp(5f) else dp(4f)
             canvas.drawCircle(x, y, r, markerFillPaint)
-            canvas.drawCircle(x, y, r, markerRingPaint)
-            if (emphasise) canvas.drawCircle(x, y, dp(2.5f), markerRingPaint)
+            if (markerSolidColor == 0) {
+                canvas.drawCircle(x, y, r, markerRingPaint)
+                if (emphasise) canvas.drawCircle(x, y, dp(2.5f), markerRingPaint)
+            }
         }
 
         drawXLabels(canvas, count, ::xAt, plotBottom)
@@ -327,6 +341,12 @@ class UsageLineChartView @JvmOverloads constructor(
     override fun performClick(): Boolean {
         super.performClick()
         return true
+    }
+
+    /** Index of the highest point, or -1 when the series is empty/flat-zero. */
+    private fun peakIndex(): Int {
+        val maxValue = values.maxOrNull() ?: return -1
+        return if (maxValue > 0f) values.indexOf(maxValue) else -1
     }
 
     private fun nearestIndex(x: Float, count: Int): Int {

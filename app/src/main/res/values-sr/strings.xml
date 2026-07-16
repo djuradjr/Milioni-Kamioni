@@ -41,24 +41,26 @@
     <string name="btn_override">Zaobiđi (potreban PIN)</string>
 
     <!-- Dashboard -->
-    <string name="dashboard_total_screen_time">Ukupno vreme korišćenja</string>
     <string name="dashboard_avg_screen_time">Prosečno vreme korišćenja</string>
     <string name="dashboard_period_total">Ukupno %1$s</string>
     <string name="dashboard_period_last_week">Poslednjih 7 dana</string>
     <string name="dashboard_period_last_month">Poslednjih 30 dana</string>
     <string name="dashboard_unlocks">Otključavanja</string>
-    <string name="dashboard_active_blocks">Aktivne blokade</string>
-    <string name="dashboard_today">Danas</string>
-    <string name="dashboard_screen_time_label">Vreme korišćenja</string>
-    <string name="dashboard_peak_time">Vrh aktivnosti</string>
+    <string name="dashboard_intercepted">Presretnuto</string>
+    <string name="dashboard_hero_label">Vreme ispred ekrana · %1$s</string>
+    <string name="dashboard_peak_time">Vrhunac</string>
     <string name="dashboard_most_used_apps">Najkorišćenije aplikacije</string>
     <string name="dashboard_prev_day">Prethodni dan</string>
     <string name="dashboard_next_day">Sledeći dan</string>
+    <string name="dashboard_goal_title">Dnevni cilj: ispod %1$s</string>
+    <string name="dashboard_goal_remaining">Izdrži još %1$s i dan je tvoj</string>
+    <string name="dashboard_goal_over">Cilj probijen za %1$s — sutra iznova</string>
+    <string name="dashboard_goal_dialog_title">Dnevni cilj</string>
 
     <!-- Stats -->
-    <string name="stats_daily">Dnevno</string>
-    <string name="stats_weekly">Nedeljno</string>
-    <string name="stats_monthly">Mesečno</string>
+    <string name="stats_daily">Dan</string>
+    <string name="stats_weekly">Nedelja</string>
+    <string name="stats_monthly">Mesec</string>
     <string name="stats_activity">Aktivnost</string>
     <string name="stats_unlocks_count">%1$d otključavanja</string>
     <string name="stats_unlocks_today">%1$d otključavanja danas</string>

@@ -15,5 +15,11 @@
         <attr name="captionTextColor" format="color" />
         <!-- Draw a hollow marker on every point (weekly) vs only the tapped one. -->
         <attr name="markersAllPoints" format="boolean" />
+        <!-- Solid (ring-less) markers in this color — for charts on dark cards. -->
+        <attr name="markerSolidColor" format="color" />
+        <!-- Tooltip bold value color; defaults to lineColor. -->
+        <attr name="tooltipValueColor" format="color" />
+        <!-- Always mark the highest point with a solid ball. -->
+        <attr name="markPeak" format="boolean" />
     </declare-styleable>
 </resources>

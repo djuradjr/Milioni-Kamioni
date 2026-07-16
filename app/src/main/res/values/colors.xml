@@ -45,18 +45,24 @@
     <color name="overlay_gradient_start">#F4511E</color>
     <color name="overlay_gradient_end">#E64A19</color>
 
-    <!-- Orange-immersive dashboard (AppBlock-style full-bleed) -->
-    <color name="dash_bg_top">#F4511E</color>
-    <color name="dash_bg_bottom">#C63D10</color>
-    <color name="dash_card">#22FFFFFF</color>
-    <color name="dash_card_stroke">#2EFFFFFF</color>
-    <color name="dash_text_secondary">#E6FFE9DF</color>
-    <color name="dash_chart_track">#26FFFFFF</color>
-    <color name="dash_chart_bar">#FFFFFF</color>
-    <color name="dash_value_accent">#FFE0B2</color>
+    <!-- Ink dashboard: orange gradient + navy cards + amber accents (brand
+         surfaces — identical in both modes, unlike the night-remapped `ink`). -->
+    <color name="dash_bg_top">#FF7043</color>
+    <color name="dash_bg_mid">#F4511E</color>
+    <color name="dash_bg_bottom">#C63A10</color>
+    <color name="dash_navy_card">#1B2B4B</color>
+    <color name="dash_navy_text">#EDF0F7</color>
+    <color name="dash_navy_muted">#9AA7C2</color>
+    <color name="dash_amber">#FFC24D</color>
+    <color name="dash_amber_light">#FFD98A</color>
+    <color name="dash_grid_white">#21FFFFFF</color>
+    <color name="dash_track_white">#24FFFFFF</color>
+    <color name="dash_seg_inactive">#99FFFFFF</color>
+    <color name="dash_hero_label">#C7FFFFFF</color>
+    <color name="dash_nav_bg">#16233F</color>
+    <color name="dash_nav_inactive">#6B7A9C</color>
 
-    <!-- Navy line chart on a white card (identical in both modes — brand surface,
-         so it does NOT track the night-remapped `ink`). -->
+    <!-- White tooltip bubble + navy value shared by the dashboard charts -->
     <color name="dash_line_card">#FFFFFF</color>
     <color name="dash_line_color">#1B2B4B</color>
     <color name="dash_line_grid">#14000000</color>
