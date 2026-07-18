@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -16,6 +17,7 @@ import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 @AndroidEntryPoint
 class BlockingFragment : Fragment() {
@@ -49,7 +51,7 @@ class BlockingFragment : Fragment() {
             this.adapter = this@BlockingFragment.adapter
         }
 
-        binding.fab.setOnClickListener {
+        binding.btnAddRule.setOnClickListener {
             findNavController().navigate(R.id.action_blocking_to_addRule)
         }
 
@@ -87,46 +89,51 @@ class BlockingFragment : Fragment() {
             }
             launch {
                 viewModel.focusActive.collectLatest { active ->
-                    bindOnOffBadge(binding.badgeFocus, active)
+                    bindStatus(
+                        binding.statusFocus, active,
+                        getString(if (active) R.string.blocking_status_active else R.string.blocking_status_off)
+                    )
                 }
             }
             launch {
-                viewModel.sleepConfigured.collectLatest { active ->
-                    bindOnOffBadge(binding.badgeSleep, active)
+                viewModel.sleepEndMinutes.collectLatest { end ->
+                    bindStatus(
+                        binding.statusSleep, end != null,
+                        if (end != null) {
+                            val time = String.format(Locale.US, "%02d:%02d", end / 60, end % 60)
+                            getString(R.string.blocking_status_until, time)
+                        } else getString(R.string.blocking_status_off)
+                    )
                 }
             }
             launch {
                 viewModel.activeWebsiteCount.collectLatest { count ->
-                    bindCountBadge(binding.badgeWebsites, count)
+                    bindStatus(
+                        binding.statusWebsites, count > 0,
+                        resources.getQuantityString(R.plurals.blocking_sites_status, count, count)
+                    )
                 }
             }
             launch {
-                viewModel.blockedAppCount.collectLatest { count ->
-                    bindCountBadge(binding.badgeBlockApps, count)
+                viewModel.contentTargetCount.collectLatest { count ->
+                    bindStatus(
+                        binding.statusBlockApps, count > 0,
+                        resources.getQuantityString(R.plurals.blocking_targets_status, count, count)
+                    )
                 }
             }
         }
     }
 
-    /** "Active now" gets the teal pill; off states stay quiet glass. */
-    private fun bindOnOffBadge(badge: TextView, active: Boolean) {
-        badge.visibility = View.VISIBLE
-        badge.text = getString(
-            if (active) R.string.blocking_status_active else R.string.blocking_status_off
+    /** Active statuses go amber; off states stay muted white. */
+    private fun bindStatus(view: TextView, active: Boolean, text: String) {
+        view.text = text
+        view.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                if (active) R.color.dash_amber else R.color.dash_status_off
+            )
         )
-        badge.setBackgroundResource(
-            if (active) R.drawable.bg_badge_teal else R.drawable.bg_badge_glass
-        )
-    }
-
-    private fun bindCountBadge(badge: TextView, count: Int) {
-        if (count > 0) {
-            badge.visibility = View.VISIBLE
-            badge.text = getString(R.string.blocking_count_active, count)
-            badge.setBackgroundResource(R.drawable.bg_badge_teal)
-        } else {
-            badge.visibility = View.GONE
-        }
     }
 
     override fun onDestroyView() {

@@ -84,18 +84,31 @@
     <string name="blocking_sleep_desc">Mirni sati svake noći</string>
     <string name="blocking_websites_desc">Blokiraj sajtove u pregledaču</string>
     <string name="blocking_block_apps">Blokiraj aplikacije</string>
-    <string name="blocking_block_apps_desc">Blokiraj cele aplikacije</string>
+    <string name="blocking_block_apps_desc">Cele aplikacije i sadržaj</string>
     <string name="block_apps_empty">Nema dostupnih aplikacija</string>
     <string name="block_apps_all_header">Sve aplikacije</string>
     <string name="block_app_limit_label">Dnevni limit</string>
     <string name="block_app_limit_block_now">Odmah</string>
     <string name="cd_limit_decrease">Smanji dnevni limit</string>
     <string name="cd_limit_increase">Povećaj dnevni limit</string>
-    <string name="blocking_rules_count">%1$d pravila • %2$d aktivno</string>
+    <string name="blocking_rules_count">%1$d pravila · %2$d aktivno</string>
     <string name="blocking_status_active">Aktivno sada</string>
     <string name="blocking_status_off">Isključeno</string>
-    <string name="blocking_count_active">%1$d aktivno</string>
-    <string name="blocking_count_none">Još nijedna</string>
+    <string name="blocking_status_until">Do %1$s</string>
+    <plurals name="blocking_sites_status">
+        <item quantity="one">%d sajt</item>
+        <item quantity="few">%d sajta</item>
+        <item quantity="other">%d sajtova</item>
+    </plurals>
+    <plurals name="blocking_targets_status">
+        <item quantity="one">%d cilj</item>
+        <item quantity="few">%d cilja</item>
+        <item quantity="other">%d ciljeva</item>
+    </plurals>
+    <string name="blocking_rule_block_now">Blokira odmah</string>
+    <string name="blocking_rule_daily_limit">Dnevni limit · %1$s</string>
+    <string name="blocking_rule_session">Sesija · %1$s</string>
+    <string name="blocking_rule_scheduled">Po rasporedu</string>
     <string name="blocking_rules_empty">Još nema limita za aplikacije</string>
     <string name="blocking_rules_empty_desc">Dodirni + da postaviš dnevni limit, raspored ili trenutnu blokadu.</string>
     <string name="blocking_add_rule">Dodaj pravilo blokiranja</string>

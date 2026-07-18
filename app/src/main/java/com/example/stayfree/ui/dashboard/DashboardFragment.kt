@@ -10,7 +10,6 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
-import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -372,25 +371,6 @@ class DashboardFragment : Fragment() {
             .setDuration(240)
             .setInterpolator(DecelerateInterpolator())
             .start()
-    }
-
-    // The dashboard is the only full-bleed orange screen, so the status bar is
-    // recolored while it is visible and restored for the light screens on leave.
-    override fun onStart() {
-        super.onStart()
-        setStatusBar(R.color.dash_bg_top, lightIcons = false)
-    }
-
-    override fun onStop() {
-        setStatusBar(R.color.surface_container_low, lightIcons = true)
-        super.onStop()
-    }
-
-    private fun setStatusBar(colorRes: Int, lightIcons: Boolean) {
-        val window = requireActivity().window
-        window.statusBarColor = ContextCompat.getColor(requireContext(), colorRes)
-        WindowCompat.getInsetsController(window, window.decorView)
-            .isAppearanceLightStatusBars = lightIcons
     }
 
     override fun onDestroyView() {

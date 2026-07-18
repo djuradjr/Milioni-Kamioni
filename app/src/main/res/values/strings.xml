@@ -89,7 +89,7 @@
     <string name="blocking_sleep_desc">Quiet hours every night</string>
     <string name="blocking_websites_desc">Block sites in your browser</string>
     <string name="blocking_block_apps">Block Apps</string>
-    <string name="blocking_block_apps_desc">Block entire apps</string>
+    <string name="blocking_block_apps_desc">Whole apps and content</string>
     <string name="block_apps_empty">No apps available</string>
     <string name="block_apps_all_header">All apps</string>
     <string name="block_app_limit_label">Daily limit</string>
@@ -97,11 +97,22 @@
     <string name="block_app_limit_block_now">Now</string>
     <string name="cd_limit_decrease">Decrease daily limit</string>
     <string name="cd_limit_increase">Increase daily limit</string>
-    <string name="blocking_rules_count">%1$d rule(s) • %2$d active</string>
+    <string name="blocking_rules_count">%1$d rule(s) · %2$d active</string>
     <string name="blocking_status_active">Active now</string>
     <string name="blocking_status_off">Off</string>
-    <string name="blocking_count_active">%1$d active</string>
-    <string name="blocking_count_none">None yet</string>
+    <string name="blocking_status_until">Until %1$s</string>
+    <plurals name="blocking_sites_status">
+        <item quantity="one">%d site</item>
+        <item quantity="other">%d sites</item>
+    </plurals>
+    <plurals name="blocking_targets_status">
+        <item quantity="one">%d target</item>
+        <item quantity="other">%d targets</item>
+    </plurals>
+    <string name="blocking_rule_block_now">Blocks immediately</string>
+    <string name="blocking_rule_daily_limit">Daily limit · %1$s</string>
+    <string name="blocking_rule_session">Session · %1$s</string>
+    <string name="blocking_rule_scheduled">On a schedule</string>
     <string name="blocking_rules_empty">No app limits yet</string>
     <string name="blocking_rules_empty_desc">Tap + to set a daily limit, schedule, or instant block for an app.</string>
     <string name="blocking_add_rule">Add block rule</string>

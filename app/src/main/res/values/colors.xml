@@ -61,6 +61,14 @@
     <color name="dash_hero_label">#C7FFFFFF</color>
     <color name="dash_nav_bg">#16233F</color>
     <color name="dash_nav_inactive">#6B7A9C</color>
+    <color name="dash_card_stroke">#17FFFFFF</color>
+    <color name="dash_status_off">#8CFFFFFF</color>
+    <color name="dash_text_soft">#ADFFFFFF</color>
+    <color name="dash_icon_faint">#61FFFFFF</color>
+    <color name="dash_amber_faint">#1FFFC24D</color>
+    <color name="dash_amber_dim">#4DFFC24D</color>
+    <color name="dash_switch_thumb_off">#8E9BB8</color>
+    <color name="dash_navy_ripple">#2E1B2B4B</color>
 
     <!-- White tooltip bubble + navy value shared by the dashboard charts -->
     <color name="dash_line_card">#FFFFFF</color>

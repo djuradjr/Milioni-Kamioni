@@ -71,6 +71,38 @@
         <item name="android:foreground">?attr/selectableItemBackground</item>
     </style>
 
+    <!-- Blocking tab: navy tool card + its status caps label + amber icon box -->
+    <style name="Widget.App.ToolCard" parent="">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:background">@drawable/bg_tool_card</item>
+        <item name="android:elevation">2dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:stateListAnimator">@animator/press_scale</item>
+    </style>
+
+    <style name="Widget.App.ToolStatus" parent="">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">9sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:letterSpacing">0.09</item>
+        <item name="android:textColor">@color/dash_status_off</item>
+    </style>
+
+    <style name="Widget.App.ToolIcon" parent="">
+        <item name="android:layout_width">32dp</item>
+        <item name="android:layout_height">32dp</item>
+        <item name="android:padding">7dp</item>
+        <item name="android:background">@drawable/bg_iconbox_amber</item>
+        <item name="android:importantForAccessibility">no</item>
+    </style>
+
     <style name="ShapeAppearance.App.Pill" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
