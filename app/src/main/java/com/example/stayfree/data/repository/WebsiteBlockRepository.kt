@@ -6,7 +6,6 @@ import kotlinx.coroutines.flow.Flow
 interface WebsiteBlockRepository {
     fun getAll(): Flow<List<WebsiteBlockEntity>>
     suspend fun getActiveOnce(): List<WebsiteBlockEntity>
-    suspend fun getByDomain(domain: String): WebsiteBlockEntity?
     suspend fun insert(entity: WebsiteBlockEntity): Long
     suspend fun update(entity: WebsiteBlockEntity)
     suspend fun deleteById(id: Long)

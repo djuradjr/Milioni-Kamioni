@@ -12,7 +12,6 @@ class WebsiteBlockRepositoryImpl @Inject constructor(
 ) : WebsiteBlockRepository {
     override fun getAll(): Flow<List<WebsiteBlockEntity>> = dao.getAll()
     override suspend fun getActiveOnce(): List<WebsiteBlockEntity> = dao.getActiveOnce()
-    override suspend fun getByDomain(domain: String): WebsiteBlockEntity? = dao.getByDomain(domain)
     override suspend fun insert(entity: WebsiteBlockEntity): Long = dao.insert(entity)
     override suspend fun update(entity: WebsiteBlockEntity) = dao.update(entity)
     override suspend fun deleteById(id: Long) = dao.deleteById(id)

@@ -2,14 +2,17 @@ package com.example.stayfree.util
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ApplicationInfo
 import android.graphics.drawable.Drawable
+import android.os.Build
 
 object AppInfoUtils {
 
     data class InstalledApp(
         val packageName: String,
         val appName: String,
-        val icon: Drawable?
+        val icon: Drawable?,
+        val isGame: Boolean = false
     )
 
     /**
@@ -25,10 +28,13 @@ object AppInfoUtils {
             .filter { it.packageName != context.packageName }
             .distinctBy { it.packageName }
             .map { info ->
+                val ai = info.applicationInfo
                 InstalledApp(
                     packageName = info.packageName,
-                    appName = info.applicationInfo.loadLabel(pm).toString(),
-                    icon = try { pm.getApplicationIcon(info.packageName) } catch (e: Exception) { null }
+                    appName = ai.loadLabel(pm).toString(),
+                    icon = try { pm.getApplicationIcon(info.packageName) } catch (e: Exception) { null },
+                    isGame = (Build.VERSION.SDK_INT >= 26 && ai.category == ApplicationInfo.CATEGORY_GAME) ||
+                        (ai.flags and ApplicationInfo.FLAG_IS_GAME) != 0
                 )
             }
             .sortedBy { it.appName.lowercase() }

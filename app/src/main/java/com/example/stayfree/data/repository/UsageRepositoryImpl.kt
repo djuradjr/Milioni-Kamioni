@@ -50,45 +50,28 @@ class UsageRepositoryImpl @Inject constructor(
         dao.getUsageForPackageOnDate(packageName, date).map { it?.unlockCount ?: 0 }
 
     /**
-     * Recomputes per-app foreground time for the effective day by iterating
-     * raw UsageEvents (RESUMED = session start, PAUSED = session end). Unlike
-     * queryUsageStats(INTERVAL_DAILY) — which is aligned to the system day —
-     * this respects a custom daily reset time.
+     * Recomputes per-app foreground time for the effective day by folding raw
+     * UsageEvents into sessions. Unlike queryUsageStats(INTERVAL_DAILY) — which
+     * is aligned to the system day — this respects a custom daily reset time.
      */
     override suspend fun syncFromUsageStats(date: String, resetTimeMinutes: Int) {
         val startMs = effectiveDayStartMs(resetTimeMinutes)
         val endMs = System.currentTimeMillis()
         if (endMs <= startMs) return
 
-        val events = usageStatsManager.queryEvents(startMs, endMs) ?: return
-        val totals = mutableMapOf<String, Long>()
-        val foregroundSince = mutableMapOf<String, Long>()
-        val event = UsageEvents.Event()
+        // Never track ourselves — a screen-time tracker topping its own chart with
+        // hours spent on the block/config screens is meaningless and alarming.
+        dao.deleteForPackage(context.packageName)
+        // One-shot healing of days corrupted by the old double-counting fold.
+        dao.deleteCorruptDays(DAY_MS)
 
-        while (events.hasNextEvent()) {
-            events.getNextEvent(event)
-            val pkg = event.packageName ?: continue
-            when (event.eventType) {
-                // ACTIVITY_RESUMED/PAUSED (API 29+) share int values with the
-                // older MOVE_TO_FOREGROUND/BACKGROUND, so this matches both.
-                UsageEvents.Event.ACTIVITY_RESUMED ->
-                    if (pkg !in foregroundSince) foregroundSince[pkg] = event.timeStamp
-                UsageEvents.Event.ACTIVITY_PAUSED -> {
-                    // PAUSE without a seen RESUME: session started before the window.
-                    val sessionStart = foregroundSince.remove(pkg) ?: startMs
-                    val elapsed = event.timeStamp - sessionStart
-                    if (elapsed > 0) totals[pkg] = (totals[pkg] ?: 0L) + elapsed
-                }
-            }
-        }
-        // Apps still in the foreground count up to the end of the window.
-        for ((pkg, since) in foregroundSince) {
-            val elapsed = endMs - since
-            if (elapsed > 0) totals[pkg] = (totals[pkg] ?: 0L) + elapsed
+        val totals = mutableMapOf<String, Long>()
+        foldForegroundSessions(startMs, endMs) { pkg, from, to ->
+            totals[pkg] = (totals[pkg] ?: 0L) + (to - from)
         }
 
         for ((pkg, totalMs) in totals) {
-            if (totalMs <= 0 || pkg == AppUsageEntity.DEVICE_ROW) continue
+            if (totalMs <= 0 || pkg == AppUsageEntity.DEVICE_ROW || pkg == context.packageName) continue
             val existing = dao.getUsageForPackageAndDate(pkg, date)
             dao.upsert(
                 AppUsageEntity(
@@ -115,33 +98,73 @@ class UsageRepositoryImpl @Inject constructor(
         val dayEnd = minOf(dayStart + 24 * 3_600_000L, System.currentTimeMillis())
         if (dayEnd <= dayStart) return buckets.toList()
 
-        val events = usageStatsManager.queryEvents(dayStart, dayEnd) ?: return buckets.toList()
-        val foregroundSince = mutableMapOf<String, Long>()
-        val event = UsageEvents.Event()
-
-        fun addSession(startMs: Long, endMs: Long) {
-            var cursor = startMs.coerceAtLeast(dayStart)
-            val stop = endMs.coerceAtMost(dayEnd)
-            while (cursor < stop) {
+        foldForegroundSessions(dayStart, dayEnd) { pkg, from, to ->
+            // Excluded from totals, so exclude here too — otherwise the peak chart
+            // disagrees with the daily total.
+            if (pkg == context.packageName) return@foldForegroundSessions
+            var cursor = from
+            while (cursor < to) {
                 val hour = ((cursor - dayStart) / 3_600_000L).toInt().coerceIn(0, 23)
                 val hourEnd = dayStart + (hour + 1) * 3_600_000L
-                buckets[hour] += minOf(stop, hourEnd) - cursor
+                buckets[hour] += minOf(to, hourEnd) - cursor
                 cursor = hourEnd
             }
+        }
+        return buckets.toList()
+    }
+
+    /**
+     * Folds raw UsageEvents into non-overlapping foreground sessions clamped to
+     * [windowStartMs, windowEndMs] using a single-current-foreground model: only
+     * one app counts at a time; a RESUMED of another package, a PAUSED/STOPPED of
+     * the current activity, or screen-off/keyguard/shutdown ends the session.
+     * (A per-package map double-counted apps with several activities: the second
+     * RESUMED was swallowed, so its PAUSED fell back to the window start and a
+     * day could sum to 20h+.) Activity identity (pkg+class) guards against a
+     * stale PAUSED arriving after a same-package activity switch.
+     */
+    private fun foldForegroundSessions(
+        windowStartMs: Long,
+        windowEndMs: Long,
+        onSession: (pkg: String, fromMs: Long, toMs: Long) -> Unit
+    ) {
+        // Look back so a session straddling the window start still counts from it.
+        val events = usageStatsManager.queryEvents(windowStartMs - LOOKBACK_MS, windowEndMs) ?: return
+        val event = UsageEvents.Event()
+        var currentPkg: String? = null
+        var currentClass: String? = null
+        var currentSince = 0L
+
+        fun close(endMs: Long) {
+            val pkg = currentPkg ?: return
+            currentPkg = null
+            val from = maxOf(currentSince, windowStartMs)
+            val to = minOf(endMs, windowEndMs)
+            if (to > from) onSession(pkg, from, to)
         }
 
         while (events.hasNextEvent()) {
             events.getNextEvent(event)
-            val pkg = event.packageName ?: continue
             when (event.eventType) {
-                UsageEvents.Event.ACTIVITY_RESUMED ->
-                    if (pkg !in foregroundSince) foregroundSince[pkg] = event.timeStamp
-                UsageEvents.Event.ACTIVITY_PAUSED ->
-                    addSession(foregroundSince.remove(pkg) ?: dayStart, event.timeStamp)
+                UsageEvents.Event.ACTIVITY_RESUMED -> {
+                    val pkg = event.packageName ?: continue
+                    if (pkg != currentPkg) {
+                        close(event.timeStamp)
+                        currentPkg = pkg
+                        currentSince = event.timeStamp
+                    }
+                    currentClass = event.className
+                }
+                UsageEvents.Event.ACTIVITY_PAUSED, UsageEvents.Event.ACTIVITY_STOPPED ->
+                    if (event.packageName == currentPkg && event.className == currentClass) {
+                        close(event.timeStamp)
+                    }
+                UsageEvents.Event.SCREEN_NON_INTERACTIVE,
+                UsageEvents.Event.KEYGUARD_SHOWN,
+                UsageEvents.Event.DEVICE_SHUTDOWN -> close(event.timeStamp)
             }
         }
-        for ((_, since) in foregroundSince) addSession(since, dayEnd)
-        return buckets.toList()
+        close(windowEndMs)
     }
 
     override suspend fun incrementUnlock(date: String) {
@@ -162,6 +185,11 @@ class UsageRepositoryImpl @Inject constructor(
                 date = date
             )
         )
+    }
+
+    private companion object {
+        const val LOOKBACK_MS = 6 * 3_600_000L
+        const val DAY_MS = 24 * 3_600_000L
     }
 
     private fun effectiveDayStartMs(resetTimeMinutes: Int): Long {

@@ -80,7 +80,7 @@
     <string name="blocking_focus_mode">Focus Mode</string>
     <string name="blocking_sleep_mode">Sleep Mode</string>
     <string name="blocking_websites">Websites</string>
-    <string name="blocking_app_rules">App Block Rules</string>
+    <string name="blocking_app_rules">App block</string>
     <string name="app_detail_block_this_app">Block This App</string>
 
     <!-- Blocking screen detail -->
@@ -97,7 +97,16 @@
     <string name="block_app_limit_block_now">Now</string>
     <string name="cd_limit_decrease">Decrease daily limit</string>
     <string name="cd_limit_increase">Increase daily limit</string>
-    <string name="blocking_rules_count">%1$d rule(s) · %2$d active</string>
+    <string name="blocking_rules_count">%1$d active</string>
+    <string name="cd_search">Search apps</string>
+    <string name="block_apps_search_hint">Search apps</string>
+    <string name="block_apps_no_results">No apps match your search</string>
+    <string name="active_block_whole_app_always">Whole app · blocks immediately</string>
+    <string name="active_block_whole_app_limited">Whole app · %1$d min/day</string>
+    <string name="active_block_content_always">%1$s · blocked</string>
+    <string name="active_block_content_limited">%1$s · %2$d min/day</string>
+    <string name="active_block_site_always">Website · always blocked</string>
+    <string name="active_block_site_limited">Website · %1$d min/day</string>
     <string name="blocking_status_active">Active now</string>
     <string name="blocking_status_off">Off</string>
     <string name="blocking_status_until">Until %1$s</string>

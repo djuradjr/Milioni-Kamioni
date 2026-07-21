@@ -4,10 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.stayfree.R
 import com.example.stayfree.databinding.FragmentBlockAppsBinding
 import com.example.stayfree.ui.common.bindBackHeader
 import com.example.stayfree.util.PinGate
@@ -68,12 +72,41 @@ class BlockAppsFragment : Fragment() {
             this.adapter = this@BlockAppsFragment.adapter
         }
 
+        binding.btnSearch.setOnClickListener { toggleSearch() }
+        binding.etSearch.doOnTextChanged { text, _, _, _ ->
+            viewModel.setQuery(text?.toString().orEmpty())
+        }
+
+        binding.btnAddRule.setOnClickListener {
+            findNavController().navigate(R.id.action_blockApps_to_addRule)
+        }
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.items.collectLatest { list ->
-                adapter.submitList(list)
-                binding.tvEmpty.visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
-                binding.rvBlockApps.visibility = if (list.isEmpty()) View.GONE else View.VISIBLE
+                val loading = list == null
+                binding.progressLoading.visibility = if (loading) View.VISIBLE else View.GONE
+                adapter.submitList(list.orEmpty())
+                val empty = !loading && list.orEmpty().isEmpty()
+                binding.tvEmpty.setText(
+                    if (binding.etSearch.text.isNullOrBlank()) R.string.block_apps_empty
+                    else R.string.block_apps_no_results
+                )
+                binding.tvEmpty.visibility = if (empty) View.VISIBLE else View.GONE
+                binding.rvBlockApps.visibility = if (empty || loading) View.GONE else View.VISIBLE
             }
+        }
+    }
+
+    private fun toggleSearch() {
+        val show = binding.tilSearch.visibility != View.VISIBLE
+        binding.tilSearch.visibility = if (show) View.VISIBLE else View.GONE
+        val imm = requireContext().getSystemService(InputMethodManager::class.java)
+        if (show) {
+            binding.etSearch.requestFocus()
+            imm.showSoftInput(binding.etSearch, 0)
+        } else {
+            binding.etSearch.setText("")
+            imm.hideSoftInputFromWindow(binding.etSearch.windowToken, 0)
         }
     }
 

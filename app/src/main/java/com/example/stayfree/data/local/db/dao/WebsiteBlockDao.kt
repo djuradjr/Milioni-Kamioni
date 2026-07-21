@@ -13,9 +13,6 @@ interface WebsiteBlockDao {
     @Query("SELECT * FROM website_blocks WHERE isActive = 1")
     suspend fun getActiveOnce(): List<WebsiteBlockEntity>
 
-    @Query("SELECT * FROM website_blocks WHERE domain = :domain LIMIT 1")
-    suspend fun getByDomain(domain: String): WebsiteBlockEntity?
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(entity: WebsiteBlockEntity): Long
 

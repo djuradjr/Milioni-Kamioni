@@ -71,7 +71,11 @@
     <fragment
         android:id="@+id/blockAppsFragment"
         android:name="com.example.stayfree.ui.blockapps.BlockAppsFragment"
-        android:label="@string/blocking_block_apps" />
+        android:label="@string/blocking_block_apps">
+        <action
+            android:id="@+id/action_blockApps_to_addRule"
+            app:destination="@id/addBlockRuleFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/settingsFragment"

@@ -21,6 +21,7 @@ import com.example.stayfree.domain.model.BlockType
 import com.example.stayfree.ui.blocking.FocusModeState
 import com.example.stayfree.ui.content.ContentBlockActivity
 import com.example.stayfree.ui.overlay.BlockOverlayActivity
+import com.example.stayfree.util.DomainUtils
 import com.example.stayfree.util.TimeUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
@@ -72,7 +73,8 @@ class StayFreeAccessibilityService : AccessibilityService() {
     // Website time tracking
     private var currentBrowserDomain: String? = null
     private var domainStartTime: Long = 0L
-    private var urlDebounceJob: Job? = null
+    // Polls the foreground browser's URL bar for website blocking.
+    private var browserUrlPollJob: Job? = null
     // Focus mode state (seeded from DataStore, updated via FocusModeState)
     @Volatile private var focusModeActive = false
     @Volatile private var focusModeEndTime = 0L
@@ -84,7 +86,8 @@ class StayFreeAccessibilityService : AccessibilityService() {
         private const val CONTENT_DEBOUNCE_MS = 500L
         private const val CACHE_REFRESH_INTERVAL_MS = 30_000L
         private const val INAPP_CHECK_DEBOUNCE_MS = 500L
-        private const val URL_DEBOUNCE_MS = 500L
+        // How often to sample the foreground browser's URL bar (website blocking).
+        private const val BROWSER_POLL_MS = 700L
         // Min gap between two block-screen launches (covers CONTENT_CHANGED bursts).
         private const val CONTENT_BLOCK_COOLDOWN_MS = 3_000L
         // After a host app enters foreground, ignore short-form surfaces for this
@@ -152,15 +155,15 @@ class StayFreeAccessibilityService : AccessibilityService() {
                 currentForegroundPackage = pkg
                 // Fresh app session — restart the on-open grace window.
                 foregroundSince = now
+                // Website blocking runs off a URL-bar poll, started when a browser
+                // takes foreground and stopped when it leaves.
+                updateBrowserPoll(pkg)
             }
         } else if (eventType == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED) {
             val last = lastContentCheckTime[pkg] ?: 0L
             if (now - last < CONTENT_DEBOUNCE_MS) return
             lastContentCheckTime[pkg] = now
         }
-
-        val isBrowserContentEvent =
-            eventType == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED && pkg in BROWSER_URL_VIEW_IDS
 
         serviceScope.launch(Dispatchers.Main) {
             // 0) Whole-app block (Block Apps screen) — explicit per-app choice with
@@ -192,10 +195,7 @@ class StayFreeAccessibilityService : AccessibilityService() {
                 return@launch
             }
 
-            // 3) Website blocking (only for known browsers)
-            if (isBrowserContentEvent) {
-                handleBrowserEvent(pkg)
-            }
+            // 3) Website blocking runs on its own poll (updateBrowserPoll).
 
             // 4) In-app blocking (back-kick) — Snapchat/TikTok/Twitter etc.
             val lastInAppCheck = lastInAppCheckTime[pkg] ?: 0L
@@ -426,22 +426,37 @@ class StayFreeAccessibilityService : AccessibilityService() {
         }
     }
 
-    private fun handleBrowserEvent(pkg: String) {
-        urlDebounceJob?.cancel()
-        urlDebounceJob = serviceScope.launch {
-            delay(URL_DEBOUNCE_MS)
-            val rootNode = rootInActiveWindow ?: return@launch
-            try {
-                val urlViewId = BROWSER_URL_VIEW_IDS[pkg] ?: return@launch
-                val urlNodes = rootNode.findAccessibilityNodeInfosByViewId(urlViewId)
-                val urlText = urlNodes.firstOrNull()?.text?.toString() ?: return@launch
-                urlNodes.forEach { it.recycle() }
-
-                val domain = extractDomain(urlText) ?: return@launch
-                checkWebsiteDomain(domain, pkg)
-            } finally {
-                rootNode.recycle()
+    /**
+     * Website blocking runs off a poll, not accessibility events: a page that
+     * finishes loading emits too few events to reliably re-read the URL bar, so
+     * an event-driven read missed blocks or lagged 10s+. While a known browser is
+     * foreground its URL bar is sampled every [BROWSER_POLL_MS] instead — a
+     * blocked domain is caught within one tick, incl. reopening an already-loaded
+     * page (the first tick fires immediately).
+     */
+    private fun updateBrowserPoll(pkg: String) {
+        browserUrlPollJob?.cancel()
+        if (pkg !in BROWSER_URL_VIEW_IDS) return
+        browserUrlPollJob = serviceScope.launch {
+            while (isActive && currentForegroundPackage == pkg) {
+                checkBrowserUrl(pkg)
+                delay(BROWSER_POLL_MS)
             }
+        }
+    }
+
+    private suspend fun checkBrowserUrl(pkg: String) {
+        val rootNode = rootInActiveWindow ?: return
+        try {
+            val urlViewId = BROWSER_URL_VIEW_IDS[pkg] ?: return
+            val urlNodes = rootNode.findAccessibilityNodeInfosByViewId(urlViewId)
+            val urlText = urlNodes.firstOrNull()?.text?.toString()
+            urlNodes.forEach { it.recycle() }
+
+            val domain = urlText?.let { DomainUtils.normalize(it) } ?: return
+            checkWebsiteDomain(domain, pkg)
+        } finally {
+            rootNode.recycle()
         }
     }
 
@@ -449,13 +464,17 @@ class StayFreeAccessibilityService : AccessibilityService() {
         val resetTime = prefs.dailyResetTimeMinutes.first()
         val date = TimeUtils.getEffectiveDate(resetTime)
         val now = System.currentTimeMillis()
+        // Subdomain-aware matching: a block on "youtube.com" must also catch
+        // "m.youtube.com" — the URL bar rarely shows the bare apex domain.
+        val activeBlocks = websiteBlockRepository.getActiveOnce()
 
-        // Update time for previous domain
-        if (currentBrowserDomain != null && currentBrowserDomain != domain) {
-            val elapsed = now - domainStartTime
-            val prevBlock = websiteBlockRepository.getByDomain(currentBrowserDomain!!)
+        // Persist elapsed time for the domain we're leaving.
+        val prevDomain = currentBrowserDomain
+        if (prevDomain != null && prevDomain != domain) {
+            val prevBlock = activeBlocks.firstOrNull { DomainUtils.matches(prevDomain, it.domain) }
             if (prevBlock != null) {
-                websiteBlockRepository.updateTimeUsed(prevBlock.id, prevBlock.timeUsedTodayMs + elapsed, date)
+                val base = if (prevBlock.date == date) prevBlock.timeUsedTodayMs else 0L
+                websiteBlockRepository.updateTimeUsed(prevBlock.id, base + (now - domainStartTime), date)
             }
         }
 
@@ -464,16 +483,17 @@ class StayFreeAccessibilityService : AccessibilityService() {
             domainStartTime = now
         }
 
-        val websiteBlock = websiteBlockRepository.getByDomain(domain) ?: return
-        if (!websiteBlock.isActive) return
+        val websiteBlock = activeBlocks.firstOrNull { DomainUtils.matches(domain, it.domain) } ?: return
 
+        // Log only the user's own rule, never the visited host.
         if (websiteBlock.dailyCapMs == null) {
-            // Always block
+            Log.d(TAG, "Website blocked (rule ${websiteBlock.domain})")
             showBlockOverlay(browserPkg, "WEBSITE_BLOCKED")
         } else {
-            val elapsed = now - domainStartTime
-            val totalUsed = websiteBlock.timeUsedTodayMs + elapsed
-            if (totalUsed >= websiteBlock.dailyCapMs) {
+            // A stale row from a previous day counts from zero.
+            val usedToday = if (websiteBlock.date == date) websiteBlock.timeUsedTodayMs else 0L
+            if (usedToday + (now - domainStartTime) >= websiteBlock.dailyCapMs) {
+                Log.d(TAG, "Website cap reached (rule ${websiteBlock.domain})")
                 showBlockOverlay(browserPkg, "WEBSITE_CAP_REACHED")
             }
         }
@@ -557,16 +577,6 @@ class StayFreeAccessibilityService : AccessibilityService() {
             }
         }
         return false
-    }
-
-    private fun extractDomain(url: String): String? {
-        return try {
-            val cleaned = url.removePrefix("https://").removePrefix("http://").removePrefix("www.")
-            val domain = cleaned.substringBefore("/").substringBefore("?").substringBefore("#")
-            if (domain.contains(".") && domain.length > 3) domain else null
-        } catch (e: Exception) {
-            null
-        }
     }
 
     private fun computeExemptPackages(): Set<String> {

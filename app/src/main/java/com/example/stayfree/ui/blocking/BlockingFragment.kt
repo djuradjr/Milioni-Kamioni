@@ -44,15 +44,13 @@ class BlockingFragment : Fragment() {
 
         adapter = BlockRulesAdapter(
             onToggle = { id, active -> viewModel.toggleRule(id, active) },
-            onDelete = { id -> viewModel.deleteRule(id) }
+            onDelete = { id -> viewModel.deleteRule(id) },
+            onOpenApps = { findNavController().navigate(R.id.action_blocking_to_blockApps) },
+            onOpenSites = { findNavController().navigate(R.id.action_blocking_to_website) }
         )
         binding.rvBlockRules.apply {
             layoutManager = LinearLayoutManager(requireContext())
             this.adapter = this@BlockingFragment.adapter
-        }
-
-        binding.btnAddRule.setOnClickListener {
-            findNavController().navigate(R.id.action_blocking_to_addRule)
         }
 
         binding.btnFocusMode.setOnClickListener {
@@ -77,12 +75,11 @@ class BlockingFragment : Fragment() {
     private fun observeData() {
         viewLifecycleOwner.lifecycleScope.launch {
             launch {
-                viewModel.allRules.collectLatest { rules ->
-                    adapter.submitList(rules)
-                    val active = rules.count { it.isActive }
+                viewModel.activeBlocks.collectLatest { items ->
+                    adapter.submitList(items)
                     binding.tvRulesCount.text =
-                        resources.getString(R.string.blocking_rules_count, rules.size, active)
-                    val empty = rules.isEmpty()
+                        resources.getString(R.string.blocking_rules_count, items.size)
+                    val empty = items.isEmpty()
                     binding.emptyState.visibility = if (empty) View.VISIBLE else View.GONE
                     binding.rvBlockRules.visibility = if (empty) View.GONE else View.VISIBLE
                 }

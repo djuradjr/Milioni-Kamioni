@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.stayfree.data.local.entity.WebsiteBlockEntity
 import com.example.stayfree.data.repository.WebsiteBlockRepository
+import com.example.stayfree.util.DomainUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -20,8 +21,10 @@ class WebsiteBlockViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     fun addWebsite(domain: String, dailyCapMs: Long?) {
+        // Store the bare host ("youtube.com"), whatever the user pasted.
+        val normalized = DomainUtils.normalize(domain) ?: return
         viewModelScope.launch {
-            repository.insert(WebsiteBlockEntity(domain = domain, dailyCapMs = dailyCapMs))
+            repository.insert(WebsiteBlockEntity(domain = normalized, dailyCapMs = dailyCapMs))
         }
     }
 

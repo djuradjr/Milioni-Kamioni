@@ -57,4 +57,16 @@ interface AppUsageDao {
 
     @Query("DELETE FROM app_usage WHERE date < :beforeDate")
     suspend fun deleteOlderThan(beforeDate: String)
+
+    @Query("DELETE FROM app_usage WHERE packageName = :pkg")
+    suspend fun deleteForPackage(pkg: String)
+
+    // Purge whole days whose app time sums past [maxDayMs]. Under the single-
+    // foreground model a day can't exceed 24h total, so such rows are corruption
+    // from the old double-counting fold — better to drop them than show 80h.
+    @Query(
+        "DELETE FROM app_usage WHERE date IN " +
+            "(SELECT date FROM app_usage GROUP BY date HAVING SUM(totalTimeMs) > :maxDayMs)"
+    )
+    suspend fun deleteCorruptDays(maxDayMs: Long)
 }
