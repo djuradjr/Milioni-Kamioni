@@ -5,7 +5,10 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -36,6 +39,15 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Size the bar scrims to the real insets; returning them unconsumed lets the
+        // inner fitsSystemWindows layout keep padding the content as it always did.
+        ViewCompat.setOnApplyWindowInsetsListener(binding.mainRoot) { _, insets ->
+            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            binding.statusBarScrim.updateLayoutParams { height = bars.top }
+            binding.navBarScrim.updateLayoutParams { height = bars.bottom }
+            insets
+        }
+
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         binding.bottomNav.setupWithNavController(navHostFragment.navController)
@@ -46,9 +58,13 @@ class MainActivity : AppCompatActivity() {
         navHostFragment.navController.addOnDestinationChangedListener { _, destination, _ ->
             val orange = destination.id == R.id.dashboardFragment ||
                 destination.id == R.id.blockingFragment
-            window.statusBarColor = ContextCompat.getColor(
+            val barColor = ContextCompat.getColor(
                 this, if (orange) R.color.dash_bg_top else R.color.surface_container_low
             )
+            binding.statusBarScrim.setBackgroundColor(barColor)
+            // Ignored from API 35 up (edge-to-edge), but below it this is what paints the bar.
+            @Suppress("DEPRECATION")
+            window.statusBarColor = barColor
             WindowCompat.getInsetsController(window, window.decorView)
                 .isAppearanceLightStatusBars =
                 !orange && resources.getBoolean(R.bool.light_status_bar)

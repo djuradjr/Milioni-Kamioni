@@ -4,6 +4,5 @@
     <style name="Theme.StayFree" parent="Base.Theme.StayFree">
         <item name="android:navigationBarColor">@color/background</item>
         <item name="android:windowLightNavigationBar">true</item>
-        <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
     </style>
 </resources>

@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="@dimen/spacing_lg"
-    android:gravity="center">
+    android:gravity="center"
+    android:fitsSystemWindows="true">
 
     <TextView
         android:id="@+id/tv_step_indicator"
