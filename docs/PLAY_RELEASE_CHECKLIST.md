@@ -1,9 +1,12 @@
-# MoreMoney — Google Play Release Checklist
+# Block Brainrot — Google Play Release Checklist
+
+> Deklaracioni tekst (a11y, FGS, App access, Data safety) živi u
+> `docs/PLAY_CONSOLE_DECLARATIONS.md` — copy-paste odatle.
 
 ## Pre-flight (code, already done in repo)
 
-- [x] `applicationId = com.djuki.moremoney`, `versionName = 1.0.0`
-- [x] `targetSdk = 35` (Play requirement as of mid-2026)
+- [x] `applicationId = com.djuki.blockbrainrot` (debug `.debug`), `versionName = 1.0.1`
+- [x] `compileSdk` / `targetSdk = 36` (Play requirement as of 31 Aug 2026; needs AGP 8.12.0)
 - [x] `allowBackup = false`, backup/data-extraction rules exclude everything
 - [x] No INTERNET permission (strong Data Safety argument)
 - [x] Account username/email are LOCAL-ONLY (DataStore, backup-excluded, never
@@ -20,15 +23,17 @@
    enroll in Play App Signing — do enroll, it's the default):
 
    ```
-   keytool -genkeypair -keystore moremoney-release.jks -keyalg RSA -keysize 2048 -validity 10000 -alias moremoney
+   keytool -genkeypair -keystore blockbrainrot-release.jks -keyalg RSA -keysize 2048 -validity 10000 -alias blockbrainrot
    ```
+   > Postojeći keystore koristi alias `MOREMONE` (nasleđe). Alias je interan,
+   > Play ga ne vidi — ne diraj ga, samo ne izgubi `.jks`.
 
-2. **Create `keystore.properties`** in the repo root (gitignored):
+2. **Create `keystore.properties`** in the repo root (gitignored) — VEĆ POSTOJI:
 
    ```
-   storeFile=C:\\path\\to\\moremoney-release.jks
+   storeFile=C:\\path\\to\\blockbrainrot-release.jks
    storePassword=...
-   keyAlias=moremoney
+   keyAlias=...
    keyPassword=...
    ```
 
@@ -72,6 +77,6 @@
 
 Verify before upload:
 
-- merged manifest contains `com.djuki.moremoney`, `allowBackup="false"`, no `INTERNET`
+- merged manifest contains `com.djuki.blockbrainrot`, `allowBackup="false"`, no `INTERNET`
 - install the minified APK (`assembleRelease`) on a device and re-run the core
   flow from `docs/MANUAL_TEST_SCRIPT.md` — R8 issues only appear in minified builds
