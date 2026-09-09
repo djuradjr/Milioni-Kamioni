@@ -23,12 +23,31 @@ object PermissionUtils {
     fun hasOverlayPermission(context: Context): Boolean =
         Settings.canDrawOverlays(context)
 
-    fun hasAccessibilityServiceEnabled(context: Context): Boolean {
+    fun hasAccessibilityServiceEnabled(context: Context): Boolean =
+        isAccessibilityServiceBound(context) || isAccessibilityServiceOnInSettings(context)
+
+    private fun isAccessibilityServiceBound(context: Context): Boolean {
         val am = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
         val enabledServices = am.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK)
         return enabledServices.any {
             it.resolveInfo.serviceInfo.packageName == context.packageName
         }
+    }
+
+    /**
+     * getEnabledAccessibilityServiceList() lists only services the system has already
+     * bound. On several OEM builds (Samsung One UI) the toggle reads On for seconds —
+     * or indefinitely, when the service ends up in the crashed/zombie state — before
+     * binding happens, so the setting string is the only source that matches what the
+     * user sees on screen.
+     */
+    private fun isAccessibilityServiceOnInSettings(context: Context): Boolean {
+        val enabled = Settings.Secure.getString(
+            context.contentResolver,
+            Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES
+        ) ?: return false
+        val prefix = "${context.packageName}/"
+        return enabled.split(':').any { it.trim().startsWith(prefix) }
     }
 
     fun hasNotificationPermission(context: Context): Boolean {
@@ -44,9 +63,4 @@ object PermissionUtils {
         val pm = context.getSystemService(Context.POWER_SERVICE) as android.os.PowerManager
         return pm.isIgnoringBatteryOptimizations(context.packageName)
     }
-
-    fun allPermissionsGranted(context: Context): Boolean =
-        hasUsageStatsPermission(context) &&
-                hasOverlayPermission(context) &&
-                hasAccessibilityServiceEnabled(context)
 }
