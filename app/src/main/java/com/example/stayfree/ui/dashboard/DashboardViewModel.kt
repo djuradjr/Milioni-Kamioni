@@ -113,14 +113,6 @@ class DashboardViewModel @Inject constructor(
         usageRepository.getTotalScreenTimeBetween(currentFrom(period), TimeUtils.getTodayString())
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0L)
 
-    /** Average daily screen time over the period (total / days) — the hero number
-     *  for Weekly/Monthly, where a raw sum would read as misleadingly huge. */
-    val periodAverageScreenTime: StateFlow<Long> = _period.flatMapLatest { period ->
-        val days = periodDays(period)
-        usageRepository.getTotalScreenTimeBetween(currentFrom(period), TimeUtils.getTodayString())
-            .map { it / days }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0L)
-
     /** Per-day total screen time (ms) across the rolling window, oldest→today,
      *  zero-filled for days without data — the line chart series. */
     val periodDailyUsage: StateFlow<List<Long>> = _period.flatMapLatest { period ->
@@ -132,6 +124,17 @@ class DashboardViewModel @Inject constructor(
             }
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    /**
+     * Average daily screen time — the hero number for Weekly/Monthly, where a raw
+     * sum would read as misleadingly huge. Divides by the days that actually have
+     * data, not by the nominal 7/30: a week-old install would otherwise report a
+     * 30-day average of a third of the real number.
+     */
+    val periodAverageScreenTime: StateFlow<Long> = periodDailyUsage.map { daily ->
+        val trackedDays = daily.count { it > 0L }
+        if (trackedDays == 0) 0L else daily.sum() / trackedDays
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0L)
 
     val periodTotalUnlocks: StateFlow<Int> = _period.flatMapLatest { period ->
         usageRepository.getTotalUnlocksBetween(currentFrom(period), TimeUtils.getTodayString())

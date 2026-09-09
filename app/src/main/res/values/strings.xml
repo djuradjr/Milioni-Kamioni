@@ -69,6 +69,7 @@
     <string name="stats_monthly">Month</string>
     <string name="stats_activity">Activity</string>
     <string name="stats_unlocks_count">%1$d unlocks</string>
+    <string name="stats_opens_count">%1$d opens</string>
     <string name="stats_unlocks_today">%1$d unlocks today</string>
     <string name="stats_trend_down">▼ %1$d%% vs previous</string>
     <string name="stats_trend_up">▲ %1$d%% vs previous</string>

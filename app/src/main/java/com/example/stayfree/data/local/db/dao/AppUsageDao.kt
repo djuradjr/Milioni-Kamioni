@@ -28,13 +28,14 @@ interface AppUsageDao {
     @Query("SELECT SUM(totalTimeMs) FROM app_usage WHERE date = :date AND packageName != '__device__'")
     fun getTotalScreenTimeForDate(date: String): Flow<Long?>
 
-    @Query("SELECT SUM(unlockCount) FROM app_usage WHERE date = :date")
+    // Device unlocks live only on the __device__ row; app rows carry per-app opens.
+    @Query("SELECT SUM(unlockCount) FROM app_usage WHERE date = :date AND packageName = '__device__'")
     fun getTotalUnlocksForDate(date: String): Flow<Int?>
 
     @Query("SELECT SUM(totalTimeMs) FROM app_usage WHERE date >= :fromDate AND date <= :toDate AND packageName != '__device__'")
     fun getTotalScreenTimeBetween(fromDate: String, toDate: String): Flow<Long?>
 
-    @Query("SELECT SUM(unlockCount) FROM app_usage WHERE date >= :fromDate AND date <= :toDate")
+    @Query("SELECT SUM(unlockCount) FROM app_usage WHERE date >= :fromDate AND date <= :toDate AND packageName = '__device__'")
     fun getTotalUnlocksBetween(fromDate: String, toDate: String): Flow<Int?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -60,6 +61,15 @@ interface AppUsageDao {
 
     @Query("DELETE FROM app_usage WHERE packageName = :pkg")
     suspend fun deleteForPackage(pkg: String)
+
+    // Scoped to one date on purpose: history (including apps the user has since
+    // uninstalled) must survive, but the day being synced stays free of system
+    // surfaces that are not real apps.
+    @Query(
+        "DELETE FROM app_usage WHERE date = :date AND packageName != '__device__' " +
+            "AND packageName NOT IN (:trackable)"
+    )
+    suspend fun deleteUntrackedForDate(date: String, trackable: List<String>)
 
     // Purge whole days whose app time sums past [maxDayMs]. Under the single-
     // foreground model a day can't exceed 24h total, so such rows are corruption

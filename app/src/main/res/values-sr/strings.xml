@@ -64,6 +64,7 @@
     <string name="stats_monthly">Mesec</string>
     <string name="stats_activity">Aktivnost</string>
     <string name="stats_unlocks_count">%1$d otključavanja</string>
+    <string name="stats_opens_count">%1$d otvaranja</string>
     <string name="stats_unlocks_today">%1$d otključavanja danas</string>
     <string name="stats_trend_down">▼ %1$d%% u odnosu na prethodno</string>
     <string name="stats_trend_up">▲ %1$d%% u odnosu na prethodno</string>

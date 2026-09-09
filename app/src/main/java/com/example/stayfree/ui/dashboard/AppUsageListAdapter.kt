@@ -37,13 +37,15 @@ class AppUsageListAdapter(
             binding.tvAppName.text = appUsage.appName
             binding.tvUsageTime.text = TimeUtils.formatDuration(appUsage.totalTimeMs)
             binding.tvUnlockCount.text =
-                binding.root.context.getString(R.string.stats_unlocks_count, appUsage.unlockCount)
+                binding.root.context.getString(R.string.stats_opens_count, appUsage.unlockCount)
             binding.progressUsage.setProgressCompat(
                 ((appUsage.totalTimeMs * 100) / maxTimeMs).toInt().coerceIn(0, 100),
                 true
             )
             val icon = AppInfoUtils.getAppIcon(binding.root.context, appUsage.packageName)
+            // Recycled rows keep the previous icon unless every bind writes one.
             if (icon != null) binding.ivAppIcon.setImageDrawable(icon)
+            else binding.ivAppIcon.setImageResource(R.drawable.ic_layers)
             binding.root.setOnClickListener { onClick(appUsage) }
         }
     }

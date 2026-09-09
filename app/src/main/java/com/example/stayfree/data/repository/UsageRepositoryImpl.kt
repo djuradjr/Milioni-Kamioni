@@ -3,6 +3,8 @@ package com.example.stayfree.data.repository
 import android.app.usage.UsageEvents
 import android.app.usage.UsageStatsManager
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import com.example.stayfree.data.local.db.dao.AppUsageDao
 import com.example.stayfree.data.local.entity.AppUsageEntity
 import com.example.stayfree.domain.model.AppUsage
@@ -65,13 +67,29 @@ class UsageRepositoryImpl @Inject constructor(
         // One-shot healing of days corrupted by the old double-counting fold.
         dao.deleteCorruptDays(DAY_MS)
 
+        // The home screen used to top the chart as if it were an app.
+        homePackage()?.let { dao.deleteForPackage(it) }
+
+        val trackable = trackablePackages()
+        if (trackable.isNotEmpty()) dao.deleteUntrackedForDate(date, trackable.toList())
+
         val totals = mutableMapOf<String, Long>()
+        val opens = mutableMapOf<String, Int>()
+        // Screen changes inside an app, and system dialogs on top of it, each end one
+        // foreground session and start another; only a real absence counts as an open.
+        val lastEndMs = mutableMapOf<String, Long>()
         foldForegroundSessions(startMs, endMs) { pkg, from, to ->
+            if (pkg !in trackable) return@foldForegroundSessions
             totals[pkg] = (totals[pkg] ?: 0L) + (to - from)
+            val previousEnd = lastEndMs[pkg]
+            if (previousEnd == null || from - previousEnd > OPEN_GAP_MS) {
+                opens[pkg] = (opens[pkg] ?: 0) + 1
+            }
+            lastEndMs[pkg] = to
         }
 
         for ((pkg, totalMs) in totals) {
-            if (totalMs <= 0 || pkg == AppUsageEntity.DEVICE_ROW || pkg == context.packageName) continue
+            if (totalMs <= 0) continue
             val existing = dao.getUsageForPackageAndDate(pkg, date)
             dao.upsert(
                 AppUsageEntity(
@@ -80,12 +98,39 @@ class UsageRepositoryImpl @Inject constructor(
                     appName = AppInfoUtils.getAppName(context, pkg),
                     date = date,
                     totalTimeMs = totalMs,
-                    unlockCount = existing?.unlockCount ?: 0,
+                    unlockCount = opens[pkg] ?: 0,
                     screenOnCount = existing?.screenOnCount ?: 0
                 )
             )
         }
     }
+
+    /**
+     * Packages that count as screen time: launchable apps only, minus every home
+     * app and ourselves. Without this the launcher is the #1 "app" of the day and
+     * system dialogs (permission controller, installers) show up as apps.
+     */
+    private fun trackablePackages(): Set<String> {
+        val pm = context.packageManager
+        val launchable = pm.queryIntentActivities(
+            Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER), 0
+        ).mapTo(mutableSetOf()) { it.activityInfo.packageName }
+        homePackage()?.let { launchable -= it }
+        launchable -= context.packageName
+        launchable -= AppUsageEntity.DEVICE_ROW
+        return launchable
+    }
+
+    /**
+     * The current default launcher only. Matching every package that declares a
+     * CATEGORY_HOME activity would also swallow Settings, which ships the boot-time
+     * FallbackHome and is a perfectly normal app to track.
+     */
+    private fun homePackage(): String? =
+        context.packageManager.resolveActivity(
+            Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME),
+            PackageManager.MATCH_DEFAULT_ONLY
+        )?.activityInfo?.packageName
 
     /**
      * Splits foreground sessions from raw UsageEvents into 24 clock-hour buckets.
@@ -98,10 +143,10 @@ class UsageRepositoryImpl @Inject constructor(
         val dayEnd = minOf(dayStart + 24 * 3_600_000L, System.currentTimeMillis())
         if (dayEnd <= dayStart) return buckets.toList()
 
+        val trackable = trackablePackages()
         foldForegroundSessions(dayStart, dayEnd) { pkg, from, to ->
-            // Excluded from totals, so exclude here too — otherwise the peak chart
-            // disagrees with the daily total.
-            if (pkg == context.packageName) return@foldForegroundSessions
+            // Same filter as the totals, or the peak chart disagrees with the daily total.
+            if (pkg !in trackable) return@foldForegroundSessions
             var cursor = from
             while (cursor < to) {
                 val hour = ((cursor - dayStart) / 3_600_000L).toInt().coerceIn(0, 23)
@@ -189,6 +234,7 @@ class UsageRepositoryImpl @Inject constructor(
 
     private companion object {
         const val LOOKBACK_MS = 6 * 3_600_000L
+        const val OPEN_GAP_MS = 5_000L
         const val DAY_MS = 24 * 3_600_000L
     }
 
