@@ -104,6 +104,10 @@
     <color name="skor_warn_soft">#1FA66A00</color>
     <color name="skor_idle">#C3CCD9</color>
 
+    <!-- Splash resolves from the SYSTEM config, not AppCompatDelegate, so it
+         must not be night-qualified: one fixed dark value in both modes,
+         which also matches the dark-first default. -->
+    <color name="skor_splash_bg">#0F1926</color>
     <color name="skor_ripple">#14111C2B</color>
     <color name="skor_scrim">#99000000</color>
 </resources>

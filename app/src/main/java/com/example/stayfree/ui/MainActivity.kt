@@ -60,23 +60,15 @@ class MainActivity : AppCompatActivity() {
             navHostFragment.navController.popBackStack(item.itemId, false)
         }
 
-        // Full-bleed orange tabs recolor the status bar; per-fragment onStart/onStop
-        // can't do this reliably because replace() starts the new fragment before
-        // stopping the old one.
-        navHostFragment.navController.addOnDestinationChangedListener { _, destination, _ ->
-            val orange = destination.id == R.id.dashboardFragment ||
-                destination.id == R.id.blockingFragment
-            val barColor = ContextCompat.getColor(
-                this, if (orange) R.color.dash_bg_top else R.color.surface_container_low
-            )
-            binding.statusBarScrim.setBackgroundColor(barColor)
-            // Ignored from API 35 up (edge-to-edge), but below it this is what paints the bar.
-            @Suppress("DEPRECATION")
-            window.statusBarColor = barColor
-            WindowCompat.getInsetsController(window, window.decorView)
-                .isAppearanceLightStatusBars =
-                !orange && resources.getBoolean(R.bool.light_status_bar)
-        }
+        // Every screen sits on the same ground now, so the status bar is one
+        // colour throughout — no per-destination recolouring.
+        val barColor = ContextCompat.getColor(this, R.color.skor_ground)
+        binding.statusBarScrim.setBackgroundColor(barColor)
+        // Ignored from API 35 up (edge-to-edge), but below it this is what paints the bar.
+        @Suppress("DEPRECATION")
+        window.statusBarColor = barColor
+        WindowCompat.getInsetsController(window, window.decorView)
+            .isAppearanceLightStatusBars = resources.getBoolean(R.bool.light_status_bar)
 
         // Keep the splash up (hiding the dashboard) until we've decided whether
         // to route to onboarding instead.

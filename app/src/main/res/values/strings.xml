@@ -51,7 +51,7 @@
     <string name="dashboard_period_last_month">Last 30 days</string>
     <string name="dashboard_unlocks">Unlocks</string>
     <string name="dashboard_intercepted">Intercepted</string>
-    <string name="dashboard_hero_label">Screen time · %1$s</string>
+    <string name="dashboard_hero_label" translatable="false">%1$s</string>
     <string name="dashboard_peak_time">Peak</string>
     <string name="dashboard_most_used_apps">Most used apps</string>
     <string name="dashboard_prev_day">Previous day</string>
@@ -62,6 +62,18 @@
     <string name="dashboard_goal_remaining">Hold out %1$s more and the day is yours</string>
     <string name="dashboard_goal_over">Goal exceeded by %1$s — fresh start tomorrow</string>
     <string name="dashboard_goal_dialog_title">Daily goal</string>
+    <!-- Skor redesign -->
+    <string name="dashboard_score_label">Focus</string>
+    <string name="dashboard_screen_today">Screen today</string>
+    <string name="dashboard_hourly_title">Hour by hour</string>
+    <string name="dashboard_peak_prefix">peak · %1$s</string>
+    <string name="dashboard_legend_distraction">Distraction %1$s</string>
+    <string name="dashboard_legend_other">Other %1$s</string>
+    <string name="dashboard_streak_record">Best streak</string>
+    <string name="dashboard_goal_chip_left">%1$s left</string>
+    <string name="dashboard_goal_chip_over">%1$s over goal</string>
+    <string name="dashboard_hour_readout" translatable="false">%1$02dh · %2$s</string>
+    <string name="dashboard_score_waiting">Score arrives tonight</string>
 
     <!-- Stats -->
     <string name="stats_daily">Day</string>
@@ -86,7 +98,13 @@
     <string name="app_detail_block_this_app">Block This App</string>
 
     <!-- Blocking screen detail -->
-    <string name="blocking_tools_title">Blocking tools</string>
+    <string name="blocking_tools_title">Protection</string>
+    <string name="blocking_tools_section">Tools</string>
+    <string name="blocking_blocks_today">blocks fired today</string>
+    <plurals name="blocking_active_tools">
+        <item quantity="one">%1$d active</item>
+        <item quantity="other">%1$d active</item>
+    </plurals>
     <string name="blocking_focus_desc">Mute everything for a set time</string>
     <string name="blocking_sleep_desc">Quiet hours every night</string>
     <string name="blocking_websites_desc">Block sites in your browser</string>

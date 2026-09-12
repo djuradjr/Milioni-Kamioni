@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.stayfree.R
 import com.example.stayfree.databinding.FragmentBlockingBinding
+import com.example.stayfree.ui.common.CountUp
 import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -85,6 +86,17 @@ class BlockingFragment : Fragment() {
                 }
             }
             launch {
+                viewModel.blocksToday.collectLatest { count ->
+                    CountUp.animate(binding.tvBlocksToday, count.toLong()) { it.toString() }
+                }
+            }
+            launch {
+                viewModel.activeToolCount.collectLatest { count ->
+                    binding.tvActiveTools.text =
+                        resources.getQuantityString(R.plurals.blocking_active_tools, count, count)
+                }
+            }
+            launch {
                 viewModel.focusActive.collectLatest { active ->
                     bindStatus(
                         binding.statusFocus, active,
@@ -122,13 +134,13 @@ class BlockingFragment : Fragment() {
         }
     }
 
-    /** Active statuses go amber; off states stay muted white. */
+    /** Active statuses take the action colour; off states stay dim. */
     private fun bindStatus(view: TextView, active: Boolean, text: String) {
         view.text = text
         view.setTextColor(
             ContextCompat.getColor(
                 requireContext(),
-                if (active) R.color.dash_amber else R.color.dash_status_off
+                if (active) R.color.skor_focus else R.color.skor_text_dim
             )
         )
     }

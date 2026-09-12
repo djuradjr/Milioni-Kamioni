@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private const val AVERAGE_WINDOW_DAYS = 7
+private const val STREAK_WINDOW_DAYS = 30
 
 enum class StatsPeriod { DAILY, WEEKLY, MONTHLY }
 
@@ -89,7 +90,7 @@ class DashboardViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     /** User's override wins; unknown packages fall back to the seed guess. */
-    private val categoryResolver: StateFlow<(String) -> AppCategory> =
+    val categoryResolver: StateFlow<(String) -> AppCategory> =
         prefs.appCategoryOverrides
             .map { overrides -> { pkg: String -> overrides[pkg] ?: AppCategory.defaultFor(pkg) } }
             .stateIn(
@@ -142,6 +143,31 @@ class DashboardViewModel @Inject constructor(
             val share = distraction.toDouble() / total
             hours.map { ms -> (ms * share).toLong() to (ms - (ms * share).toLong()) }
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    /**
+     * Longest run of consecutive days under the goal in the last 30. Counts
+     * only days that actually have data — a gap ends the run rather than
+     * silently counting as a win.
+     */
+    val bestStreak: StateFlow<Int> = combine(
+        usageRepository.getUsageFromDate(TimeUtils.getDateStringDaysAgo(STREAK_WINDOW_DAYS)),
+        prefs.dailyGoalMinutes
+    ) { rows, goalMinutes ->
+        val goalMs = goalMinutes.coerceAtLeast(1) * 60_000L
+        val totals = rows.groupBy { it.date }.mapValues { (_, day) -> day.sumOf { it.totalTimeMs } }
+        var best = 0
+        var run = 0
+        (STREAK_WINDOW_DAYS downTo 0).forEach { ago ->
+            val total = totals[TimeUtils.getDateStringDaysAgo(ago)]
+            if (total != null && total > 0L && total <= goalMs) {
+                run++
+                if (run > best) best = run
+            } else {
+                run = 0
+            }
+        }
+        best
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
 
     private val _period = MutableStateFlow(StatsPeriod.DAILY)
     val period: StateFlow<StatsPeriod> = _period.asStateFlow()

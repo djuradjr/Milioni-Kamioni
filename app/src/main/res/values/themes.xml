@@ -3,7 +3,7 @@
 
     <bool name="light_status_bar">true</bool>
 
-    <!-- DayNight: the mode is applied at startup from AppPreferences (light default) -->
+    <!-- DayNight: the mode is applied at startup from AppPreferences (dark default) -->
     <style name="Base.Theme.StayFree" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorOnPrimary">@color/on_primary</item>
@@ -29,10 +29,10 @@
         <item name="colorOnTertiary">@color/on_accent_purple</item>
         <item name="colorTertiaryContainer">@color/accent_purple</item>
         <item name="colorOnTertiaryContainer">@color/on_accent_purple</item>
-        <!-- Warm "comfy" surface behind floating white cards -->
-        <item name="android:colorBackground">@color/surface_container_low</item>
-        <item name="android:windowBackground">@color/surface_container_low</item>
-        <item name="android:statusBarColor">@color/surface_container_low</item>
+        <!-- One ground colour under every screen -->
+        <item name="android:colorBackground">@color/skor_ground</item>
+        <item name="android:windowBackground">@color/skor_ground</item>
+        <item name="android:statusBarColor">@color/skor_ground</item>
         <item name="android:windowLightStatusBar">@bool/light_status_bar</item>
         <!-- Archivo everywhere. android:fontFamily covers API 26+; the bare
              fontFamily attr is what AppCompat reads below that. -->
@@ -40,27 +40,27 @@
         <item name="fontFamily">@font/archivo</item>
         <!-- Fully-rounded (pill) buttons everywhere -->
         <item name="materialButtonStyle">@style/Widget.App.Button</item>
-        <!-- White bottom nav with an orange pill indicator -->
+        <!-- Flat nav bar, teal active item, no pill indicator -->
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNav</item>
     </style>
 
     <style name="Widget.App.BottomNav" parent="Widget.Material3.BottomNavigationView">
-        <!-- Navy brand bar (identical in both modes): amber active, no pill —
-             elevation stays 0 so M3 doesn't blend a surface-tint overlay in. -->
-        <item name="android:background">@color/dash_nav_bg</item>
-        <item name="backgroundTint">@color/dash_nav_bg</item>
+        <!-- Skor nav bar: teal active, no pill — elevation stays 0 so M3
+             doesn't blend a surface-tint overlay in. -->
+        <item name="android:background">@color/skor_nav</item>
+        <item name="backgroundTint">@color/skor_nav</item>
         <item name="elevation">0dp</item>
         <item name="itemActiveIndicatorStyle">@style/Widget.App.BottomNav.Indicator</item>
         <item name="itemIconTint">@color/bottom_nav_icon_tint</item>
         <item name="itemTextColor">@color/bottom_nav_text_tint</item>
-        <item name="itemRippleColor">@color/dash_track_white</item>
+        <item name="itemRippleColor">@color/skor_ripple</item>
     </style>
 
     <style name="Widget.App.BottomNav.Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
         <item name="android:color">@android:color/transparent</item>
     </style>
 
-    <!-- Dashboard segmented switch: one segment inside the navy pill track -->
+    <!-- Dashboard segmented switch: one segment inside the pill track -->
     <style name="Widget.App.DashSegment" parent="">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
@@ -71,7 +71,7 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:letterSpacing">0.06</item>
-        <item name="android:textColor">@color/dash_seg_inactive</item>
+        <item name="android:textColor">@color/skor_text_dim</item>
         <item name="android:foreground">?attr/selectableItemBackground</item>
     </style>
 
@@ -134,7 +134,7 @@
     </style>
 
     <style name="Theme.StayFree.Splash" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">@color/background</item>
+        <item name="windowSplashScreenBackground">@color/skor_splash_bg</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_logo</item>
         <item name="postSplashScreenTheme">@style/Theme.StayFree</item>
     </style>

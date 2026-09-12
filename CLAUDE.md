@@ -21,6 +21,20 @@ or manifest/permission change), **bb-billing** (payments/premium work).
   (never rename packages); `applicationId = com.djuki.blockbrainrot` (debug adds
   `.debug`, installs alongside release). ⚠️ applicationId locks at first Play publish.
 
+## 2a. Redizajn "Skor" (u toku, od 2026-09-12)
+Ceo UI prelazi na **Skor** dizajn sistem — zamenjuje narandzasti "Ink/Puls"
+dashboard. Heroj Home-a je **Fokus skor 0-100** u prstenu, ispod sat-po-sat
+stubici u dve boje. Tokeni `skor_*`, font Archivo, **tamna tema podrazumevana**.
+Kljucno pravilo: **narandzasta vise nije boja brenda u UI-ju** — znaci samo
+distrakciju/blokiranje; teal je jedina boja akcije. Detalji: `bb-ui` skill.
+Mockapi svih 15 ekrana: https://claude.ai/code/artifact/ba2e1c37-ee17-4af5-aadf-101452e7f066
+
+Stanje: faze 1-3 gotove (tokeni, `domain/score/`, `ScoreRingView` +
+`HourlyBarsView`) + Pregled/Dan. Preostalo: Zastita hub (redosled alata:
+Aplikacije i sadrzaj -> Sajtovi -> Fokus -> San), Aplikacije, Detalj, Fokus,
+San, Sajtovi, Podesavanja, Blok ekran, Onboarding (+2 nova koraka: izvestaj o
+prosloj nedelji i izbor meta), nedeljni/mesecni prikaz, svetla tema u praksi.
+
 ## 2. Product direction: paid SaaS (decided 2026-07-06)
 - Block Brainrot is a **paid product** — NOT ad-supported. Do not add AdMob/rewarded
   ads; the AdMob template comments in `RewardGateActivity` are legacy reference only.

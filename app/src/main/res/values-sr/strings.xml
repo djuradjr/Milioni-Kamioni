@@ -48,7 +48,6 @@
     <string name="dashboard_period_last_month">Poslednjih 30 dana</string>
     <string name="dashboard_unlocks">Otključavanja</string>
     <string name="dashboard_intercepted">Presretnuto</string>
-    <string name="dashboard_hero_label">Vreme ispred ekrana · %1$s</string>
     <string name="dashboard_peak_time">Vrhunac</string>
     <string name="dashboard_most_used_apps">Najkorišćenije aplikacije</string>
     <string name="dashboard_prev_day">Prethodni dan</string>
@@ -81,7 +80,7 @@
     <string name="app_detail_block_this_app">Blokiraj ovu aplikaciju</string>
 
     <!-- Blocking screen detail -->
-    <string name="blocking_tools_title">Alati za blokiranje</string>
+    <string name="blocking_tools_title">Zastita</string>
     <string name="blocking_focus_desc">Utišaj sve na određeno vreme</string>
     <string name="blocking_sleep_desc">Mirni sati svake noći</string>
     <string name="blocking_websites_desc">Blokiraj sajtove u pregledaču</string>
@@ -254,4 +253,22 @@
     <string name="notif_before_timeout_text">Dnevni limit samo što nije istekao. Vreme za pauzu?</string>
     <string name="notif_daily_summary_title">Dnevni pregled vremena korišćenja</string>
     <string name="notif_daily_summary_text">Ukupno vreme korišćenja juče: %1$s</string>
+    <!-- Skor redizajn -->
+    <string name="dashboard_score_label">Fokus</string>
+    <string name="dashboard_screen_today">Ekran danas</string>
+    <string name="dashboard_hourly_title">Sat po sat</string>
+    <string name="dashboard_peak_prefix">vrh · %1$s</string>
+    <string name="dashboard_legend_distraction">Distrakcija %1$s</string>
+    <string name="dashboard_legend_other">Ostalo %1$s</string>
+    <string name="dashboard_streak_record">Rekord niza</string>
+    <string name="dashboard_goal_chip_left">jos %1$s</string>
+    <string name="dashboard_goal_chip_over">%1$s preko cilja</string>
+    <string name="dashboard_score_waiting">Skor stize veceras</string>
+    <string name="blocking_tools_section">Alati</string>
+    <string name="blocking_blocks_today">presretanja danas</string>
+    <plurals name="blocking_active_tools">
+        <item quantity="one">%1$d aktivan</item>
+        <item quantity="few">%1$d aktivna</item>
+        <item quantity="other">%1$d aktivnih</item>
+    </plurals>
 </resources>

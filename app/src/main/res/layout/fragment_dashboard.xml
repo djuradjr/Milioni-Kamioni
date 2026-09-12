@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/bg_dashboard_gradient">
+    android:background="@color/skor_ground">
 
     <!-- Segmented period switch: navy pill track, amber active segment -->
     <LinearLayout
@@ -15,7 +16,7 @@
         android:layout_marginHorizontal="@dimen/spacing_md"
         android:layout_marginTop="@dimen/spacing_sm"
         android:padding="3dp"
-        android:background="@drawable/bg_seg_track">
+        android:background="@drawable/bg_skor_seg_track">
 
         <TextView
             android:id="@+id/seg_day"
@@ -52,274 +53,270 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- Hero: big time + date label with day navigation chevrons -->
-                <TextView
-                    android:id="@+id/tv_total_screen_time"
+                <!-- Date stepper. The date IS the label here — a separate
+                     "screen time" caption would only repeat the one below. -->
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textAppearance="?attr/textAppearanceDisplayLarge"
-                    android:textColor="@color/on_primary"
-                    android:textStyle="bold" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
+                    <ImageButton
+                        android:id="@+id/btn_prev_day"
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_chevron_left"
+                        app:tint="@color/skor_text_dim"
+                        android:contentDescription="@string/dashboard_prev_day" />
+
+                    <TextView
+                        android:id="@+id/tv_hero_label"
+                        style="@style/Skor.Label"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center" />
+
+                    <ImageButton
+                        android:id="@+id/btn_next_day"
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_chevron_right"
+                        app:tint="@color/skor_text_dim"
+                        android:contentDescription="@string/dashboard_next_day" />
+                </LinearLayout>
+
+                <!-- Hero: the ring carries the screen, the total sits beside it -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
+                    android:baselineAligned="false"
+                    android:layout_marginTop="@dimen/spacing_sm"
                     android:layout_marginBottom="@dimen/spacing_md">
 
-                    <ImageButton
-                        android:id="@+id/btn_prev_day"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:src="@drawable/ic_chevron_left"
-                        app:tint="@color/dash_hero_label"
-                        android:contentDescription="@string/dashboard_prev_day" />
+                    <FrameLayout
+                        android:layout_width="116dp"
+                        android:layout_height="116dp">
 
-                    <TextView
-                        android:id="@+id/tv_hero_label"
+                        <com.example.stayfree.ui.common.ScoreRingView
+                            android:id="@+id/score_ring"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center">
+
+                            <TextView
+                                android:id="@+id/tv_score"
+                                style="@style/Skor.Display"
+                                tools:text="38" />
+
+                            <TextView
+                                style="@style/Skor.Label"
+                                android:layout_marginTop="3dp"
+                                android:textSize="10sp"
+                                android:text="@string/dashboard_score_label" />
+                        </LinearLayout>
+                    </FrameLayout>
+
+                    <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:gravity="center"
-                        android:textSize="11sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/dash_hero_label"
-                        android:textAllCaps="true"
-                        android:letterSpacing="0.18" />
+                        android:orientation="vertical"
+                        android:layout_marginStart="@dimen/spacing_md">
 
-                    <ImageButton
-                        android:id="@+id/btn_next_day"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:src="@drawable/ic_chevron_right"
-                        app:tint="@color/dash_hero_label"
-                        android:contentDescription="@string/dashboard_next_day" />
+                        <TextView
+                            style="@style/Skor.Label"
+                            android:text="@string/dashboard_screen_today" />
+
+                        <TextView
+                            android:id="@+id/tv_total_screen_time"
+                            style="@style/Skor.Metric"
+                            android:layout_marginTop="5dp"
+                            tools:text="4h 12m" />
+
+                        <TextView
+                            android:id="@+id/tv_goal_chip"
+                            style="@style/Skor.Chip"
+                            android:layout_marginTop="9dp"
+                            android:backgroundTint="@color/skor_distraction_soft"
+                            android:textColor="@color/skor_distraction"
+                            tools:text="12m preko cilja" />
+                    </LinearLayout>
                 </LinearLayout>
 
-                <!-- Daily goal card (tap to edit the goal) -->
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/card_goal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/spacing_sm"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground"
-                    app:cardBackgroundColor="@color/dash_navy_card"
-                    app:cardCornerRadius="@dimen/radius_dash"
-                    app:cardElevation="4dp">
+                <!-- Hour by hour: colour is what makes this readable, not shape -->
+                <androidx.cardview.widget.CardView
+                    style="@style/Skor.Card"
+                    android:layout_marginBottom="@dimen/spacing_sm">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:paddingHorizontal="14dp"
-                        android:paddingVertical="12dp">
+                        android:padding="@dimen/spacing_md">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                style="@style/Skor.CardTitle"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:text="@string/dashboard_hourly_title" />
+
+                            <TextView
+                                android:id="@+id/tv_peak_time"
+                                style="@style/Skor.Micro"
+                                tools:text="vrh 22h" />
+                        </LinearLayout>
+
+                        <com.example.stayfree.ui.common.HourlyBarsView
+                            android:id="@+id/chart_hourly"
+                            android:layout_width="match_parent"
+                            android:layout_height="74dp"
+                            android:layout_marginTop="@dimen/spacing_sm" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
-                            android:gravity="center_vertical">
+                            android:layout_marginTop="6dp">
 
-                            <TextView
-                                android:id="@+id/tv_goal_title"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:textAppearance="?attr/textAppearanceLabelLarge"
-                                android:textColor="@color/dash_navy_muted" />
-
-                            <TextView
-                                android:id="@+id/tv_goal_pct"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="?attr/textAppearanceLabelLarge"
-                                android:textStyle="bold"
-                                android:textColor="@color/dash_amber" />
+                            <TextView style="@style/Skor.Micro" android:textSize="9sp" android:text="00" />
+                            <Space android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1" />
+                            <TextView style="@style/Skor.Micro" android:textSize="9sp" android:text="06" />
+                            <Space android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1" />
+                            <TextView style="@style/Skor.Micro" android:textSize="9sp" android:text="12" />
+                            <Space android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1" />
+                            <TextView style="@style/Skor.Micro" android:textSize="9sp" android:text="18" />
+                            <Space android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1" />
+                            <TextView style="@style/Skor.Micro" android:textSize="9sp" android:text="23" />
                         </LinearLayout>
-
-                        <ProgressBar
-                            android:id="@+id/progress_goal"
-                            style="?android:attr/progressBarStyleHorizontal"
-                            android:layout_width="match_parent"
-                            android:layout_height="8dp"
-                            android:layout_marginTop="@dimen/spacing_sm"
-                            android:progressDrawable="@drawable/bg_goal_progress"
-                            android:max="100" />
-
-                        <TextView
-                            android:id="@+id/tv_goal_sub"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/spacing_sm"
-                            android:textAppearance="?attr/textAppearanceBodySmall"
-                            android:textColor="@color/dash_navy_muted" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <!-- Peak card with hourly amber line chart -->
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/spacing_sm"
-                    app:cardBackgroundColor="@color/dash_navy_card"
-                    app:cardCornerRadius="@dimen/radius_dash"
-                    app:cardElevation="4dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:paddingHorizontal="14dp"
-                        android:paddingVertical="12dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
                             android:gravity="center_vertical"
-                            android:layout_marginBottom="@dimen/spacing_sm">
+                            android:layout_marginTop="@dimen/spacing_sm">
+
+                            <View
+                                android:layout_width="8dp"
+                                android:layout_height="8dp"
+                                android:background="@drawable/bg_skor_chip"
+                                android:backgroundTint="@color/skor_distraction" />
 
                             <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="@string/dashboard_peak_time"
-                                android:textAppearance="?attr/textAppearanceTitleSmall"
-                                android:textStyle="bold"
-                                android:textColor="@color/dash_navy_muted" />
+                                android:id="@+id/tv_legend_distraction"
+                                style="@style/Skor.Micro"
+                                android:textSize="9sp"
+                                android:layout_marginStart="5dp"
+                                android:layout_marginEnd="@dimen/spacing_sm"
+                                tools:text="Distrakcija 3h 31m" />
+
+                            <View
+                                android:layout_width="8dp"
+                                android:layout_height="8dp"
+                                android:background="@drawable/bg_skor_chip"
+                                android:backgroundTint="@color/skor_idle" />
 
                             <TextView
-                                android:id="@+id/tv_peak_time"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="?attr/textAppearanceTitleSmall"
-                                android:textStyle="bold"
-                                android:textColor="@color/dash_amber" />
+                                android:id="@+id/tv_legend_other"
+                                style="@style/Skor.Micro"
+                                android:textSize="9sp"
+                                android:layout_marginStart="5dp"
+                                tools:text="Ostalo 41m" />
                         </LinearLayout>
-
-                        <com.example.stayfree.ui.common.UsageLineChartView
-                            android:id="@+id/chart_hourly"
-                            android:layout_width="match_parent"
-                            android:layout_height="160dp"
-                            app:lineColor="@color/dash_amber"
-                            app:gridColor="@color/dash_grid_white"
-                            app:axisTextColor="@color/dash_navy_muted"
-                            app:tooltipValueColor="@color/dash_line_color"
-                            app:markerSolidColor="@android:color/white"
-                            app:markPeak="true"
-                            app:markersAllPoints="false" />
                     </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
+                </androidx.cardview.widget.CardView>
 
-                <!-- Stats row: intercepted today + unlocks -->
+                <!-- Three tiles: the raw counts the score is built from -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:baselineAligned="false"
                     android:layout_marginBottom="@dimen/spacing_md">
 
-                    <com.google.android.material.card.MaterialCardView
+                    <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:layout_marginEnd="5dp"
-                        app:cardBackgroundColor="@color/dash_navy_card"
-                        app:cardCornerRadius="@dimen/radius_dash"
-                        app:cardElevation="4dp">
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_md"
+                        android:layout_marginEnd="4dp"
+                        android:background="@drawable/bg_skor_card">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:gravity="center"
-                            android:padding="12dp">
+                        <TextView
+                            android:id="@+id/tv_unlocks"
+                            style="@style/Skor.MetricSmall"
+                            tools:text="87" />
 
-                            <ImageView
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
-                                android:src="@drawable/ic_shield"
-                                app:tint="@color/dash_amber"
-                                android:importantForAccessibility="no" />
+                        <TextView
+                            style="@style/Skor.Micro"
+                            android:textSize="9sp"
+                            android:layout_marginTop="5dp"
+                            android:text="@string/dashboard_unlocks" />
+                    </LinearLayout>
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="6dp"
-                                android:text="@string/dashboard_intercepted"
-                                android:textAppearance="?attr/textAppearanceLabelSmall"
-                                android:textColor="@color/dash_navy_muted"
-                                android:textAllCaps="true"
-                                android:letterSpacing="0.12" />
-
-                            <TextView
-                                android:id="@+id/tv_intercepted"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="?attr/textAppearanceHeadlineMedium"
-                                android:textStyle="bold"
-                                android:textColor="@color/dash_navy_text" />
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <com.google.android.material.card.MaterialCardView
+                    <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:layout_marginStart="5dp"
-                        app:cardBackgroundColor="@color/dash_navy_card"
-                        app:cardCornerRadius="@dimen/radius_dash"
-                        app:cardElevation="4dp">
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_md"
+                        android:layout_marginHorizontal="4dp"
+                        android:background="@drawable/bg_skor_card">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:gravity="center"
-                            android:padding="12dp">
+                        <TextView
+                            android:id="@+id/tv_intercepted"
+                            style="@style/Skor.MetricSmall"
+                            android:textColor="@color/skor_focus"
+                            tools:text="23" />
 
-                            <ImageView
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
-                                android:src="@drawable/ic_lock"
-                                app:tint="@color/dash_amber"
-                                android:importantForAccessibility="no" />
+                        <TextView
+                            style="@style/Skor.Micro"
+                            android:textSize="9sp"
+                            android:layout_marginTop="5dp"
+                            android:text="@string/dashboard_intercepted" />
+                    </LinearLayout>
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="6dp"
-                                android:text="@string/dashboard_unlocks"
-                                android:textAppearance="?attr/textAppearanceLabelSmall"
-                                android:textColor="@color/dash_navy_muted"
-                                android:textAllCaps="true"
-                                android:letterSpacing="0.12" />
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_md"
+                        android:layout_marginStart="4dp"
+                        android:background="@drawable/bg_skor_card">
 
-                            <TextView
-                                android:id="@+id/tv_unlocks"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="?attr/textAppearanceHeadlineMedium"
-                                android:textStyle="bold"
-                                android:textColor="@color/dash_navy_text" />
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
+                        <TextView
+                            android:id="@+id/tv_streak"
+                            style="@style/Skor.MetricSmall"
+                            tools:text="6" />
+
+                        <TextView
+                            style="@style/Skor.Micro"
+                            android:textSize="9sp"
+                            android:layout_marginTop="5dp"
+                            android:text="@string/dashboard_streak_record" />
+                    </LinearLayout>
                 </LinearLayout>
 
-                <!-- Most used apps -->
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/dashboard_most_used_apps"
-                    android:textAppearance="?attr/textAppearanceTitleMedium"
-                    android:textStyle="bold"
-                    android:textColor="@color/on_primary"
-                    android:layout_marginBottom="@dimen/spacing_sm" />
+                    style="@style/Skor.Label"
+                    android:layout_marginBottom="@dimen/spacing_sm"
+                    android:text="@string/dashboard_most_used_apps" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_top_apps"

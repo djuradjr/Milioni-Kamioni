@@ -8,6 +8,7 @@ import com.example.stayfree.data.repository.BlockingRepository
 import com.example.stayfree.data.repository.WebsiteBlockRepository
 import com.example.stayfree.domain.BlockRuleEvaluator
 import com.example.stayfree.domain.content.ContentSignatures
+import com.example.stayfree.util.TimeUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -109,6 +110,18 @@ class BlockingViewModel @Inject constructor(
     val contentTargetCount: StateFlow<Int> = prefs.contentBlockEnabledIds
         .map { it.size }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
+
+    /** Content blocks fired today — the same number the dashboard tile shows. */
+    val blocksToday: StateFlow<Int> = prefs.contentBlockCount
+        .map { (date, count) -> if (date == TimeUtils.getTodayString()) count else 0 }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
+
+    /** Tools currently doing something, for the header count. */
+    val activeToolCount: StateFlow<Int> = combine(
+        focusActive, sleepEndMinutes, activeWebsiteCount, contentTargetCount
+    ) { focus, sleepEnd, sites, targets ->
+        listOf(focus, sleepEnd != null, sites > 0, targets > 0).count { it }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
 
     fun toggleRule(id: Long, active: Boolean) {
         viewModelScope.launch { blockingRepository.setRuleActive(id, active) }

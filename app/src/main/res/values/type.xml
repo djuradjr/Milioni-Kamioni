@@ -116,6 +116,50 @@
         <item name="android:textColor">@color/skor_text</item>
     </style>
 
+    <!-- One tool row in the protection hub. -->
+    <style name="Skor.ToolRow" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingHorizontal">14dp</item>
+        <item name="android:paddingVertical">13dp</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="Skor.ToolIcon" parent="">
+        <item name="android:layout_width">32dp</item>
+        <item name="android:layout_height">32dp</item>
+        <item name="android:padding">7dp</item>
+        <item name="android:layout_marginEnd">12dp</item>
+        <item name="android:background">@drawable/bg_skor_chip</item>
+        <item name="android:importantForAccessibility">no</item>
+    </style>
+
+    <style name="Skor.ToolText" parent="">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <!-- Tool status chip: the fragment recolours it by active/off. -->
+    <style name="Skor.ToolStatusNew" parent="Skor.Text">
+        <item name="android:textSize">11sp</item>
+        <item name="android:textFontWeight">600</item>
+        <item name="android:layout_marginStart">10dp</item>
+        <item name="android:textColor">@color/skor_text_dim</item>
+    </style>
+
+    <style name="Skor.Divider" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:layout_marginStart">58dp</item>
+        <item name="android:background">@color/skor_line</item>
+    </style>
+
     <!-- Card container: flat, no elevation — separation comes from fill. -->
     <style name="Skor.Card" parent="Widget.Material3.CardView.Filled">
         <item name="cardBackgroundColor">@color/skor_card</item>

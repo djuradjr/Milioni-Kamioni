@@ -16,12 +16,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.stayfree.R
-import com.example.stayfree.databinding.DialogDailyGoalBinding
 import com.example.stayfree.databinding.FragmentDashboardBinding
 import com.example.stayfree.domain.model.AppUsage
+import com.example.stayfree.domain.score.FocusScore
 import com.example.stayfree.ui.common.CountUp
 import com.example.stayfree.util.TimeUtils
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -62,7 +61,6 @@ class DashboardFragment : Fragment() {
         setupSegments()
         setupRecyclerViews()
         setupDateNav()
-        setupGoalCard()
         setupCharts()
         observeData()
     }
@@ -86,39 +84,15 @@ class DashboardFragment : Fragment() {
     private fun applySegmentState(selected: StatsPeriod) {
         segmentViews().forEach { (period, segment) ->
             val active = period == selected
-            segment.setBackgroundResource(if (active) R.drawable.bg_seg_active else 0)
+            segment.setBackgroundResource(if (active) R.drawable.bg_skor_seg_active else 0)
             segment.setTextColor(
                 ContextCompat.getColor(
                     requireContext(),
-                    if (active) R.color.dash_navy_card else R.color.dash_seg_inactive
+                    if (active) R.color.skor_text else R.color.skor_text_dim
                 )
             )
             segment.translationZ = if (active) 2f * resources.displayMetrics.density else 0f
         }
-    }
-
-    private fun setupGoalCard() {
-        binding.cardGoal.setOnClickListener {
-            val goal = viewModel.goalUi.value ?: return@setOnClickListener
-            showGoalDialog(goal.goalMinutes)
-        }
-    }
-
-    private fun showGoalDialog(goalMinutes: Int) {
-        val dialogBinding = DialogDailyGoalBinding.inflate(layoutInflater)
-        dialogBinding.etGoalHours.setText((goalMinutes / 60).toString())
-        dialogBinding.etGoalMinutes.setText((goalMinutes % 60).toString())
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.dashboard_goal_dialog_title)
-            .setView(dialogBinding.root)
-            .setPositiveButton(R.string.btn_save) { _, _ ->
-                val hours = dialogBinding.etGoalHours.text.toString().toIntOrNull() ?: 0
-                val minutes = dialogBinding.etGoalMinutes.text.toString().toIntOrNull() ?: 0
-                val total = hours * 60 + minutes
-                if (total > 0) viewModel.setDailyGoal(total)
-            }
-            .setNegativeButton(R.string.btn_cancel, null)
-            .show()
     }
 
     /** "4h", "4h 30m" or "45m" — goal copy without the seconds noise. */
@@ -166,11 +140,20 @@ class DashboardFragment : Fragment() {
         val minutesToDuration: (Float) -> String = { minutes ->
             TimeUtils.formatDuration((minutes * 60_000f).toLong())
         }
-        // Daily: 24 hourly points, clock ticks at 0/6/12/18, tooltip caption = hour.
-        binding.chartHourly.apply {
-            tooltipValueFormatter = minutesToDuration
-            tooltipCaptionFormatter = { hour -> String.format(Locale.US, "%02d:00", hour) }
-            xLabelFormatter = { hour -> if (hour % 6 == 0) hour.toString() else "" }
+        // The hourly chart is HourlyBarsView now; dragging it reports an hour
+        // instead of showing a tooltip, so the peak caption doubles as the readout.
+        binding.chartHourly.onHourSelected = { hour ->
+            binding.tvPeakTime.text = if (hour == null) {
+                peakCaption(viewModel.peakHour.value)
+            } else {
+                val (distraction, other) = viewModel.hourlyBreakdown.value.getOrNull(hour)
+                    ?: (0L to 0L)
+                getString(
+                    R.string.dashboard_hour_readout,
+                    hour,
+                    TimeUtils.formatDuration(distraction + other)
+                )
+            }
         }
         // Weekly/Monthly: per-day points; ticks are day initials (7d) or dates (30d).
         binding.chartPeriod.apply {
@@ -191,6 +174,17 @@ class DashboardFragment : Fragment() {
     private fun dateForPeriodIndex(index: Int): String {
         val daysAgo = (periodDayCount - 1 - index).coerceAtLeast(0)
         return TimeUtils.getDateStringDaysAgo(daysAgo)
+    }
+
+    private fun peakCaption(hour: Int?): String =
+        if (hour == null) getString(R.string.dashboard_no_peak)
+        else getString(R.string.dashboard_peak_prefix, String.format(Locale.US, "%02dh", hour))
+
+    /** Ring and number share the band colour so the state reads without the digits. */
+    private fun scoreColor(score: Int): Int = when (FocusScore.bandOf(score)) {
+        FocusScore.Band.GOOD -> R.color.skor_focus
+        FocusScore.Band.MIXED -> R.color.skor_warn
+        FocusScore.Band.POOR -> R.color.skor_distraction
     }
 
     private fun observeData() {
@@ -233,27 +227,24 @@ class DashboardFragment : Fragment() {
             launch {
                 viewModel.goalUi.collectLatest { goal ->
                     if (goal == null) return@collectLatest
-                    binding.tvGoalTitle.text =
-                        getString(R.string.dashboard_goal_title, formatMinutesCompact(goal.goalMinutes))
-                    binding.tvGoalPct.text = getString(R.string.dashboard_goal_percent, goal.percent)
-                    ObjectAnimator.ofInt(
-                        binding.progressGoal, "progress", goal.percent.coerceIn(0, 100)
-                    ).apply {
-                        duration = 700
-                        interpolator = DecelerateInterpolator()
-                    }.start()
                     val remainingMin = (goal.remainingMs / 60_000L).toInt()
-                    binding.tvGoalSub.text = if (goal.remainingMs > 0) {
+                    val over = goal.remainingMs <= 0
+                    binding.tvGoalChip.text = if (over) {
                         getString(
-                            R.string.dashboard_goal_remaining,
-                            formatMinutesCompact(remainingMin.coerceAtLeast(1))
+                            R.string.dashboard_goal_chip_over,
+                            formatMinutesCompact((-remainingMin).coerceAtLeast(1))
                         )
                     } else {
                         getString(
-                            R.string.dashboard_goal_over,
-                            formatMinutesCompact((-remainingMin).coerceAtLeast(1))
+                            R.string.dashboard_goal_chip_left,
+                            formatMinutesCompact(remainingMin.coerceAtLeast(1))
                         )
                     }
+                    val tint = if (over) R.color.skor_distraction else R.color.skor_focus
+                    val fill = if (over) R.color.skor_distraction_soft else R.color.skor_focus_soft
+                    binding.tvGoalChip.setTextColor(ContextCompat.getColor(requireContext(), tint))
+                    binding.tvGoalChip.backgroundTintList =
+                        ContextCompat.getColorStateList(requireContext(), fill)
                 }
             }
             launch {
@@ -267,17 +258,49 @@ class DashboardFragment : Fragment() {
                 }
             }
             launch {
-                viewModel.hourlyUsage.collectLatest { buckets ->
-                    binding.chartHourly.setData(buckets.map { it / 60_000f })
+                // collect, not collectLatest: setData animates, and a cancelled
+                // block would leave the legend showing the previous (0s) totals.
+                viewModel.hourlyBreakdown.collect { hours ->
+                    binding.chartHourly.setData(hours)
+                    val distraction = hours.sumOf { it.first }
+                    val other = hours.sumOf { it.second }
+                    binding.tvLegendDistraction.text = getString(
+                        R.string.dashboard_legend_distraction, TimeUtils.formatDuration(distraction)
+                    )
+                    binding.tvLegendOther.text = getString(
+                        R.string.dashboard_legend_other, TimeUtils.formatDuration(other)
+                    )
+                }
+            }
+            launch {
+                viewModel.focusScore.collectLatest { breakdown ->
+                    if (breakdown == null) {
+                        // No data yet: a dash, never a zero — zero reads as "you failed".
+                        binding.tvScore.text = getString(R.string.dashboard_no_peak)
+                        binding.scoreRing.setProgress(0f)
+                        return@collectLatest
+                    }
+                    CountUp.animate(binding.tvScore, breakdown.score.toLong()) { it.toString() }
+                    val color = ContextCompat.getColor(requireContext(), scoreColor(breakdown.score))
+                    binding.scoreRing.progressColor = color
+                    binding.tvScore.setTextColor(color)
+                    binding.scoreRing.setProgress(breakdown.score / 100f)
+                }
+            }
+            launch {
+                viewModel.categoryResolver.collectLatest { resolver ->
+                    topAppsAdapter.categoryOf = resolver
+                    periodAppsAdapter.categoryOf = resolver
+                }
+            }
+            launch {
+                viewModel.bestStreak.collectLatest { days ->
+                    CountUp.animate(binding.tvStreak, days.toLong()) { it.toString() }
                 }
             }
             launch {
                 viewModel.peakHour.collectLatest { hour ->
-                    binding.tvPeakTime.text = if (hour == null) {
-                        getString(R.string.dashboard_no_peak)
-                    } else {
-                        String.format(Locale.US, "%02d:00 – %02d:00", hour, (hour + 1) % 24)
-                    }
+                    binding.tvPeakTime.text = peakCaption(hour)
                 }
             }
             launch {
