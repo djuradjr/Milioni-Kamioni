@@ -13,6 +13,34 @@
     <string name="accessibility_service_description">Block Brainrot uses the Accessibility Service to detect which app or website is currently open so it can enforce your blocking rules.</string>
 
     <!-- Onboarding -->
+    <string name="onboarding_step_indicator" translatable="false">%1$d / %2$d</string>
+    <string name="onboarding_target_name_whole">%1$s · whole app</string>
+    <string name="onboarding_goal_hint_already">already below this — keep it there</string>
+    <string name="duration_hours" translatable="false">%1$dh</string>
+    <string name="duration_hours_minutes" translatable="false">%1$dh %2$dm</string>
+    <string name="duration_minutes" translatable="false">%1$dm</string>
+    <string name="onboarding_target_name" translatable="false">%1$s · %2$s</string>
+    <string name="stepper_minus" translatable="false">−</string>
+    <string name="stepper_plus" translatable="false">+</string>
+    <string name="onboarding_privacy_note">Nothing leaves your phone. The app has no internet access at all.</string>
+    <string name="onboarding_report_label">Your last 7 days</string>
+    <string name="onboarding_report_sub">%1$s a day · %2$d unlocks a day</string>
+    <string name="onboarding_report_sub_short">%1$s a day</string>
+    <string name="onboarding_goal_label">Suggested daily goal</string>
+    <string name="onboarding_goal_hint_less">%1$s less than now — reachable</string>
+    <string name="onboarding_goal_hint_start">we will tune it once there is a week of data</string>
+    <string name="onboarding_first_run_title">We start measuring today</string>
+    <string name="onboarding_first_run_desc">Your phone kept no earlier history, so we begin from zero. The first score arrives tonight, the first real week in seven days.</string>
+    <string name="onboarding_targets_title">What pulls you in most?</string>
+    <string name="onboarding_targets_desc">We picked these from your week. You can change any limit later.</string>
+    <string name="onboarding_targets_desc_blind">These are the surfaces Block Brainrot can detect. Turn on the ones that pull you in.</string>
+    <string name="onboarding_limit_rule_mark" translatable="false">!</string>
+    <string name="onboarding_limit_rule">You can lower a limit right away, but raising one only takes effect tomorrow.</string>
+    <string name="onboarding_decide_later">Decide later</string>
+    <string name="onboarding_set_goal">Set goal</string>
+    <string name="onboarding_turn_on_protection">Turn on protection</string>
+    <string name="onboarding_target_limit_off">blocks right away</string>
+    <string name="onboarding_target_limit_minutes">%1$d min a day</string>
     <string name="onboarding_usage_title">Usage Access</string>
     <string name="onboarding_usage_desc">Block Brainrot needs permission to view your app usage statistics. This lets us show you exactly how much time you spend in each app.</string>
     <string name="onboarding_accessibility_title">Accessibility Service</string>

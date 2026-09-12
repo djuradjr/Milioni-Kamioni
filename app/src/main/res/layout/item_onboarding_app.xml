@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- One line of the pre-install report: which app, how long. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingVertical="7dp">
+
+    <ImageView
+        android:id="@+id/iv_icon"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_marginEnd="11dp"
+        android:importantForAccessibility="no" />
+
+    <TextView
+        android:id="@+id/tv_name"
+        style="@style/Skor.Body"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:textSize="13sp"
+        android:maxLines="1"
+        android:ellipsize="end" />
+
+    <TextView
+        android:id="@+id/tv_time"
+        style="@style/Skor.Micro"
+        android:textSize="12sp"
+        android:fontFeatureSettings="tnum" />
+</LinearLayout>

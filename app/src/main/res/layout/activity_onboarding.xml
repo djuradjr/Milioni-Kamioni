@@ -1,51 +1,265 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Three phases in one activity: the permission steps, then the week-before
+     report, then target selection. Phases share the progress bar and the
+     bottom buttons so the flow reads as one sequence, not three screens. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="@dimen/spacing_lg"
-    android:gravity="center"
+    android:background="@color/skor_ground"
     android:fitsSystemWindows="true">
 
-    <TextView
-        android:id="@+id/tv_step_indicator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:textColor="?attr/colorOnSurfaceVariant"
-        android:layout_marginBottom="@dimen/spacing_xl" />
-
-    <TextView
-        android:id="@+id/tv_title"
+    <LinearLayout
+        android:id="@+id/progress_row"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textAlignment="center"
-        android:layout_marginBottom="@dimen/spacing_md" />
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/spacing_lg"
+        android:paddingTop="@dimen/spacing_md" />
 
-    <TextView
-        android:id="@+id/tv_description"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/spacing_lg">
+
+            <!-- Phase 1 · permissions -->
+            <LinearLayout
+                android:id="@+id/group_permission"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_vertical"
+                android:minHeight="420dp">
+
+                <TextView
+                    android:id="@+id/tv_step_indicator"
+                    style="@style/Skor.Label"
+                    android:layout_marginBottom="@dimen/spacing_md" />
+
+                <TextView
+                    android:id="@+id/tv_title"
+                    style="@style/Skor.Text"
+                    android:layout_width="match_parent"
+                    android:textSize="26sp"
+                    android:textFontWeight="700"
+                    android:textStyle="bold"
+                    android:letterSpacing="-0.028"
+                    android:lineSpacingMultiplier="1.15"
+                    android:layout_marginBottom="@dimen/spacing_md" />
+
+                <TextView
+                    android:id="@+id/tv_description"
+                    style="@style/Skor.Text"
+                    android:layout_width="match_parent"
+                    android:textSize="15sp"
+                    android:textColor="@color/skor_text_dim"
+                    android:lineSpacingMultiplier="1.5" />
+
+                <LinearLayout
+                    android:id="@+id/card_privacy"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="14dp"
+                    android:layout_marginTop="@dimen/spacing_md"
+                    android:background="@drawable/bg_skor_card">
+
+                    <TextView
+                        style="@style/Skor.Micro"
+                        android:layout_width="match_parent"
+                        android:lineSpacingMultiplier="1.45"
+                        android:text="@string/onboarding_privacy_note" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Phase 2 · the week before install -->
+            <LinearLayout
+                android:id="@+id/group_report"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tv_report_label"
+                    style="@style/Skor.Label"
+                    android:layout_marginTop="@dimen/spacing_lg"
+                    android:text="@string/onboarding_report_label" />
+
+                <TextView
+                    android:id="@+id/tv_report_total"
+                    style="@style/Skor.Display"
+                    android:layout_marginTop="6dp"
+                    tools:text="29h 14m" />
+
+                <TextView
+                    android:id="@+id/tv_report_sub"
+                    style="@style/Skor.Micro"
+                    android:layout_marginTop="8dp"
+                    tools:text="4h 11m dnevno" />
+
+                <com.example.stayfree.ui.common.BarChartView
+                    android:id="@+id/chart_report"
+                    android:layout_width="match_parent"
+                    android:layout_height="86dp"
+                    android:layout_marginTop="@dimen/spacing_md"
+                    app:barColor="@color/skor_idle"
+                    app:barTrackColor="@color/skor_track"
+                    app:barLabelColor="@color/skor_text_dim" />
+
+                <LinearLayout
+                    android:id="@+id/report_top_apps"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="@dimen/spacing_md" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_md"
+                    android:layout_marginTop="@dimen/spacing_md"
+                    android:background="@drawable/bg_skor_card">
+
+                    <TextView
+                        style="@style/Skor.Label"
+                        android:text="@string/onboarding_goal_label" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="9dp">
+
+                        <TextView
+                            android:id="@+id/btn_goal_minus"
+                            style="@style/Skor.Stepper"
+                            android:text="@string/stepper_minus" />
+
+                        <TextView
+                            android:id="@+id/tv_goal_value"
+                            style="@style/Skor.Metric"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:textSize="24sp"
+                            android:gravity="center"
+                            tools:text="3h 10m" />
+
+                        <TextView
+                            android:id="@+id/btn_goal_plus"
+                            style="@style/Skor.Stepper"
+                            android:text="@string/stepper_plus" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv_goal_hint"
+                        style="@style/Skor.Micro"
+                        android:layout_width="match_parent"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center"
+                        tools:text="jedan sat manje nego sada" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Phase 3 · what to protect -->
+            <LinearLayout
+                android:id="@+id/group_targets"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    style="@style/Skor.Text"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="@dimen/spacing_lg"
+                    android:textSize="23sp"
+                    android:textFontWeight="700"
+                    android:textStyle="bold"
+                    android:letterSpacing="-0.028"
+                    android:text="@string/onboarding_targets_title" />
+
+                <TextView
+                    android:id="@+id/tv_targets_sub"
+                    style="@style/Skor.Micro"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="9dp"
+                    android:lineSpacingMultiplier="1.45"
+                    android:text="@string/onboarding_targets_desc" />
+
+                <LinearLayout
+                    android:id="@+id/targets_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="@dimen/spacing_md"
+                    android:background="@drawable/bg_skor_card" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/spacing_md">
+
+                    <TextView
+                        style="@style/Skor.Micro"
+                        android:textColor="@color/skor_warn"
+                        android:layout_marginEnd="8dp"
+                        android:text="@string/onboarding_limit_rule_mark" />
+
+                    <TextView
+                        style="@style/Skor.Micro"
+                        android:layout_width="match_parent"
+                        android:lineSpacingMultiplier="1.45"
+                        android:text="@string/onboarding_limit_rule" />
+                </LinearLayout>
+            </LinearLayout>
+        </FrameLayout>
+    </ScrollView>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:textAlignment="center"
-        android:layout_marginBottom="48dp"
-        android:lineSpacingMultiplier="1.4" />
+        android:orientation="vertical"
+        android:padding="@dimen/spacing_lg">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_grant"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/btn_grant_permission"
-        android:layout_marginBottom="12dp" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_grant"
+            style="@style/Skor.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_grant_permission" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_next"
-        style="@style/Widget.App.Button.Outlined"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/btn_next"
-        android:enabled="false" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_next"
+            style="@style/Skor.Button.Neutral"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/btn_next"
+            android:enabled="false" />
 
+        <TextView
+            android:id="@+id/btn_skip"
+            style="@style/Skor.Micro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="14dp"
+            android:visibility="gone"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="@string/onboarding_decide_later" />
+    </LinearLayout>
 </LinearLayout>
