@@ -76,4 +76,34 @@
     <color name="dash_line_grid">#14000000</color>
     <color name="dash_line_axis">#94A0B4</color>
     <color name="dash_line_caption">#6B7686</color>
+
+    <!-- ===================== SKOR design system (light) =====================
+         The dark values in values-night/ are the designed original; these are a
+         translation, not an inversion: teal, amber and orange are all darkened
+         because the dark-mode hues fall under 4.5:1 on a white ground.
+         Rule: orange means distraction/blocking ONLY — never brand chrome.
+         Accent colors on light surfaces are text-safe; *_soft are chip fills. -->
+    <color name="skor_ground">#EFF2F6</color>
+    <color name="skor_card">#FFFFFF</color>
+    <color name="skor_card_raised">#E4EAF2</color>
+    <color name="skor_line">#DCE3EC</color>
+    <color name="skor_nav">#FFFFFF</color>
+    <color name="skor_track">#E2E8F0</color>
+
+    <color name="skor_text">#111C2B</color>
+    <color name="skor_text_dim">#5B6C82</color>
+
+    <color name="skor_focus">#0E8C74</color>
+    <color name="skor_focus_soft">#1A0E8C74</color>
+    <color name="skor_on_focus">#FFFFFF</color>
+    <color name="skor_distraction">#D9450F</color>
+    <color name="skor_distraction_soft">#1AD9450F</color>
+    <color name="skor_night">#6F4FB0</color>
+    <color name="skor_night_soft">#1A6F4FB0</color>
+    <color name="skor_warn">#A66A00</color>
+    <color name="skor_warn_soft">#1FA66A00</color>
+    <color name="skor_idle">#C3CCD9</color>
+
+    <color name="skor_ripple">#14111C2B</color>
+    <color name="skor_scrim">#99000000</color>
 </resources>

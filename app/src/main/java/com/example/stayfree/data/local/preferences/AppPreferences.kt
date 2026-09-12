@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
+import com.example.stayfree.domain.score.AppCategory
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -67,10 +68,15 @@ class AppPreferences @Inject constructor(
         // Content blocks fired for ONE effective day: {"date":"yyyy-MM-dd","count":N}.
         // Same rolling-day reset as CONTENT_TARGET_USAGE.
         val CONTENT_BLOCK_COUNT = stringPreferencesKey("content_block_count_json")
+        // Focus-score category overrides: JSON map {pkg: AppCategory.name}.
+        // Only packages the user actually changed are stored; everything else
+        // resolves through AppCategory.defaultFor so the seed list can evolve.
+        val APP_CATEGORIES = stringPreferencesKey("app_categories_json")
     }
 
     val dailyResetTimeMinutes: Flow<Int> = dataStore.data.map { it[DAILY_RESET_TIME_MINUTES] ?: 0 }
-    val appearanceMode: Flow<String> = dataStore.data.map { it[APPEARANCE_MODE] ?: APPEARANCE_LIGHT }
+    // Skor is designed dark-first; light is a translation of it, not the default.
+    val appearanceMode: Flow<String> = dataStore.data.map { it[APPEARANCE_MODE] ?: APPEARANCE_DARK }
     val pinHash: Flow<String?> = dataStore.data.map { it[PIN_HASH] }
     val pinEnabled: Flow<Boolean> = dataStore.data.map { it[PIN_ENABLED] ?: false }
     val pinLockoutUntil: Flow<Long> = dataStore.data.map { it[PIN_LOCKOUT_UNTIL] ?: 0L }
@@ -97,6 +103,19 @@ class AppPreferences @Inject constructor(
     /** Daily allowance in minutes per content target (0 = block immediately). */
     val contentTargetLimitsMinutes: Flow<Map<String, Int>> =
         dataStore.data.map { parseLimits(it[CONTENT_TARGET_LIMITS]) }
+    /** Only the packages the user re-categorised; resolve through [categoryOf]. */
+    val appCategoryOverrides: Flow<Map<String, AppCategory>> = dataStore.data.map { prefs ->
+        val json = prefs[APP_CATEGORIES] ?: return@map emptyMap()
+        try {
+            val obj = JSONObject(json)
+            obj.keys().asSequence().mapNotNull { key ->
+                runCatching { key to AppCategory.valueOf(obj.getString(key)) }.getOrNull()
+            }.toMap()
+        } catch (e: Exception) {
+            emptyMap()
+        }
+    }
+
     val dailyGoalMinutes: Flow<Int> =
         dataStore.data.map { it[DAILY_GOAL_MINUTES] ?: DEFAULT_DAILY_GOAL_MINUTES }
     /** (effectiveDate, count) of content blocks fired that day. */
@@ -227,6 +246,23 @@ class AppPreferences @Inject constructor(
             }
             obj.put(packageName, minutes.coerceAtLeast(0))
             prefs[BLOCK_APP_LIMITS] = obj.toString()
+        }
+    }
+
+    /** User overrides of the focus-score category: JSON map {pkg: AppCategory.name}. */
+    suspend fun setAppCategory(packageName: String, category: AppCategory) {
+        dataStore.edit { prefs ->
+            val obj = try {
+                JSONObject(prefs[APP_CATEGORIES] ?: "{}")
+            } catch (e: Exception) {
+                JSONObject()
+            }
+            if (category == AppCategory.defaultFor(packageName)) {
+                obj.remove(packageName)
+            } else {
+                obj.put(packageName, category.name)
+            }
+            prefs[APP_CATEGORIES] = obj.toString()
         }
     }
 

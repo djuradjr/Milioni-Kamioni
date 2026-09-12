@@ -52,6 +52,14 @@ class MainActivity : AppCompatActivity() {
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         binding.bottomNav.setupWithNavController(navHostFragment.navController)
 
+        // Tapping the active tab while inside one of its sub-screens returns to
+        // that tab's root (Blokiraj → Aplikacije → tap "Blokiraj" → back to the hub).
+        // setupWithNavController alone does nothing here because the sub-screens
+        // are siblings in a flat graph, not a nested one.
+        binding.bottomNav.setOnItemReselectedListener { item ->
+            navHostFragment.navController.popBackStack(item.itemId, false)
+        }
+
         // Full-bleed orange tabs recolor the status bar; per-fragment onStart/onStop
         // can't do this reliably because replace() starts the new fragment before
         // stopping the old one.

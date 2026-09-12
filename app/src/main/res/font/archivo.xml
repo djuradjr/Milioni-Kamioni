@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Archivo (OFL), instanced from the variable font and subset to latin+latin-ext.
+     app: namespace is what AppCompat reads below API 26; android: covers 26+. -->
+<font-family xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <font
+        android:font="@font/archivo_400"
+        android:fontStyle="normal"
+        android:fontWeight="400"
+        app:font="@font/archivo_400"
+        app:fontStyle="normal"
+        app:fontWeight="400" />
+
+    <font
+        android:font="@font/archivo_500"
+        android:fontStyle="normal"
+        android:fontWeight="500"
+        app:font="@font/archivo_500"
+        app:fontStyle="normal"
+        app:fontWeight="500" />
+
+    <font
+        android:font="@font/archivo_600"
+        android:fontStyle="normal"
+        android:fontWeight="600"
+        app:font="@font/archivo_600"
+        app:fontStyle="normal"
+        app:fontWeight="600" />
+
+    <font
+        android:font="@font/archivo_700"
+        android:fontStyle="normal"
+        android:fontWeight="700"
+        app:font="@font/archivo_700"
+        app:fontStyle="normal"
+        app:fontWeight="700" />
+</font-family>

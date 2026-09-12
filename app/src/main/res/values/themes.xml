@@ -34,6 +34,10 @@
         <item name="android:windowBackground">@color/surface_container_low</item>
         <item name="android:statusBarColor">@color/surface_container_low</item>
         <item name="android:windowLightStatusBar">@bool/light_status_bar</item>
+        <!-- Archivo everywhere. android:fontFamily covers API 26+; the bare
+             fontFamily attr is what AppCompat reads below that. -->
+        <item name="android:fontFamily">@font/archivo</item>
+        <item name="fontFamily">@font/archivo</item>
         <!-- Fully-rounded (pill) buttons everywhere -->
         <item name="materialButtonStyle">@style/Widget.App.Button</item>
         <!-- White bottom nav with an orange pill indicator -->

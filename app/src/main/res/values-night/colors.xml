@@ -63,4 +63,29 @@
     <color name="dash_line_grid">#14000000</color>
     <color name="dash_line_axis">#94A0B4</color>
     <color name="dash_line_caption">#6B7686</color>
+
+    <!-- ===================== SKOR design system (dark — the original) ===== -->
+    <color name="skor_ground">#0F1926</color>
+    <color name="skor_card">#182534</color>
+    <color name="skor_card_raised">#1F2E40</color>
+    <color name="skor_line">#24354A</color>
+    <color name="skor_nav">#0B131E</color>
+    <color name="skor_track">#223145</color>
+
+    <color name="skor_text">#E7EEF6</color>
+    <color name="skor_text_dim">#7A8FA9</color>
+
+    <color name="skor_focus">#3FBFA3</color>
+    <color name="skor_focus_soft">#263FBFA3</color>
+    <color name="skor_on_focus">#06231D</color>
+    <color name="skor_distraction">#FF6B35</color>
+    <color name="skor_distraction_soft">#26FF6B35</color>
+    <color name="skor_night">#A78BD9</color>
+    <color name="skor_night_soft">#29A78BD9</color>
+    <color name="skor_warn">#FFC24D</color>
+    <color name="skor_warn_soft">#26FFC24D</color>
+    <color name="skor_idle">#34465C</color>
+
+    <color name="skor_ripple">#1FE7EEF6</color>
+    <color name="skor_scrim">#B3000000</color>
 </resources>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Pill chip. Tint the fill per meaning with android:backgroundTint
+     (skor_focus_soft / _distraction_soft / _night_soft / _warn_soft). -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <corners android:radius="999dp" />
+    <solid android:color="@color/skor_focus_soft" />
+</shape>

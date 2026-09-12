@@ -5,11 +5,15 @@ import androidx.lifecycle.viewModelScope
 import com.example.stayfree.data.local.preferences.AppPreferences
 import com.example.stayfree.data.repository.UsageRepository
 import com.example.stayfree.domain.model.AppUsage
+import com.example.stayfree.domain.score.AppCategory
+import com.example.stayfree.domain.score.FocusScore
 import com.example.stayfree.util.TimeUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+private const val AVERAGE_WINDOW_DAYS = 7
 
 enum class StatsPeriod { DAILY, WEEKLY, MONTHLY }
 
@@ -78,6 +82,66 @@ class DashboardViewModel @Inject constructor(
             if (max > 0L) buckets.indexOf(max) else null
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+
+    /** Every app for the selected date — the score weighs all of them, not just the top 5. */
+    private val dailyUsage: StateFlow<List<AppUsage>> = selectedDate
+        .flatMapLatest { date -> usageRepository.getUsageForDate(date) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    /** User's override wins; unknown packages fall back to the seed guess. */
+    private val categoryResolver: StateFlow<(String) -> AppCategory> =
+        prefs.appCategoryOverrides
+            .map { overrides -> { pkg: String -> overrides[pkg] ?: AppCategory.defaultFor(pkg) } }
+            .stateIn(
+                viewModelScope,
+                SharingStarted.WhileSubscribed(5000),
+                { pkg: String -> AppCategory.defaultFor(pkg) }
+            )
+
+    /**
+     * Unlocks per day over the previous week, today excluded — today is what we
+     * are judging, so it must not move its own baseline. With no history this is
+     * 0, and [FocusScore] then charges no unlock penalty at all.
+     */
+    private val averageUnlocks: StateFlow<Int> = usageRepository
+        .getTotalUnlocksBetween(
+            TimeUtils.getDateStringDaysAgo(AVERAGE_WINDOW_DAYS),
+            TimeUtils.getDateStringDaysAgo(1)
+        )
+        .map { total -> total / AVERAGE_WINDOW_DAYS }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
+
+    private val scorePending = combine(
+        dailyUsage,
+        categoryResolver,
+        prefs.dailyGoalMinutes,
+        totalUnlocks,
+        averageUnlocks
+    ) { usage, categoryOf, goal, unlocks, avgUnlocks ->
+        { intercepted: Int ->
+            FocusScore.compute(usage, categoryOf, goal, unlocks, avgUnlocks, intercepted)
+        }
+    }
+
+    /** Null until there is any usage at all — the first-day state shows a dash, never 0. */
+    val focusScore: StateFlow<FocusScore.Breakdown?> =
+        combine(scorePending, interceptedCount, dailyUsage) { compute, intercepted, usage ->
+            if (usage.isEmpty()) null else compute(intercepted)
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+
+    /** Distraction vs. everything else per clock hour — the two-colour bar chart. */
+    val hourlyBreakdown: StateFlow<List<Pair<Long, Long>>> =
+        combine(hourlyUsage, dailyUsage, categoryResolver) { hours, usage, categoryOf ->
+            val total = usage.sumOf { it.totalTimeMs }.coerceAtLeast(1L)
+            val distraction = usage
+                .filter { categoryOf(it.packageName) == AppCategory.DISTRACTION }
+                .sumOf { it.totalTimeMs }
+            // Per-hour category split isn't recorded, so each hour is divided by
+            // the day's own distraction share. Totals stay exact; single hours are
+            // an estimate — which is why no hour is ever labelled as pure.
+            val share = distraction.toDouble() / total
+            hours.map { ms -> (ms * share).toLong() to (ms - (ms * share).toLong()) }
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private val _period = MutableStateFlow(StatsPeriod.DAILY)
     val period: StateFlow<StatsPeriod> = _period.asStateFlow()

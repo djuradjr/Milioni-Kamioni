@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SKOR type scale. Sizes are the mockup's px scaled by ~1.24 (the mockup frame
+     is 316px wide and stands for a ~392dp screen). Every style that shows a
+     changing number sets tnum so digits don't jitter while animating. -->
+<resources>
+
+    <style name="Skor.Text" parent="">
+        <item name="android:fontFamily">@font/archivo</item>
+        <item name="fontFamily">@font/archivo</item>
+        <item name="android:textColor">@color/skor_text</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <!-- The score itself. Only one per screen. -->
+    <style name="Skor.Display" parent="Skor.Text">
+        <item name="android:textSize">40sp</item>
+        <item name="android:textFontWeight">700</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">-0.03</item>
+        <item name="android:fontFeatureSettings">tnum</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <!-- Screen-time totals, big counts. -->
+    <style name="Skor.Metric" parent="Skor.Text">
+        <item name="android:textSize">30sp</item>
+        <item name="android:textFontWeight">700</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">-0.03</item>
+        <item name="android:fontFeatureSettings">tnum</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <!-- Numbers inside the three small tiles. -->
+    <style name="Skor.MetricSmall" parent="Skor.Text">
+        <item name="android:textSize">22sp</item>
+        <item name="android:textFontWeight">700</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">-0.02</item>
+        <item name="android:fontFeatureSettings">tnum</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Skor.Title" parent="Skor.Text">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textFontWeight">700</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">-0.02</item>
+    </style>
+
+    <!-- Card headers. -->
+    <style name="Skor.CardTitle" parent="Skor.Text">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textFontWeight">600</item>
+    </style>
+
+    <!-- List row primary text. -->
+    <style name="Skor.Body" parent="Skor.Text">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textFontWeight">600</item>
+    </style>
+
+    <!-- List row secondary text. -->
+    <style name="Skor.Caption" parent="Skor.Text">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textFontWeight">400</item>
+        <item name="android:textColor">@color/skor_text_dim</item>
+    </style>
+
+    <!-- Uppercase label above a number. -->
+    <style name="Skor.Label" parent="Skor.Text">
+        <item name="android:textSize">11sp</item>
+        <item name="android:textFontWeight">500</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:letterSpacing">0.12</item>
+        <item name="android:textColor">@color/skor_text_dim</item>
+    </style>
+
+    <!-- Axis ticks, legend, footnotes. -->
+    <style name="Skor.Micro" parent="Skor.Text">
+        <item name="android:textSize">10sp</item>
+        <item name="android:textFontWeight">400</item>
+        <item name="android:textColor">@color/skor_text_dim</item>
+    </style>
+
+    <!-- Pill chip: status, category, legend. -->
+    <style name="Skor.Chip" parent="Skor.Text">
+        <item name="android:textSize">11sp</item>
+        <item name="android:textFontWeight">600</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
+        <item name="android:background">@drawable/bg_skor_chip</item>
+    </style>
+
+    <style name="Skor.Button" parent="Widget.Material3.Button">
+        <item name="android:fontFamily">@font/archivo</item>
+        <item name="fontFamily">@font/archivo</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textFontWeight">700</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:paddingTop">14dp</item>
+        <item name="android:paddingBottom">14dp</item>
+        <item name="backgroundTint">@color/skor_focus</item>
+        <item name="android:textColor">@color/skor_on_focus</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="elevation">0dp</item>
+    </style>
+
+    <style name="Skor.Button.Neutral" parent="Skor.Button">
+        <item name="backgroundTint">@color/skor_card_raised</item>
+        <item name="android:textColor">@color/skor_text</item>
+    </style>
+
+    <!-- Card container: flat, no elevation — separation comes from fill. -->
+    <style name="Skor.Card" parent="Widget.Material3.CardView.Filled">
+        <item name="cardBackgroundColor">@color/skor_card</item>
+        <item name="cardCornerRadius">14dp</item>
+        <item name="cardElevation">0dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+</resources>
