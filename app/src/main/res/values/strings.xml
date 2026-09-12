@@ -155,7 +155,7 @@
     <string name="blocking_rule_session">Session · %1$s</string>
     <string name="blocking_rule_scheduled">On a schedule</string>
     <string name="blocking_rules_empty">No app limits yet</string>
-    <string name="blocking_rules_empty_desc">Tap + to set a daily limit, schedule, or instant block for an app.</string>
+    <string name="blocking_rules_empty_desc">Add a rule to set a daily limit, a schedule, or an instant block.</string>
     <string name="blocking_add_rule">Add block rule</string>
 
     <!-- Settings detail -->
@@ -214,7 +214,7 @@
 
     <!-- Website blocking -->
     <string name="website_empty">No blocked websites</string>
-    <string name="website_empty_desc">Tap + to block a site or set a daily time cap for it.</string>
+    <string name="website_empty_desc">Add a site to block it, or give it a daily time cap.</string>
     <string name="website_add_title">Block a website</string>
     <string name="website_domain_hint">Domain (e.g. youtube.com)</string>
     <string name="website_cap_hint">Daily cap in minutes (empty = always block)</string>

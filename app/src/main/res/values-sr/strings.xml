@@ -120,7 +120,7 @@
     <string name="blocking_rule_session">Sesija · %1$s</string>
     <string name="blocking_rule_scheduled">Po rasporedu</string>
     <string name="blocking_rules_empty">Još nema limita za aplikacije</string>
-    <string name="blocking_rules_empty_desc">Dodirni + da postaviš dnevni limit, raspored ili trenutnu blokadu.</string>
+    <string name="blocking_rules_empty_desc">Dodaj pravilo za dnevni limit, raspored ili trenutnu blokadu.</string>
     <string name="blocking_add_rule">Dodaj pravilo blokiranja</string>
 
     <!-- Settings detail -->
@@ -166,7 +166,7 @@
 
     <!-- Website blocking -->
     <string name="website_empty">Nema blokiranih sajtova</string>
-    <string name="website_empty_desc">Dodirni + da blokiraš sajt ili mu postaviš dnevni limit.</string>
+    <string name="website_empty_desc">Dodaj sajt da ga blokiraš ili mu postaviš dnevni limit.</string>
     <string name="website_add_title">Blokiraj sajt</string>
     <string name="website_domain_hint">Domen (npr. youtube.com)</string>
     <string name="website_cap_hint">Dnevni limit u minutima (prazno = uvek blokiraj)</string>
