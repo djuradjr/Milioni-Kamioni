@@ -108,6 +108,7 @@
          must not be night-qualified: one fixed dark value in both modes,
          which also matches the dark-first default. -->
     <color name="skor_splash_bg">#0F1926</color>
+    <color name="skor_on_night">#FFFFFF</color>
     <color name="skor_ripple">#14111C2B</color>
     <color name="skor_scrim">#99000000</color>
 </resources>

@@ -182,10 +182,17 @@
     <string name="focus_45_min" translatable="false">45 min</string>
     <string name="focus_60_min" translatable="false">60 min</string>
     <string name="focus_custom_minutes">Custom (minutes):</string>
+    <string name="focus_90_min" translatable="false">90 min</string>
+    <string name="focus_minutes_label">minutes</string>
+    <string name="focus_drag_hint">Drag the ring for an exact length</string>
+    <string name="focus_whitelist_desc">Only apps you allow get through</string>
+    <string name="focus_start_with_length">Start focus · %1$d min</string>
     <string name="focus_start">Start Focus</string>
     <string name="focus_end_early">End Focus Early</string>
 
     <!-- Sleep mode -->
+    <string name="sleep_drag_hint">Drag the handles to move the night</string>
+    <string name="sleep_quiet_length">%1$s of quiet</string>
     <string name="sleep_days">Sleep days</string>
     <string name="sleep_start_time">Sleep start time</string>
     <string name="sleep_wake_time">Wake time</string>

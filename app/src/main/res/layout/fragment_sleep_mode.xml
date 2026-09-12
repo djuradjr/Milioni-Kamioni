@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Sleep mode. One 24-hour dial with two handles replaces the two TimePicker
+     spinners and the seven checkboxes: the night is a shape you can see, and
+     the hours of quiet are the number in the middle. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/skor_ground">
 
     <include
         android:id="@+id/back_header"
@@ -10,82 +16,130 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingHorizontal="@dimen/spacing_md">
+
+        <FrameLayout
+            android:layout_width="252dp"
+            android:layout_height="252dp"
+            android:layout_marginTop="@dimen/spacing_sm">
+
+            <com.example.stayfree.ui.common.ArcPickerView
+                android:id="@+id/arc_night"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/tv_start_time"
+                    style="@style/Skor.Metric"
+                    android:textSize="28sp"
+                    tools:text="23:00" />
+
+                <TextView
+                    android:id="@+id/tv_quiet_length"
+                    style="@style/Skor.Micro"
+                    android:layout_marginVertical="7dp"
+                    tools:text="8h 0m tišine" />
+
+                <TextView
+                    android:id="@+id/tv_end_time"
+                    style="@style/Skor.Metric"
+                    android:textSize="28sp"
+                    tools:text="07:00" />
+            </LinearLayout>
+        </FrameLayout>
+
+        <TextView
+            style="@style/Skor.Micro"
+            android:layout_marginTop="@dimen/spacing_sm"
+            android:gravity="center"
+            android:text="@string/sleep_drag_hint" />
+
+        <TextView
+            style="@style/Skor.Label"
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/spacing_md"
+            android:layout_marginBottom="@dimen/spacing_sm"
+            android:text="@string/sleep_days" />
+
+        <!-- Chips, not checkboxes: same Checkable contract, far less chrome. -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:baselineAligned="false">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/cb_mon"
+                style="@style/Skor.DayChip"
+                android:text="@string/day_m" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/cb_tue"
+                style="@style/Skor.DayChip"
+                android:text="@string/day_t" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/cb_wed"
+                style="@style/Skor.DayChip"
+                android:text="@string/day_w" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/cb_thu"
+                style="@style/Skor.DayChip"
+                android:text="@string/day_th" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/cb_fri"
+                style="@style/Skor.DayChip"
+                android:text="@string/day_f" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/cb_sat"
+                style="@style/Skor.DayChip"
+                android:checked="true"
+                android:text="@string/day_s" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/cb_sun"
+                style="@style/Skor.DayChip"
+                android:checked="true"
+                android:text="@string/day_su" />
+        </LinearLayout>
+    </LinearLayout>
 
     <LinearLayout
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="@dimen/spacing_md">
 
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_md"
-            app:cardBackgroundColor="?attr/colorTertiary"
-            app:cardCornerRadius="@dimen/radius_lg"
-            app:cardElevation="0dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="@dimen/spacing_lg">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/sleep_header_title"
-                    android:textAppearance="?attr/textAppearanceHeadlineSmall"
-                    android:textColor="?attr/colorOnTertiary" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/sleep_header_tagline"
-                    android:textAppearance="?attr/textAppearanceBodyMedium"
-                    android:textColor="?attr/colorOnTertiary"
-                    android:alpha="0.85"
-                    android:layout_marginTop="@dimen/spacing_xs" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/sleep_days" android:textStyle="bold" android:layout_marginBottom="@dimen/spacing_sm" />
-
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginBottom="@dimen/spacing_md">
-            <CheckBox android:id="@+id/cb_mon" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/day_m" />
-            <CheckBox android:id="@+id/cb_tue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/day_t" />
-            <CheckBox android:id="@+id/cb_wed" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/day_w" />
-            <CheckBox android:id="@+id/cb_thu" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/day_th" />
-            <CheckBox android:id="@+id/cb_fri" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/day_f" />
-            <CheckBox android:id="@+id/cb_sat" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/day_s" android:checked="true" />
-            <CheckBox android:id="@+id/cb_sun" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/day_su" android:checked="true" />
-        </LinearLayout>
-
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/sleep_start_time" android:textStyle="bold" android:layout_marginBottom="@dimen/spacing_sm" />
-        <TimePicker android:id="@+id/tp_start" android:layout_width="wrap_content" android:layout_height="wrap_content" android:timePickerMode="spinner" android:layout_marginBottom="@dimen/spacing_md" />
-
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/sleep_wake_time" android:textStyle="bold" android:layout_marginBottom="@dimen/spacing_sm" />
-        <TimePicker android:id="@+id/tp_end" android:layout_width="wrap_content" android:layout_height="wrap_content" android:timePickerMode="spinner" android:layout_marginBottom="@dimen/spacing_lg" />
-
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_save"
+            style="@style/Skor.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/btn_save"
-            android:layout_marginBottom="@dimen/spacing_sm" />
+            android:backgroundTint="@color/skor_night"
+            android:textColor="@color/skor_on_night"
+            android:text="@string/btn_save" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_cancel"
-            style="@style/Widget.App.Button.Outlined"
+            style="@style/Skor.Button.Neutral"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_sm"
             android:text="@string/btn_cancel" />
-
     </LinearLayout>
-    </ScrollView>
 </LinearLayout>

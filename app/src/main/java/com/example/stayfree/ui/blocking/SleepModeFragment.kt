@@ -7,9 +7,19 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.core.content.ContextCompat
+import com.example.stayfree.R
 import com.example.stayfree.databinding.FragmentSleepModeBinding
+import com.example.stayfree.util.TimeUtils
+import java.util.Locale
 import com.example.stayfree.ui.common.bindBackHeader
 import dagger.hilt.android.AndroidEntryPoint
+
+private const val MINUTES_PER_DAY = 1440
+private const val ARC_STEP_MINUTES = 15
+private const val MIN_QUIET_MINUTES = 30
+private const val DEFAULT_START_MINUTES = 23 * 60
+private const val DEFAULT_END_MINUTES = 7 * 60
 
 @AndroidEntryPoint
 class SleepModeFragment : Fragment() {
@@ -28,16 +38,41 @@ class SleepModeFragment : Fragment() {
 
         bindBackHeader(binding.backHeader)
 
+        binding.arcNight.apply {
+            range = MINUTES_PER_DAY
+            step = ARC_STEP_MINUTES
+            minSweep = MIN_QUIET_MINUTES
+            arcColor = ContextCompat.getColor(requireContext(), R.color.skor_night)
+            startValue = DEFAULT_START_MINUTES
+            endValue = DEFAULT_END_MINUTES
+            onValueChanged = { start, end -> renderWindow(start, end ?: DEFAULT_END_MINUTES) }
+        }
+        renderWindow(DEFAULT_START_MINUTES, DEFAULT_END_MINUTES)
+
         binding.btnSave.setOnClickListener {
             val daysSelected = buildSelectedDays()
-            val startMinutes = binding.tpStart.hour * 60 + binding.tpStart.minute
-            val endMinutes = binding.tpEnd.hour * 60 + binding.tpEnd.minute
+            val startMinutes = binding.arcNight.startValue
+            val endMinutes = binding.arcNight.endValue ?: DEFAULT_END_MINUTES
             viewModel.saveSleepMode(daysSelected, startMinutes, endMinutes)
             findNavController().popBackStack()
         }
 
         binding.btnCancel.setOnClickListener { findNavController().popBackStack() }
     }
+
+    /** Clock labels plus how long the quiet window actually lasts. */
+    private fun renderWindow(startMinutes: Int, endMinutes: Int) {
+        binding.tvStartTime.text = formatClock(startMinutes)
+        binding.tvEndTime.text = formatClock(endMinutes)
+        val quietMinutes = ((endMinutes - startMinutes) + MINUTES_PER_DAY) % MINUTES_PER_DAY
+        binding.tvQuietLength.text = getString(
+            R.string.sleep_quiet_length,
+            TimeUtils.formatDuration(quietMinutes * 60_000L)
+        )
+    }
+
+    private fun formatClock(minutes: Int): String =
+        String.format(Locale.US, "%02d:%02d", minutes / 60, minutes % 60)
 
     private fun buildSelectedDays(): String {
         val days = mutableListOf<String>()

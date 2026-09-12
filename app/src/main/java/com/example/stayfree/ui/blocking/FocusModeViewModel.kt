@@ -13,6 +13,10 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val DEFAULT_DURATION_MINUTES = 25
+private const val MIN_DURATION_MINUTES = 5
+private const val MAX_DURATION_MINUTES = 120
+
 @HiltViewModel
 class FocusModeViewModel @Inject constructor(
     private val prefs: AppPreferences
@@ -24,7 +28,8 @@ class FocusModeViewModel @Inject constructor(
     private val _remainingMs = MutableStateFlow(0L)
     val remainingMs: StateFlow<Long> = _remainingMs.asStateFlow()
 
-    private var durationMinutes = 25
+    private val _durationMinutes = MutableStateFlow(DEFAULT_DURATION_MINUTES)
+    val durationMinutes: StateFlow<Int> = _durationMinutes.asStateFlow()
     private var isWhitelistMode = true
     private var countdownJob: Job? = null
 
@@ -42,11 +47,13 @@ class FocusModeViewModel @Inject constructor(
         }
     }
 
-    fun setDurationMinutes(minutes: Int) { durationMinutes = minutes }
+    fun setDurationMinutes(minutes: Int) {
+        _durationMinutes.value = minutes.coerceIn(MIN_DURATION_MINUTES, MAX_DURATION_MINUTES)
+    }
     fun setWhitelistMode(whitelist: Boolean) { isWhitelistMode = whitelist }
 
     fun startFocusMode() {
-        val durationMs = durationMinutes * 60_000L
+        val durationMs = _durationMinutes.value * 60_000L
         val endTime = System.currentTimeMillis() + durationMs
 
         FocusModeState.update(

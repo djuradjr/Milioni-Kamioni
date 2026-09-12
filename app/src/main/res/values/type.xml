@@ -160,6 +160,55 @@
         <item name="android:background">@color/skor_line</item>
     </style>
 
+    <!-- Duration shortcut chip (Focus). -->
+    <style name="Skor.DurationChip" parent="Widget.Material3.Chip.Filter">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">@font/archivo</item>
+        <item name="fontFamily">@font/archivo</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/skor_chip_text</item>
+        <item name="chipBackgroundColor">@color/skor_chip_bg</item>
+        <item name="chipStrokeWidth">0dp</item>
+        <item name="chipIconVisible">false</item>
+        <item name="checkedIconVisible">false</item>
+        <item name="ensureMinTouchTargetSize">true</item>
+    </style>
+
+    <!-- One weekday in the Sleep schedule. Chip keeps the Checkable contract
+         the fragment already reads, without the checkbox chrome. -->
+    <style name="Skor.DayChip" parent="Widget.Material3.Chip.Filter">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginEnd">4dp</item>
+        <item name="android:fontFamily">@font/archivo</item>
+        <item name="fontFamily">@font/archivo</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/skor_day_chip_text</item>
+        <item name="chipBackgroundColor">@color/skor_day_chip_bg</item>
+        <item name="chipStrokeWidth">0dp</item>
+        <item name="chipMinHeight">42dp</item>
+        <!-- The weighted width does the spacing; zeroing the chip's own side
+             padding would shrink the pill back onto the letter. -->
+        <item name="chipStartPadding">2dp</item>
+        <item name="chipEndPadding">2dp</item>
+        <item name="textStartPadding">0dp</item>
+        <item name="textEndPadding">0dp</item>
+        <item name="chipIconVisible">false</item>
+        <item name="checkedIconVisible">false</item>
+        <item name="ensureMinTouchTargetSize">false</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.Skor.DayChip</item>
+    </style>
+
+    <style name="ShapeAppearance.Skor.DayChip" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
+    </style>
+
     <!-- Card container: flat, no elevation — separation comes from fill. -->
     <style name="Skor.Card" parent="Widget.Material3.CardView.Filled">
         <item name="cardBackgroundColor">@color/skor_card</item>

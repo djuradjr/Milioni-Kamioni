@@ -273,4 +273,10 @@
     </plurals>
     <string name="content_block_count">%1$d.</string>
     <string name="content_block_count_caption">put danas da te Block Brainrot zaustavio</string>
+    <string name="focus_minutes_label">minuta</string>
+    <string name="focus_drag_hint">Prevuci po prstenu za tacan broj minuta</string>
+    <string name="focus_whitelist_desc">Prolaze samo aplikacije koje dozvolis</string>
+    <string name="focus_start_with_length">Pokreni fokus · %1$d min</string>
+    <string name="sleep_drag_hint">Prevuci kuglice da pomeris noc</string>
+    <string name="sleep_quiet_length">%1$s tisine</string>
 </resources>

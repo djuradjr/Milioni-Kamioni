@@ -86,6 +86,7 @@
     <color name="skor_warn_soft">#26FFC24D</color>
     <color name="skor_idle">#34465C</color>
 
+    <color name="skor_on_night">#1A1026</color>
     <color name="skor_ripple">#1FE7EEF6</color>
     <color name="skor_scrim">#B3000000</color>
 </resources>

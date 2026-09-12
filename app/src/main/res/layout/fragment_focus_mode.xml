@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Focus mode. The ring is both the readout and the control — dragging it sets
+     the length, chips are shortcuts. Replaces the NumberPicker spinner, which
+     took a third of the screen to do the same job. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/skor_ground">
 
     <include
         android:id="@+id/back_header"
@@ -10,110 +16,142 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
-
-    <LinearLayout
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:orientation="vertical"
-        android:padding="@dimen/spacing_md"
-        android:gravity="center_horizontal">
+        android:gravity="center"
+        android:paddingHorizontal="@dimen/spacing_md">
 
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_md"
-            app:cardBackgroundColor="?attr/colorTertiary"
-            app:cardCornerRadius="@dimen/radius_lg"
-            app:cardElevation="0dp">
+        <FrameLayout
+            android:layout_width="238dp"
+            android:layout_height="238dp"
+>
+
+            <com.example.stayfree.ui.common.ArcPickerView
+                android:id="@+id/arc_duration"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:padding="@dimen/spacing_lg">
+                android:gravity="center">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/focus_header_title"
-                    android:textAppearance="?attr/textAppearanceHeadlineSmall"
-                    android:textColor="?attr/colorOnTertiary" />
+                    android:id="@+id/tv_duration"
+                    style="@style/Skor.Display"
+                    android:textSize="52sp"
+                    tools:text="45" />
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/focus_header_tagline"
-                    android:textAppearance="?attr/textAppearanceBodyMedium"
-                    android:textColor="?attr/colorOnTertiary"
-                    android:alpha="0.85"
-                    android:layout_marginTop="@dimen/spacing_xs" />
+                    android:id="@+id/tv_countdown"
+                    style="@style/Skor.Metric"
+                    android:textSize="34sp"
+                    android:textColor="@color/skor_focus"
+                    android:visibility="gone"
+                    tools:text="12:04" />
+
+                <TextView
+                    style="@style/Skor.Label"
+                    android:layout_marginTop="6dp"
+                    android:text="@string/focus_minutes_label" />
             </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+        </FrameLayout>
 
-        <TextView
-            android:id="@+id/tv_countdown"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="48sp"
-            android:textStyle="bold"
-            android:visibility="gone"
-            android:layout_marginBottom="@dimen/spacing_md" />
-
-        <!-- Mode switch: whitelist/blacklist -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="@dimen/spacing_md">
-            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/focus_whitelist_mode" />
-            <androidx.appcompat.widget.SwitchCompat android:id="@+id/switch_mode" android:layout_width="wrap_content" android:layout_height="wrap_content" android:checked="true" />
-        </LinearLayout>
-
-        <!-- Duration chips -->
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/chip_group"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_md"
+            android:layout_marginTop="@dimen/spacing_md"
             app:singleSelection="true"
-            xmlns:app="http://schemas.android.com/apk/res-auto">
+            app:selectionRequired="false">
 
-            <com.google.android.material.chip.Chip android:id="@+id/chip_25min" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/focus_25_min" />
-            <com.google.android.material.chip.Chip android:id="@+id/chip_45min" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/focus_45_min" />
-            <com.google.android.material.chip.Chip android:id="@+id/chip_60min" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/focus_60_min" />
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_25min"
+                style="@style/Skor.DurationChip"
+                android:text="@string/focus_25_min" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_45min"
+                style="@style/Skor.DurationChip"
+                android:text="@string/focus_45_min" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_60min"
+                style="@style/Skor.DurationChip"
+                android:text="@string/focus_60_min" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_90min"
+                style="@style/Skor.DurationChip"
+                android:text="@string/focus_90_min" />
         </com.google.android.material.chip.ChipGroup>
+
+        <TextView
+            android:id="@+id/tv_hint"
+            style="@style/Skor.Micro"
+            android:layout_marginTop="@dimen/spacing_sm"
+            android:gravity="center"
+            android:text="@string/focus_drag_hint" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/spacing_md">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginBottom="@dimen/spacing_lg">
-            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/focus_custom_minutes" />
-            <NumberPicker android:id="@+id/np_custom_minutes" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+            android:padding="14dp"
+            android:background="@drawable/bg_skor_card"
+            android:layout_marginBottom="@dimen/spacing_sm">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/Skor.Body"
+                    android:text="@string/focus_whitelist_mode" />
+
+                <TextView
+                    android:id="@+id/tv_whitelist_sub"
+                    style="@style/Skor.Micro"
+                    android:layout_marginTop="1dp"
+                    android:text="@string/focus_whitelist_desc" />
+            </LinearLayout>
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switch_mode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                app:thumbTint="@color/skor_switch_thumb"
+                app:trackTint="@color/skor_switch_track" />
         </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_start_focus"
+            style="@style/Skor.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/focus_start"
-            android:layout_marginBottom="@dimen/spacing_sm" />
+            tools:text="Pokreni fokus · 45 min" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_stop_focus"
-            style="@style/Widget.App.Button.Outlined"
+            style="@style/Skor.Button.Neutral"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/focus_end_early"
-            android:visibility="gone" />
-
+            android:visibility="gone"
+            android:text="@string/focus_end_early" />
     </LinearLayout>
-    </ScrollView>
 </LinearLayout>
