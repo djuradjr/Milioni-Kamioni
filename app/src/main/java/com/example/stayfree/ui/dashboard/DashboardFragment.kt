@@ -310,18 +310,37 @@ class DashboardFragment : Fragment() {
             }
             launch {
                 viewModel.periodTotalScreenTime.collectLatest { ms ->
-                    binding.tvPeriodTotalSum.text =
-                        getString(R.string.dashboard_period_total, TimeUtils.formatDuration(ms))
+                    CountUp.animate(binding.tvPeriodTotalSum, ms) { TimeUtils.formatDuration(it) }
                 }
             }
             launch {
                 viewModel.periodTotalUnlocks.collectLatest { count ->
-                    binding.tvPeriodUnlocks.text = getString(R.string.stats_unlocks_count, count)
+                    CountUp.animate(binding.tvPeriodUnlocks, count.toLong()) { it.toString() }
                 }
             }
             launch {
                 viewModel.screenTimeComparison.collectLatest { comparison ->
                     bindTrendBadge(comparison)
+                }
+            }
+            launch {
+                viewModel.periodAverageScore.collectLatest { score ->
+                    if (score == null) {
+                        binding.tvPeriodScore.text = getString(R.string.dashboard_no_peak)
+                        binding.periodScoreRing.setProgress(0f)
+                        return@collectLatest
+                    }
+                    CountUp.animate(binding.tvPeriodScore, score.toLong()) { it.toString() }
+                    val color = ContextCompat.getColor(requireContext(), scoreColor(score))
+                    binding.periodScoreRing.progressColor = color
+                    binding.tvPeriodScore.setTextColor(color)
+                    binding.periodScoreRing.setProgress(score / 100f)
+                }
+            }
+            launch {
+                viewModel.periodDaysInGoal.collectLatest { (inGoal, total) ->
+                    binding.tvPeriodInGoal.text =
+                        getString(R.string.dashboard_period_in_goal_value, inGoal, total)
                 }
             }
             launch {
@@ -357,9 +376,14 @@ class DashboardFragment : Fragment() {
             getString(R.string.stats_trend_up, deltaPct)
         }
         // Less screen time = calming teal; more = glass white (no alarm, just a nudge).
-        badge.setBackgroundResource(
-            if (deltaPct < 0) R.drawable.bg_badge_teal else R.drawable.bg_badge_glass
-        )
+        // Less screen time reads as a win; more is a nudge, never an alarm.
+        val (fill, text) = if (deltaPct < 0) {
+            R.color.skor_focus_soft to R.color.skor_focus
+        } else {
+            R.color.skor_warn_soft to R.color.skor_warn
+        }
+        badge.backgroundTintList = ContextCompat.getColorStateList(requireContext(), fill)
+        badge.setTextColor(ContextCompat.getColor(requireContext(), text))
     }
 
     /** Crossfades the content when switching Daily/Weekly/Monthly. */

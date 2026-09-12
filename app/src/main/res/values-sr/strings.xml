@@ -254,6 +254,9 @@
     <string name="notif_daily_summary_title">Dnevni pregled vremena korišćenja</string>
     <string name="notif_daily_summary_text">Ukupno vreme korišćenja juče: %1$s</string>
     <!-- Skor redizajn -->
+    <string name="dashboard_period_score_label">Prosek</string>
+    <string name="dashboard_period_daily_avg">Prosek dnevno</string>
+    <string name="dashboard_period_in_goal">Dana u cilju</string>
     <string name="dashboard_score_label">Fokus</string>
     <string name="dashboard_screen_today">Ekran danas</string>
     <string name="dashboard_hourly_title">Sat po sat</string>

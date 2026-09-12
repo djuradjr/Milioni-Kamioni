@@ -63,6 +63,10 @@
     <string name="dashboard_goal_over">Goal exceeded by %1$s — fresh start tomorrow</string>
     <string name="dashboard_goal_dialog_title">Daily goal</string>
     <!-- Skor redesign -->
+    <string name="dashboard_period_score_label">Average</string>
+    <string name="dashboard_period_daily_avg">Daily average</string>
+    <string name="dashboard_period_in_goal">Days in goal</string>
+    <string name="dashboard_period_in_goal_value" translatable="false">%1$d/%2$d</string>
     <string name="dashboard_score_label">Focus</string>
     <string name="dashboard_screen_today">Screen today</string>
     <string name="dashboard_hourly_title">Hour by hour</string>

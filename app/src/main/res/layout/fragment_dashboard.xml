@@ -334,74 +334,142 @@
                 android:orientation="vertical"
                 android:visibility="gone">
 
-                <!-- Hero: period average + unlocks + trend badge -->
-                <com.google.android.material.card.MaterialCardView
+                <!-- Hero mirrors the daily screen: the ring carries the average
+                     score, the totals sit beside it. Same shape, different scale. -->
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/spacing_sm"
-                    app:cardBackgroundColor="@color/skor_card"
-                    app:cardCornerRadius="@dimen/radius_dash"
-                    app:cardElevation="0dp">
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:baselineAligned="false"
+                    android:layout_marginTop="@dimen/spacing_sm"
+                    android:layout_marginBottom="@dimen/spacing_md">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="@dimen/spacing_md">
+                    <FrameLayout
+                        android:layout_width="116dp"
+                        android:layout_height="116dp">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/dashboard_avg_screen_time"
-                            android:textAppearance="?attr/textAppearanceLabelMedium"
-                            android:textColor="@color/skor_text_dim"
-                            android:textAllCaps="true"
-                            android:letterSpacing="0.1" />
-
-                        <TextView
-                            android:id="@+id/tv_period_total_time"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?attr/textAppearanceDisplaySmall"
-                            android:textStyle="bold"
-                            android:textColor="@color/skor_text" />
-
-                        <TextView
-                            android:id="@+id/tv_period_total_sum"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?attr/textAppearanceBodyMedium"
-                            android:textColor="@color/skor_text_dim" />
+                        <com.example.stayfree.ui.common.ScoreRingView
+                            android:id="@+id/period_score_ring"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
-                            android:layout_marginTop="@dimen/spacing_xs">
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center">
 
                             <TextView
-                                android:id="@+id/tv_period_unlocks"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:textAppearance="?attr/textAppearanceBodyMedium"
-                                android:textColor="@color/skor_text_dim" />
+                                android:id="@+id/tv_period_score"
+                                style="@style/Skor.Display"
+                                tools:text="44" />
 
                             <TextView
-                                android:id="@+id/tv_trend"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/bg_badge_glass"
-                                android:paddingHorizontal="@dimen/spacing_sm"
-                                android:paddingVertical="4dp"
-                                android:textAppearance="?attr/textAppearanceLabelMedium"
-                                android:textStyle="bold"
-                                android:textColor="@color/skor_text"
-                                android:visibility="gone" />
+                                style="@style/Skor.Label"
+                                android:layout_marginTop="3dp"
+                                android:textSize="10sp"
+                                android:text="@string/dashboard_period_score_label" />
                         </LinearLayout>
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="@dimen/spacing_md">
+
+                        <TextView
+                            android:id="@+id/tv_period_pill"
+                            style="@style/Skor.Label"
+                            tools:text="Last 7 days" />
+
+                        <TextView
+                            android:id="@+id/tv_period_total_sum"
+                            style="@style/Skor.Metric"
+                            android:layout_marginTop="5dp"
+                            tools:text="29h 14m" />
+
+                        <TextView
+                            android:id="@+id/tv_trend"
+                            style="@style/Skor.Chip"
+                            android:layout_marginTop="9dp"
+                            android:visibility="gone"
+                            tools:text="6 points better" />
                     </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:baselineAligned="false"
+                    android:layout_marginBottom="@dimen/spacing_md">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_md"
+                        android:layout_marginEnd="4dp"
+                        android:background="@drawable/bg_skor_card">
+
+                        <TextView
+                            android:id="@+id/tv_period_total_time"
+                            style="@style/Skor.MetricSmall"
+                            tools:text="4h 11m" />
+
+                        <TextView
+                            style="@style/Skor.Micro"
+                            android:textSize="9sp"
+                            android:layout_marginTop="5dp"
+                            android:text="@string/dashboard_period_daily_avg" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_md"
+                        android:layout_marginHorizontal="4dp"
+                        android:background="@drawable/bg_skor_card">
+
+                        <TextView
+                            android:id="@+id/tv_period_unlocks"
+                            style="@style/Skor.MetricSmall"
+                            tools:text="147" />
+
+                        <TextView
+                            style="@style/Skor.Micro"
+                            android:textSize="9sp"
+                            android:layout_marginTop="5dp"
+                            android:text="@string/dashboard_unlocks" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_md"
+                        android:layout_marginStart="4dp"
+                        android:background="@drawable/bg_skor_card">
+
+                        <TextView
+                            android:id="@+id/tv_period_in_goal"
+                            style="@style/Skor.MetricSmall"
+                            tools:text="3/7" />
+
+                        <TextView
+                            style="@style/Skor.Micro"
+                            android:textSize="9sp"
+                            android:layout_marginTop="5dp"
+                            android:text="@string/dashboard_period_in_goal" />
+                    </LinearLayout>
+                </LinearLayout>
 
                 <!-- Per-day activity line chart -->
                 <com.google.android.material.card.MaterialCardView
@@ -431,20 +499,12 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/stats_activity"
-                                android:textAppearance="?attr/textAppearanceTitleSmall"
-                                android:textStyle="bold"
-                                android:textColor="@color/skor_text_dim" />
+                                android:textSize="13sp"
+                                android:textFontWeight="600"
+                                android:fontFamily="@font/archivo"
+                                android:textColor="@color/skor_text" />
 
-                            <TextView
-                                android:id="@+id/tv_period_pill"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/bg_badge_glass"
-                                android:paddingHorizontal="@dimen/spacing_sm"
-                                android:paddingVertical="4dp"
-                                android:textAppearance="?attr/textAppearanceLabelMedium"
-                                android:textStyle="bold"
-                                android:textColor="@color/skor_warn" />
+
                         </LinearLayout>
 
                         <com.example.stayfree.ui.common.UsageLineChartView

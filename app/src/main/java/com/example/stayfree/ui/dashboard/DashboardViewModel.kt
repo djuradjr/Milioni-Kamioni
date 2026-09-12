@@ -12,6 +12,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 private const val AVERAGE_WINDOW_DAYS = 7
 private const val STREAK_WINDOW_DAYS = 30
@@ -198,6 +199,61 @@ class DashboardViewModel @Inject constructor(
                 .sortedByDescending { it.totalTimeMs }
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    /**
+     * Score for each day in the window, oldest→today; null for days with no data
+     * so they can be skipped rather than counted as a perfect 100.
+     *
+     * Two inputs the daily score has are missing for past days: the unlock
+     * baseline (today's own average would be circular) and the intercept count
+     * (only today's is persisted). Both are therefore neutralised here, so a
+     * past day is scored purely on where its time went.
+     */
+    val periodDailyScores: StateFlow<List<Int?>> = combine(
+        _period.flatMapLatest { period -> usageRepository.getUsageFromDate(currentFrom(period)) },
+        _period,
+        categoryResolver,
+        prefs.dailyGoalMinutes
+    ) { rows, period, categoryOf, goalMinutes ->
+        val byDate = rows.groupBy { it.date }
+        (periodDays(period) - 1 downTo 0).map { ago ->
+            val day = byDate[TimeUtils.getDateStringDaysAgo(ago)] ?: return@map null
+            if (day.isEmpty()) return@map null
+            val unlocks = day.sumOf { it.unlockCount }
+            FocusScore.compute(
+                usage = day,
+                categoryOf = categoryOf,
+                goalMinutes = goalMinutes,
+                unlocks = unlocks,
+                averageUnlocks = unlocks,
+                interceptedCount = 0
+            ).score
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    /** Mean of the days that actually have data; null when the window is empty. */
+    val periodAverageScore: StateFlow<Int?> = periodDailyScores
+        .map { scores ->
+            val known = scores.filterNotNull()
+            if (known.isEmpty()) null else known.average().roundToInt()
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+
+    /** Days in the window that finished under the goal. */
+    val periodDaysInGoal: StateFlow<Pair<Int, Int>> = combine(
+        _period.flatMapLatest { period -> usageRepository.getUsageFromDate(currentFrom(period)) },
+        _period,
+        prefs.dailyGoalMinutes
+    ) { rows, period, goalMinutes ->
+        val goalMs = goalMinutes.coerceAtLeast(1) * 60_000L
+        val totals = rows.groupBy { it.date }.mapValues { (_, day) -> day.sumOf { it.totalTimeMs } }
+        val days = periodDays(period)
+        val inGoal = (days - 1 downTo 0).count { ago ->
+            val total = totals[TimeUtils.getDateStringDaysAgo(ago)]
+            total != null && total > 0L && total <= goalMs
+        }
+        inGoal to days
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0 to 7)
 
     val periodTotalScreenTime: StateFlow<Long> = _period.flatMapLatest { period ->
         usageRepository.getTotalScreenTimeBetween(currentFrom(period), TimeUtils.getTodayString())
