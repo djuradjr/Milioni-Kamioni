@@ -7,8 +7,15 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.stayfree.R
+import com.example.stayfree.data.local.preferences.AppPreferences
 import com.example.stayfree.databinding.ActivityContentBlockBinding
+import com.example.stayfree.util.TimeUtils
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /**
  * Hard-block screen shown the moment a blocked content surface (Reels, Stories,
@@ -17,7 +24,10 @@ import com.example.stayfree.databinding.ActivityContentBlockBinding
  * over it. There is no unlock path — Exit and Back both go home, so the user can
  * never bounce back into the blocked surface.
  */
+@AndroidEntryPoint
 class ContentBlockActivity : AppCompatActivity() {
+
+    @Inject lateinit var prefs: AppPreferences
 
     companion object {
         const val EXTRA_DISPLAY_NAME = "extra_display_name"
@@ -41,6 +51,17 @@ class ContentBlockActivity : AppCompatActivity() {
 
         val displayName = intent.getStringExtra(EXTRA_DISPLAY_NAME) ?: getString(R.string.app_name)
         binding.tvTitle.text = getString(R.string.content_block_title, displayName)
+
+        // The service increments the counter before starting us, so this read
+        // already includes the block the user is looking at.
+        lifecycleScope.launch {
+            val (date, count) = prefs.contentBlockCount.first()
+            if (date == TimeUtils.getTodayString() && count > 0) {
+                binding.tvBlockCount.text = getString(R.string.content_block_count, count)
+                binding.tvBlockCountCaption.text = getString(R.string.content_block_count_caption)
+                binding.cardCount.visibility = View.VISIBLE
+            }
+        }
 
         binding.btnExit.setOnClickListener { goHome() }
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {

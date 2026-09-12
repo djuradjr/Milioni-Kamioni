@@ -271,4 +271,6 @@
         <item quantity="few">%1$d aktivna</item>
         <item quantity="other">%1$d aktivnih</item>
     </plurals>
+    <string name="content_block_count">%1$d.</string>
+    <string name="content_block_count_caption">put danas da te Block Brainrot zaustavio</string>
 </resources>

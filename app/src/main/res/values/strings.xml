@@ -212,6 +212,8 @@
     <string name="content_block_title">%1$s blocked</string>
     <string name="content_block_message">You blocked this to protect your focus. Take a break.</string>
     <string name="content_block_brand" translatable="false">Block Brainrot</string>
+    <string name="content_block_count">%1$d</string>
+    <string name="content_block_count_caption">times today Block Brainrot stopped you</string>
     <string name="content_block_exit">Exit</string>
 
     <!-- PIN -->

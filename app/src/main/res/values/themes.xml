@@ -139,9 +139,13 @@
         <item name="postSplashScreenTheme">@style/Theme.StayFree</item>
     </style>
 
-    <!-- Content hard-block host — opaque branded surface over the host feed -->
-    <style name="Theme.StayFree.ContentBlock" parent="Theme.Material3.Light.NoActionBar">
-        <item name="android:windowBackground">@drawable/bg_overlay_gradient</item>
+    <!-- Content hard-block host — opaque branded surface over the host feed.
+         Dark parent: the block screen follows the Skor ground, and orange is
+         spent only on the block mark itself. -->
+    <style name="Theme.StayFree.ContentBlock" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="android:fontFamily">@font/archivo</item>
+        <item name="fontFamily">@font/archivo</item>
+        <item name="android:windowBackground">@drawable/bg_skor_block</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">false</item>

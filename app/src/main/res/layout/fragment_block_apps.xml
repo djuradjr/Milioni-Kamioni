@@ -103,12 +103,12 @@
             android:layout_marginBottom="12dp"
             android:text="@string/blocking_add_rule"
             android:textStyle="bold"
-            android:textColor="@color/dash_navy_card"
-            app:backgroundTint="@color/dash_amber"
+            android:textColor="@color/skor_on_focus"
+            app:backgroundTint="@color/skor_focus"
             app:cornerRadius="@dimen/radius_ink"
-            app:rippleColor="@color/dash_navy_ripple"
+            app:rippleColor="@color/skor_ripple"
             app:icon="@drawable/ic_add"
-            app:iconTint="@color/dash_navy_card"
+            app:iconTint="@color/skor_on_focus"
             app:iconSize="16dp"
             app:iconGravity="textStart" />
 
