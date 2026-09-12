@@ -95,6 +95,18 @@
     <string name="blocking_sleep_mode">Sleep Mode</string>
     <string name="blocking_websites">Websites</string>
     <string name="blocking_app_rules">App block</string>
+    <string name="app_detail_category_hint">Tap the tag to change how it counts</string>
+    <string name="app_detail_points_lost" translatable="false">−%1$d</string>
+    <string name="app_detail_score_impact">Score impact</string>
+    <string name="app_detail_score_impact_sub">points lost today</string>
+    <string name="app_detail_score_impact_none">costs you nothing</string>
+    <string name="app_detail_last_days">Last 7 days</string>
+    <string name="app_detail_today">Today</string>
+    <string name="app_detail_opens">Opens</string>
+    <string name="app_detail_set_limit">Set a daily limit</string>
+    <string name="category_distraction">Distraction</string>
+    <string name="category_neutral">Neutral</string>
+    <string name="category_productive">Productive</string>
     <string name="app_detail_block_this_app">Block This App</string>
 
     <!-- Blocking screen detail -->

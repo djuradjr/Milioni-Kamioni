@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- App detail. Leads with what the app costs the score, not with raw minutes —
+     the points are the reason to do something about it. The category chip is a
+     control: tapping it cycles Distraction → Neutral → Productive, which is the
+     only place the score's input can be corrected. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/skor_ground">
 
     <include
         android:id="@+id/back_header"
@@ -15,61 +22,178 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="@dimen/spacing_md">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="@dimen/spacing_md">
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_md">
 
-            <ImageView
-                android:id="@+id/iv_app_icon"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:layout_marginEnd="@dimen/spacing_md" />
-
-            <TextView
-                android:id="@+id/tv_app_name"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="14dp"
+                android:background="@drawable/bg_skor_card"
+                android:layout_marginBottom="@dimen/spacing_sm">
+
+                <ImageView
+                    android:id="@+id/iv_app_icon"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:layout_marginEnd="12dp"
+                    android:importantForAccessibility="no" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_app_name"
+                        style="@style/Skor.Title"
+                        android:textSize="17sp"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        tools:text="Instagram" />
+
+                    <TextView
+                        android:id="@+id/tv_category_hint"
+                        style="@style/Skor.Micro"
+                        android:layout_marginTop="2dp"
+                        android:text="@string/app_detail_category_hint" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/chip_category"
+                    style="@style/Skor.Chip"
+                    android:clickable="true"
+                    android:focusable="true"
+                    tools:text="Distraction" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_md"
+                android:background="@drawable/bg_skor_card"
+                android:layout_marginBottom="@dimen/spacing_sm">
+
+                <TextView
+                    style="@style/Skor.Label"
+                    android:text="@string/app_detail_score_impact" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="bottom"
+                    android:layout_marginTop="6dp">
+
+                    <TextView
+                        android:id="@+id/tv_score_impact"
+                        style="@style/Skor.Metric"
+                        android:textSize="28sp"
+                        tools:text="−18" />
+
+                    <TextView
+                        android:id="@+id/tv_score_impact_sub"
+                        style="@style/Skor.Micro"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginBottom="3dp"
+                        tools:text="poena danas" />
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/track_impact"
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/bg_skor_chip"
+                    android:backgroundTint="@color/skor_track" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_md"
+                android:background="@drawable/bg_skor_card"
+                android:layout_marginBottom="@dimen/spacing_sm">
+
+                <TextView
+                    style="@style/Skor.CardTitle"
+                    android:layout_marginBottom="@dimen/spacing_sm"
+                    android:text="@string/app_detail_last_days" />
+
+                <com.example.stayfree.ui.common.BarChartView
+                    android:id="@+id/bar_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="130dp"
+                    app:barColor="@color/skor_distraction"
+                    app:barTrackColor="@color/skor_track"
+                    app:barLabelColor="@color/skor_text_dim"
+                    app:barHighlightColor="@color/skor_warn" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:baselineAligned="false"
+                android:layout_marginBottom="@dimen/spacing_md">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_md"
+                    android:layout_marginEnd="4dp"
+                    android:background="@drawable/bg_skor_card">
+
+                    <TextView
+                        android:id="@+id/tv_today_usage"
+                        style="@style/Skor.MetricSmall"
+                        tools:text="1h 48m" />
+
+                    <TextView
+                        style="@style/Skor.Micro"
+                        android:layout_marginTop="5dp"
+                        android:text="@string/app_detail_today" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_md"
+                    android:layout_marginStart="4dp"
+                    android:background="@drawable/bg_skor_card">
+
+                    <TextView
+                        android:id="@+id/tv_today_unlocks"
+                        style="@style/Skor.MetricSmall"
+                        tools:text="31" />
+
+                    <TextView
+                        style="@style/Skor.Micro"
+                        android:layout_marginTop="5dp"
+                        android:text="@string/app_detail_opens" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_block_app"
+                style="@style/Skor.Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/skor_distraction"
+                android:textColor="@color/skor_on_distraction"
+                android:text="@string/app_detail_set_limit" />
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/tv_today_usage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="32sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="@dimen/spacing_xs" />
-
-        <TextView
-            android:id="@+id/tv_today_unlocks"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:layout_marginBottom="@dimen/spacing_md" />
-
-        <com.example.stayfree.ui.common.BarChartView
-            android:id="@+id/bar_chart"
-            android:layout_width="match_parent"
-            android:layout_height="160dp"
-            android:layout_marginBottom="@dimen/spacing_md" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_block_app"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/app_detail_block_this_app" />
-
-    </LinearLayout>
     </ScrollView>
 </LinearLayout>

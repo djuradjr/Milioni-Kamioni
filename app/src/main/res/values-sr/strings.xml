@@ -279,4 +279,15 @@
     <string name="focus_start_with_length">Pokreni fokus · %1$d min</string>
     <string name="sleep_drag_hint">Prevuci kuglice da pomeris noc</string>
     <string name="sleep_quiet_length">%1$s tisine</string>
+    <string name="app_detail_category_hint">Dodirni oznaku da promenis kako se racuna</string>
+    <string name="app_detail_score_impact">Uticaj na skor</string>
+    <string name="app_detail_score_impact_sub">poena danas</string>
+    <string name="app_detail_score_impact_none">ne uzima ti nista</string>
+    <string name="app_detail_last_days">Poslednjih 7 dana</string>
+    <string name="app_detail_today">Danas</string>
+    <string name="app_detail_opens">Otvaranja</string>
+    <string name="app_detail_set_limit">Postavi dnevni limit</string>
+    <string name="category_distraction">Distrakcija</string>
+    <string name="category_neutral">Neutralno</string>
+    <string name="category_productive">Produktivno</string>
 </resources>
