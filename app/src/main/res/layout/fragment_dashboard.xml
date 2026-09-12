@@ -213,7 +213,7 @@
                             <View
                                 android:layout_width="8dp"
                                 android:layout_height="8dp"
-                                android:background="@drawable/bg_skor_chip"
+                                android:background="@drawable/bg_skor_dot"
                                 android:backgroundTint="@color/skor_distraction" />
 
                             <TextView
@@ -227,7 +227,7 @@
                             <View
                                 android:layout_width="8dp"
                                 android:layout_height="8dp"
-                                android:background="@drawable/bg_skor_chip"
+                                android:background="@drawable/bg_skor_dot"
                                 android:backgroundTint="@color/skor_idle" />
 
                             <TextView

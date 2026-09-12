@@ -22,7 +22,7 @@
             android:layout_width="84dp"
             android:layout_height="84dp"
             android:layout_marginBottom="26dp"
-            android:background="@drawable/bg_skor_chip"
+            android:background="@drawable/bg_skor_dot"
             android:backgroundTint="@color/skor_distraction_soft">
 
             <ImageView
