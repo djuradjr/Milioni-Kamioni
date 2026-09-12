@@ -339,9 +339,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/spacing_sm"
-                    app:cardBackgroundColor="@color/dash_navy_card"
+                    app:cardBackgroundColor="@color/skor_card"
                     app:cardCornerRadius="@dimen/radius_dash"
-                    app:cardElevation="4dp">
+                    app:cardElevation="0dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -354,7 +354,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/dashboard_avg_screen_time"
                             android:textAppearance="?attr/textAppearanceLabelMedium"
-                            android:textColor="@color/dash_navy_muted"
+                            android:textColor="@color/skor_text_dim"
                             android:textAllCaps="true"
                             android:letterSpacing="0.1" />
 
@@ -364,14 +364,14 @@
                             android:layout_height="wrap_content"
                             android:textAppearance="?attr/textAppearanceDisplaySmall"
                             android:textStyle="bold"
-                            android:textColor="@color/dash_navy_text" />
+                            android:textColor="@color/skor_text" />
 
                         <TextView
                             android:id="@+id/tv_period_total_sum"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="?attr/textAppearanceBodyMedium"
-                            android:textColor="@color/dash_navy_muted" />
+                            android:textColor="@color/skor_text_dim" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -386,7 +386,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:textAppearance="?attr/textAppearanceBodyMedium"
-                                android:textColor="@color/dash_navy_muted" />
+                                android:textColor="@color/skor_text_dim" />
 
                             <TextView
                                 android:id="@+id/tv_trend"
@@ -397,7 +397,7 @@
                                 android:paddingVertical="4dp"
                                 android:textAppearance="?attr/textAppearanceLabelMedium"
                                 android:textStyle="bold"
-                                android:textColor="@color/on_primary"
+                                android:textColor="@color/skor_text"
                                 android:visibility="gone" />
                         </LinearLayout>
                     </LinearLayout>
@@ -408,9 +408,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/spacing_sm"
-                    app:cardBackgroundColor="@color/dash_navy_card"
+                    app:cardBackgroundColor="@color/skor_card"
                     app:cardCornerRadius="@dimen/radius_dash"
-                    app:cardElevation="4dp">
+                    app:cardElevation="0dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -433,7 +433,7 @@
                                 android:text="@string/stats_activity"
                                 android:textAppearance="?attr/textAppearanceTitleSmall"
                                 android:textStyle="bold"
-                                android:textColor="@color/dash_navy_muted" />
+                                android:textColor="@color/skor_text_dim" />
 
                             <TextView
                                 android:id="@+id/tv_period_pill"
@@ -444,17 +444,17 @@
                                 android:paddingVertical="4dp"
                                 android:textAppearance="?attr/textAppearanceLabelMedium"
                                 android:textStyle="bold"
-                                android:textColor="@color/dash_amber" />
+                                android:textColor="@color/skor_warn" />
                         </LinearLayout>
 
                         <com.example.stayfree.ui.common.UsageLineChartView
                             android:id="@+id/chart_period"
                             android:layout_width="match_parent"
                             android:layout_height="170dp"
-                            app:lineColor="@color/dash_amber"
-                            app:gridColor="@color/dash_grid_white"
-                            app:axisTextColor="@color/dash_navy_muted"
-                            app:tooltipValueColor="@color/dash_line_color"
+                            app:lineColor="@color/skor_focus"
+                            app:gridColor="@color/skor_line"
+                            app:axisTextColor="@color/skor_text_dim"
+                            app:tooltipValueColor="@color/skor_text"
                             app:markerSolidColor="@android:color/white"
                             app:markPeak="true"
                             app:markersAllPoints="true" />
@@ -467,7 +467,7 @@
                     android:text="@string/dashboard_most_used_apps"
                     android:textAppearance="?attr/textAppearanceTitleMedium"
                     android:textStyle="bold"
-                    android:textColor="@color/on_primary"
+                    android:textColor="@color/skor_text"
                     android:layout_marginBottom="@dimen/spacing_sm" />
 
                 <androidx.recyclerview.widget.RecyclerView
