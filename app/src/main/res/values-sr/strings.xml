@@ -313,4 +313,5 @@
     <string name="onboarding_target_limit_minutes">%1$d min dnevno</string>
     <string name="onboarding_target_name_whole">%1$s · cela aplikacija</string>
     <string name="onboarding_goal_hint_already">vec si ispod ovoga — drzi tako</string>
+    <string name="block_app_limit_pending">%1$s od sutra</string>
 </resources>

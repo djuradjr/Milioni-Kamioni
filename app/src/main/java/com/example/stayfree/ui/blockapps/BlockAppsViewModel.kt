@@ -24,7 +24,9 @@ data class ContentTargetRow(
     val id: String,
     val displayName: String,
     val enabled: Boolean,
-    val limitMinutes: Int
+    val limitMinutes: Int,
+    /** A raise that is waiting for tomorrow, if any. */
+    val pendingLimitMinutes: Int? = null
 )
 
 /** One row on the Block Apps screen. Icon is loaded lazily in the adapter. */
@@ -33,6 +35,7 @@ data class BlockAppItem(
     val appName: String,
     val isBlocked: Boolean,
     val limitMinutes: Int,
+    val pendingLimitMinutes: Int? = null,
     val contentTargets: List<ContentTargetRow> = emptyList()
 )
 
@@ -49,13 +52,33 @@ class BlockAppsViewModel @Inject constructor(
 
     private val query = MutableStateFlow("")
 
+    /** Active and parked limits travel together so combine stays within its typed arity. */
+    private data class LimitState(
+        val appLimits: Map<String, Int>,
+        val targetLimits: Map<String, Int>,
+        val appPending: Map<String, Pair<Int, String>>,
+        val targetPending: Map<String, Pair<Int, String>>
+    )
+
+    private val limitState = combine(
+        prefs.blockAppLimitsMinutes,
+        prefs.contentTargetLimitsMinutes,
+        prefs.blockAppLimitsPending,
+        prefs.contentTargetLimitsPending
+    ) { appLimits, targetLimits, appPending, targetPending ->
+        LimitState(appLimits, targetLimits, appPending, targetPending)
+    }
+
     private val allItems = combine(
         installedApps,
         prefs.blockAppsEnabledPkgs,
-        prefs.blockAppLimitsMinutes,
         prefs.contentBlockEnabledIds,
-        prefs.contentTargetLimitsMinutes
-    ) { apps, enabled, limits, contentEnabled, contentLimits ->
+        limitState
+    ) { apps, enabled, contentEnabled, state ->
+        val limits = state.appLimits
+        val contentLimits = state.targetLimits
+        val appPending = state.appPending
+        val targetPending = state.targetPending
         apps
             .sortedWith(compareBy({ blockPriority(it) }, { it.appName.lowercase() }))
             .map { app ->
@@ -65,12 +88,14 @@ class BlockAppsViewModel @Inject constructor(
                     isBlocked = app.packageName in enabled,
                     limitMinutes = limits[app.packageName]
                         ?: AppPreferences.DEFAULT_BLOCK_APP_LIMIT_MINUTES,
+                    pendingLimitMinutes = appPending[app.packageName]?.first,
                     contentTargets = ContentSignatures.allByPackage(app.packageName).map { target ->
                         ContentTargetRow(
                             id = target.id,
                             displayName = target.displayName,
                             enabled = target.id in contentEnabled,
-                            limitMinutes = contentLimits[target.id] ?: 0
+                            limitMinutes = contentLimits[target.id] ?: 0,
+                            pendingLimitMinutes = targetPending[target.id]?.first
                         )
                     }
                 )

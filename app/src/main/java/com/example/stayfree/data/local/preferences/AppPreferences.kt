@@ -5,6 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
 import com.example.stayfree.domain.score.AppCategory
+import com.example.stayfree.util.TimeUtils
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -72,6 +73,12 @@ class AppPreferences @Inject constructor(
         // Only packages the user actually changed are stored; everything else
         // resolves through AppCategory.defaultFor so the seed list can evolve.
         val APP_CATEGORIES = stringPreferencesKey("app_categories_json")
+        // Raises to a limit are parked here until their date arrives:
+        // {id: {"minutes": N, "from": "yyyy-MM-dd"}}. Lowering never parks.
+        val CONTENT_TARGET_LIMITS_PENDING = stringPreferencesKey("content_target_limits_pending_json")
+        val BLOCK_APP_LIMITS_PENDING = stringPreferencesKey("block_app_limits_pending_json")
+        const val PENDING_MINUTES = "minutes"
+        const val PENDING_FROM = "from"
     }
 
     val dailyResetTimeMinutes: Flow<Int> = dataStore.data.map { it[DAILY_RESET_TIME_MINUTES] ?: 0 }
@@ -98,11 +105,13 @@ class AppPreferences @Inject constructor(
     val blockAppsEnabledPkgs: Flow<Set<String>> =
         dataStore.data.map { it[BLOCK_APPS_ENABLED] ?: emptySet() }
     /** Daily allowance in minutes per blocked app (0 = block immediately). */
-    val blockAppLimitsMinutes: Flow<Map<String, Int>> =
-        dataStore.data.map { parseLimits(it[BLOCK_APP_LIMITS]) }
+    val blockAppLimitsMinutes: Flow<Map<String, Int>> = dataStore.data.map {
+        parseLimits(it[BLOCK_APP_LIMITS]) + duePending(it[BLOCK_APP_LIMITS_PENDING])
+    }
     /** Daily allowance in minutes per content target (0 = block immediately). */
-    val contentTargetLimitsMinutes: Flow<Map<String, Int>> =
-        dataStore.data.map { parseLimits(it[CONTENT_TARGET_LIMITS]) }
+    val contentTargetLimitsMinutes: Flow<Map<String, Int>> = dataStore.data.map {
+        parseLimits(it[CONTENT_TARGET_LIMITS]) + duePending(it[CONTENT_TARGET_LIMITS_PENDING])
+    }
     /** Only the packages the user re-categorised; resolve through [categoryOf]. */
     val appCategoryOverrides: Flow<Map<String, AppCategory>> = dataStore.data.map { prefs ->
         val json = prefs[APP_CATEGORIES] ?: return@map emptyMap()
@@ -238,16 +247,15 @@ class AppPreferences @Inject constructor(
     }
 
     suspend fun setBlockAppLimitMinutes(packageName: String, minutes: Int) {
-        dataStore.edit { prefs ->
-            val obj = try {
-                JSONObject(prefs[BLOCK_APP_LIMITS] ?: "{}")
-            } catch (e: Exception) {
-                JSONObject()
-            }
-            obj.put(packageName, minutes.coerceAtLeast(0))
-            prefs[BLOCK_APP_LIMITS] = obj.toString()
-        }
+        applyLimit(BLOCK_APP_LIMITS, BLOCK_APP_LIMITS_PENDING, packageName, minutes)
     }
+
+    /** What a raise is waiting on, per key: (minutes, effective date). */
+    val blockAppLimitsPending: Flow<Map<String, Pair<Int, String>>> =
+        dataStore.data.map { parsePending(it[BLOCK_APP_LIMITS_PENDING]) }
+
+    val contentTargetLimitsPending: Flow<Map<String, Pair<Int, String>>> =
+        dataStore.data.map { parsePending(it[CONTENT_TARGET_LIMITS_PENDING]) }
 
     /** User overrides of the focus-score category: JSON map {pkg: AppCategory.name}. */
     suspend fun setAppCategory(packageName: String, category: AppCategory) {
@@ -267,14 +275,50 @@ class AppPreferences @Inject constructor(
     }
 
     suspend fun setContentTargetLimitMinutes(id: String, minutes: Int) {
+        applyLimit(CONTENT_TARGET_LIMITS, CONTENT_TARGET_LIMITS_PENDING, id, minutes)
+    }
+
+    /**
+     * Tightening protection is immediate; loosening it waits until tomorrow.
+     *
+     * Without this, a limit is only a suggestion: the moment it bites, the user
+     * raises it and the app stops meaning anything. The delay costs nothing to
+     * someone who genuinely wants more time tomorrow, and everything to the
+     * impulse that wants it right now.
+     *
+     * A raise that is still parked is replaced, not stacked — the newest wins.
+     */
+    private suspend fun applyLimit(
+        activeKey: Preferences.Key<String>,
+        pendingKey: Preferences.Key<String>,
+        id: String,
+        minutes: Int
+    ) {
+        val target = minutes.coerceAtLeast(0)
         dataStore.edit { prefs ->
-            val obj = try {
-                JSONObject(prefs[CONTENT_TARGET_LIMITS] ?: "{}")
-            } catch (e: Exception) {
-                JSONObject()
+            val active = JSONObject(prefs[activeKey] ?: "{}")
+            val pending = JSONObject(prefs[pendingKey] ?: "{}")
+
+            // Promote anything already due, so "current" means what the user sees.
+            duePending(prefs[pendingKey]).forEach { (key, value) ->
+                active.put(key, value)
+                pending.remove(key)
             }
-            obj.put(id, minutes.coerceAtLeast(0))
-            prefs[CONTENT_TARGET_LIMITS] = obj.toString()
+
+            val current = if (active.has(id)) active.optInt(id) else null
+            if (current == null || target <= current) {
+                active.put(id, target)
+                pending.remove(id)
+            } else {
+                pending.put(
+                    id,
+                    JSONObject()
+                        .put(PENDING_MINUTES, target)
+                        .put(PENDING_FROM, TimeUtils.addDays(TimeUtils.getTodayString(), 1))
+                )
+            }
+            prefs[activeKey] = active.toString()
+            prefs[pendingKey] = pending.toString()
         }
     }
 
@@ -327,6 +371,29 @@ class AppPreferences @Inject constructor(
             else obj.optJSONObject("usage")?.optLong(id) ?: 0L
         } catch (e: Exception) {
             0L
+        }
+    }
+
+    /** Parked raises whose date has arrived, ready to be merged over the active map. */
+    private fun duePending(json: String?): Map<String, Int> {
+        val today = TimeUtils.getTodayString()
+        return parsePending(json)
+            .filterValues { (_, from) -> from <= today }
+            .mapValues { (_, value) -> value.first }
+    }
+
+    private fun parsePending(json: String?): Map<String, Pair<Int, String>> {
+        if (json.isNullOrEmpty()) return emptyMap()
+        return try {
+            val obj = JSONObject(json)
+            obj.keys().asSequence().mapNotNull { key ->
+                val entry = obj.optJSONObject(key) ?: return@mapNotNull null
+                val from = entry.optString(PENDING_FROM)
+                if (from.isEmpty()) null
+                else key to (entry.optInt(PENDING_MINUTES) to from)
+            }.toMap()
+        } catch (e: Exception) {
+            emptyMap()
         }
     }
 
