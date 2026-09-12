@@ -5,21 +5,23 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textAppearance">?attr/textAppearanceLabelLarge</item>
-        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:textColor">@color/skor_text_dim</item>
         <item name="android:textAllCaps">true</item>
-        <item name="android:letterSpacing">0.08</item>
+        <item name="android:letterSpacing">0.12</item>
         <item name="android:layout_marginTop">@dimen/spacing_md</item>
         <item name="android:layout_marginBottom">@dimen/spacing_xs</item>
         <item name="android:paddingStart">@dimen/spacing_xs</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:fontFamily">@font/archivo</item>
     </style>
 
     <style name="Settings.Card" parent="Widget.Material3.CardView.Filled">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="cardBackgroundColor">?attr/colorSurface</item>
-        <item name="cardCornerRadius">@dimen/radius_md</item>
+        <item name="cardBackgroundColor">@color/skor_card</item>
+        <item name="cardCornerRadius">14dp</item>
         <item name="cardElevation">0dp</item>
-        <item name="strokeWidth">1dp</item>
+        <item name="strokeWidth">0dp</item>
         <item name="strokeColor">?attr/colorSurfaceContainerHigh</item>
     </style>
 
@@ -55,20 +57,24 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textAppearance">?attr/textAppearanceBodyLarge</item>
-        <item name="android:textColor">?attr/colorOnSurface</item>
+        <item name="android:textColor">@color/skor_text</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:fontFamily">@font/archivo</item>
     </style>
 
     <style name="Settings.RowSubtitle" parent="">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textAppearance">?attr/textAppearanceBodySmall</item>
-        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+        <item name="android:textColor">@color/skor_text_dim</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">@font/archivo</item>
     </style>
 
     <style name="Settings.RowChevron" parent="">
         <item name="android:layout_width">24dp</item>
         <item name="android:layout_height">24dp</item>
-        <item name="android:tint">?attr/colorOnSurfaceVariant</item>
+        <item name="android:tint">@color/skor_text_dim</item>
         <item name="android:importantForAccessibility">no</item>
     </style>
 
