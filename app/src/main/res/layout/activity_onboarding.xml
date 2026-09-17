@@ -251,25 +251,6 @@
                     android:orientation="vertical"
                     android:layout_marginTop="@dimen/spacing_md"
                     android:background="@drawable/bg_skor_card" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="@dimen/spacing_md">
-
-                    <TextView
-                        style="@style/Skor.Micro"
-                        android:textColor="@color/skor_warn"
-                        android:layout_marginEnd="8dp"
-                        android:text="@string/onboarding_limit_rule_mark" />
-
-                    <TextView
-                        style="@style/Skor.Micro"
-                        android:layout_width="match_parent"
-                        android:lineSpacingMultiplier="1.45"
-                        android:text="@string/onboarding_limit_rule" />
-                </LinearLayout>
             </LinearLayout>
         </FrameLayout>
     </ScrollView>

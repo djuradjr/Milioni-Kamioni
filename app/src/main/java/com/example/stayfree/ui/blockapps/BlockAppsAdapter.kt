@@ -103,14 +103,6 @@ class BlockAppsAdapter(
                 row.cardTargetLimit.visibility = if (target.enabled) View.VISIBLE else View.GONE
                 if (target.enabled) {
                     row.tvTargetLimitValue.text = formatLimit(target.limitMinutes)
-                    val pending = target.pendingLimitMinutes
-                    row.tvTargetLimitPending.visibility =
-                        if (pending == null) View.GONE else View.VISIBLE
-                    if (pending != null) {
-                        row.tvTargetLimitPending.text = row.root.context.getString(
-                            R.string.block_app_limit_pending, formatLimit(pending)
-                        )
-                    }
                     val idx = nearestStepIndex(CONTENT_LIMIT_STEPS, target.limitMinutes)
                     bindArrow(row.btnTargetLimitDown, enabled = idx > 0) {
                         onContentLimitChange(target.id, CONTENT_LIMIT_STEPS[idx - 1], false)

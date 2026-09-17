@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -41,15 +40,10 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
             android:paddingHorizontal="@dimen/spacing_md"
             android:paddingVertical="@dimen/spacing_xs">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
 
             <TextView
                 android:layout_width="0dp"
@@ -85,18 +79,6 @@
                 android:src="@drawable/ic_chevron_right"
                 app:tint="?attr/colorOnSurface" />
 
-        </LinearLayout>
-
-            <!-- Raising a limit only takes effect tomorrow; without this line the
-                 stepper looks broken when the number refuses to move. -->
-            <TextView
-                android:id="@+id/tv_target_limit_pending"
-                style="@style/Skor.Micro"
-                android:layout_width="match_parent"
-                android:layout_marginBottom="6dp"
-                android:textColor="@color/skor_warn"
-                android:visibility="gone"
-                tools:text="30 min from tomorrow" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 </LinearLayout>

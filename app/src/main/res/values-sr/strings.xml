@@ -310,7 +310,6 @@
     <string name="onboarding_targets_title">Sta te najvise vuce?</string>
     <string name="onboarding_targets_desc">Izabrali smo ove na osnovu tvoje nedelje. Limit mozes da menjas kad god.</string>
     <string name="onboarding_targets_desc_blind">Ovo su povrsine koje Block Brainrot ume da prepozna. Ukljuci one koje te vuku.</string>
-    <string name="onboarding_limit_rule">Limit mozes da smanjis odmah, ali povecanje vazi tek od sutra.</string>
     <string name="onboarding_decide_later">Odluci kasnije</string>
     <string name="onboarding_set_goal">Postavi cilj</string>
     <string name="onboarding_turn_on_protection">Ukljuci zastitu</string>
@@ -318,5 +317,4 @@
     <string name="onboarding_target_limit_minutes">%1$d min dnevno</string>
     <string name="onboarding_target_name_whole">%1$s · cela aplikacija</string>
     <string name="onboarding_goal_hint_already">Tvoj dnevni prosek vec staje u ovaj cilj</string>
-    <string name="block_app_limit_pending">%1$s od sutra</string>
 </resources>
