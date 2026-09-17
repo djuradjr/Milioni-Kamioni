@@ -15,7 +15,7 @@
     <!-- Onboarding -->
     <string name="onboarding_step_indicator" translatable="false">%1$d / %2$d</string>
     <string name="onboarding_target_name_whole">%1$s · whole app</string>
-    <string name="onboarding_goal_hint_already">already below this — keep it there</string>
+    <string name="onboarding_goal_hint_already">Your daily average already fits this goal</string>
     <string name="duration_hours" translatable="false">%1$dh</string>
     <string name="duration_hours_minutes" translatable="false">%1$dh %2$dm</string>
     <string name="duration_minutes" translatable="false">%1$dm</string>
@@ -24,10 +24,14 @@
     <string name="stepper_plus" translatable="false">+</string>
     <string name="onboarding_privacy_note">Nothing leaves your phone. The app has no internet access at all.</string>
     <string name="onboarding_report_label">Your last 7 days</string>
-    <string name="onboarding_report_sub">%1$s a day · %2$d unlocks a day</string>
-    <string name="onboarding_report_sub_short">%1$s a day</string>
+    <string name="onboarding_report_total_label">Total</string>
+    <string name="onboarding_report_daily_label">Daily average</string>
+    <plurals name="onboarding_report_days_measured">
+        <item quantity="one">Average of the one day your phone kept</item>
+        <item quantity="other">Average of the %d days your phone kept</item>
+    </plurals>
     <string name="onboarding_goal_label">Suggested daily goal</string>
-    <string name="onboarding_goal_hint_less">%1$s less than now — reachable</string>
+    <string name="onboarding_goal_hint_less">%1$s under your daily average (−%2$d%%)</string>
     <string name="onboarding_goal_hint_start">we will tune it once there is a week of data</string>
     <string name="onboarding_first_run_title">We start measuring today</string>
     <string name="onboarding_first_run_desc">Your phone kept no earlier history, so we begin from zero. The first score arrives tonight, the first real week in seven days.</string>

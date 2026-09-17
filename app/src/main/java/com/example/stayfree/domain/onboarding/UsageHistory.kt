@@ -1,9 +1,8 @@
 package com.example.stayfree.domain.onboarding
 
-import android.app.usage.UsageStatsManager
 import android.content.Context
-import android.content.pm.ApplicationInfo
-import android.content.pm.PackageManager
+import com.example.stayfree.data.usage.ForegroundSessions
+import com.example.stayfree.util.AppInfoUtils
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -12,33 +11,39 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Reads the week *before* install straight from UsageStatsManager.
+ * Reads the week *before* install from the system's usage event log.
  *
  * The repository's own sync only ever covers the current effective day, so it
- * can't answer "what did last week look like". This does, and it lets the first
- * screen after the permission steps show real numbers instead of an empty state
- * — which is the one moment the user actually wants to see them.
+ * can't answer "what did last week look like". This does, through the same
+ * [ForegroundSessions] fold the dashboard uses, so the report and the dashboard
+ * agree to the minute.
  *
- * How much history exists is up to the device: most keep daily buckets for about
- * a week, some OEMs clear them aggressively. An empty result is normal, not an
- * error, and callers must have a first-run state for it.
+ * How much history exists is up to the device: the event log usually reaches back
+ * about a week, some OEMs clear it sooner. An empty result is normal, not an error,
+ * and callers must have a first-run state for it.
  */
 @Singleton
 class UsageHistory @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val sessions: ForegroundSessions
 ) {
 
     data class AppTotal(val packageName: String, val label: String, val totalMs: Long)
+
+    data class Session(val packageName: String, val fromMs: Long, val toMs: Long)
 
     data class Report(
         /** Per-day totals, oldest→yesterday. Empty when the device kept nothing. */
         val dailyTotals: List<Long>,
         val totalMs: Long,
-        val topApps: List<AppTotal>
+        val topApps: List<AppTotal>,
+        /** Days the log fully covers and that have usage — what the average divides by. */
+        val measuredDays: Int,
+        val measuredMs: Long
     ) {
         val hasData: Boolean get() = totalMs > 0L
         val dailyAverageMs: Long
-            get() = if (dailyTotals.isEmpty()) 0L else totalMs / dailyTotals.size
+            get() = if (measuredDays == 0) 0L else measuredMs / measuredDays
     }
 
     /**
@@ -46,86 +51,82 @@ class UsageHistory @Inject constructor(
      *        progress and would drag the average down.
      */
     suspend fun lastWeek(days: Int = DEFAULT_DAYS): Report = withContext(Dispatchers.IO) {
-        val manager = context.getSystemService(Context.USAGE_STATS_SERVICE) as? UsageStatsManager
-            ?: return@withContext EMPTY
-        val pm = context.packageManager
-        val trackable = trackablePackages(pm)
+        // days+1 boundaries: start of each day, and midnight today closing the last one.
+        val boundaries = (days downTo 0).map { startOfDay(it) }
+        val trackable = sessions.trackablePackages()
+        val found = mutableListOf<Session>()
 
-        val dayTotals = mutableListOf<Long>()
-        val perApp = mutableMapOf<String, Long>()
-
-        for (ago in days downTo 1) {
-            val (start, end) = dayBounds(ago)
-            val stats = runCatching {
-                manager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, start, end)
-            }.getOrNull().orEmpty()
-
-            var dayTotal = 0L
-            stats.forEach { entry ->
-                val pkg = entry.packageName ?: return@forEach
-                if (pkg !in trackable) return@forEach
-                // INTERVAL_DAILY buckets can overlap the query window; clamping to
-                // the window keeps a long-running app from inflating one day.
-                val ms = entry.totalTimeInForeground.coerceAtMost(end - start)
-                if (ms <= 0L) return@forEach
-                dayTotal += ms
-                perApp[pkg] = (perApp[pkg] ?: 0L) + ms
+        val oldestEventMs = runCatching {
+            sessions.fold(boundaries.first(), boundaries.last()) { pkg, from, to ->
+                if (pkg in trackable) found += Session(pkg, from, to)
             }
-            dayTotals += dayTotal
-        }
+        }.getOrNull() ?: return@withContext EMPTY
 
-        val total = dayTotals.sum()
-        if (total <= 0L) return@withContext EMPTY
-
-        val top = perApp.entries
-            .sortedByDescending { it.value }
-            .take(TOP_APPS)
-            .map { (pkg, ms) -> AppTotal(pkg, labelOf(pm, pkg), ms) }
-
-        Report(dailyTotals = dayTotals, totalMs = total, topApps = top)
+        buildReport(boundaries, found, oldestEventMs) { AppInfoUtils.getAppName(context, it) }
     }
 
-    /** Start/end of the day [ago] days before today, in local time. */
-    private fun dayBounds(ago: Int): Pair<Long, Long> {
-        val cal = Calendar.getInstance().apply {
+    /** Local midnight [ago] days before today; the calendar handles DST days. */
+    private fun startOfDay(ago: Int): Long =
+        Calendar.getInstance().apply {
             add(Calendar.DAY_OF_YEAR, -ago)
             set(Calendar.HOUR_OF_DAY, 0)
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
-        }
-        val start = cal.timeInMillis
-        return start to (start + DAY_MS)
-    }
+        }.timeInMillis
 
-    /**
-     * Launchable, non-system apps only — the same rule the tracker uses, so the
-     * report can't contradict what the dashboard shows later. Our own package is
-     * excluded: a screen-time app topping its own chart is meaningless.
-     */
-    private fun trackablePackages(pm: PackageManager): Set<String> =
-        runCatching {
-            pm.getInstalledApplications(PackageManager.GET_META_DATA)
-                .asSequence()
-                .filter { it.packageName != context.packageName }
-                .filter { pm.getLaunchIntentForPackage(it.packageName) != null }
-                .filter { isUpdatedSystemOrUserApp(it) }
-                .map { it.packageName }
-                .toSet()
-        }.getOrDefault(emptySet())
-
-    private fun isUpdatedSystemOrUserApp(info: ApplicationInfo): Boolean =
-        info.flags and ApplicationInfo.FLAG_SYSTEM == 0 ||
-            info.flags and ApplicationInfo.FLAG_UPDATED_SYSTEM_APP != 0
-
-    private fun labelOf(pm: PackageManager, pkg: String): String =
-        runCatching { pm.getApplicationLabel(pm.getApplicationInfo(pkg, 0)).toString() }
-            .getOrDefault(pkg)
-
-    private companion object {
+    internal companion object {
         const val DEFAULT_DAYS = 7
         const val TOP_APPS = 5
-        const val DAY_MS = 24 * 60 * 60 * 1000L
-        val EMPTY = Report(emptyList(), 0L, emptyList())
+        /** Below a minute an app is a tap-through, not part of anyone's week. */
+        const val MIN_APP_MS = 60_000L
+        val EMPTY = Report(emptyList(), 0L, emptyList(), 0, 0L)
+
+        /**
+         * @param boundaries start of each day plus the end of the last one, ascending
+         * @param oldestEventMs how far back the system log actually reaches
+         */
+        fun buildReport(
+            boundaries: List<Long>,
+            sessions: List<Session>,
+            oldestEventMs: Long,
+            labelOf: (String) -> String
+        ): Report {
+            val days = boundaries.size - 1
+            val dayTotals = LongArray(days)
+            val perApp = mutableMapOf<String, Long>()
+
+            sessions.forEach { s ->
+                // A session can run across midnight; each day gets its own part.
+                for (day in 0 until days) {
+                    val overlap = minOf(s.toMs, boundaries[day + 1]) - maxOf(s.fromMs, boundaries[day])
+                    if (overlap <= 0) continue
+                    dayTotals[day] += overlap
+                    perApp[s.packageName] = (perApp[s.packageName] ?: 0L) + overlap
+                }
+            }
+
+            val total = dayTotals.sum()
+            if (total <= 0L) return EMPTY
+
+            // A day that starts before the oldest surviving event is only partly in the
+            // log; averaging it in would understate the user's real day.
+            val withUsage = (0 until days).filter { dayTotals[it] > 0L }
+            val averaged = withUsage.filter { boundaries[it] >= oldestEventMs }.ifEmpty { withUsage }
+
+            val top = perApp.entries
+                .filter { it.value >= MIN_APP_MS }
+                .sortedByDescending { it.value }
+                .take(TOP_APPS)
+                .map { (pkg, ms) -> AppTotal(pkg, labelOf(pkg), ms) }
+
+            return Report(
+                dailyTotals = dayTotals.toList(),
+                totalMs = total,
+                topApps = top,
+                measuredDays = averaged.size,
+                measuredMs = averaged.sumOf { dayTotals[it] }
+            )
+        }
     }
 }

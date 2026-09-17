@@ -1,12 +1,9 @@
 package com.example.stayfree.data.repository
 
-import android.app.usage.UsageEvents
-import android.app.usage.UsageStatsManager
 import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
 import com.example.stayfree.data.local.db.dao.AppUsageDao
 import com.example.stayfree.data.local.entity.AppUsageEntity
+import com.example.stayfree.data.usage.ForegroundSessions
 import com.example.stayfree.domain.model.AppUsage
 import com.example.stayfree.util.AppInfoUtils
 import com.example.stayfree.util.TimeUtils
@@ -20,7 +17,7 @@ import javax.inject.Singleton
 @Singleton
 class UsageRepositoryImpl @Inject constructor(
     private val dao: AppUsageDao,
-    private val usageStatsManager: UsageStatsManager,
+    private val sessions: ForegroundSessions,
     @ApplicationContext private val context: Context
 ) : UsageRepository {
 
@@ -68,9 +65,9 @@ class UsageRepositoryImpl @Inject constructor(
         dao.deleteCorruptDays(DAY_MS)
 
         // The home screen used to top the chart as if it were an app.
-        homePackage()?.let { dao.deleteForPackage(it) }
+        sessions.homePackage()?.let { dao.deleteForPackage(it) }
 
-        val trackable = trackablePackages()
+        val trackable = sessions.trackablePackages()
         if (trackable.isNotEmpty()) dao.deleteUntrackedForDate(date, trackable.toList())
 
         val totals = mutableMapOf<String, Long>()
@@ -78,8 +75,8 @@ class UsageRepositoryImpl @Inject constructor(
         // Screen changes inside an app, and system dialogs on top of it, each end one
         // foreground session and start another; only a real absence counts as an open.
         val lastEndMs = mutableMapOf<String, Long>()
-        foldForegroundSessions(startMs, endMs) { pkg, from, to ->
-            if (pkg !in trackable) return@foldForegroundSessions
+        sessions.fold(startMs, endMs) { pkg, from, to ->
+            if (pkg !in trackable) return@fold
             totals[pkg] = (totals[pkg] ?: 0L) + (to - from)
             val previousEnd = lastEndMs[pkg]
             if (previousEnd == null || from - previousEnd > OPEN_GAP_MS) {
@@ -106,33 +103,6 @@ class UsageRepositoryImpl @Inject constructor(
     }
 
     /**
-     * Packages that count as screen time: launchable apps only, minus every home
-     * app and ourselves. Without this the launcher is the #1 "app" of the day and
-     * system dialogs (permission controller, installers) show up as apps.
-     */
-    private fun trackablePackages(): Set<String> {
-        val pm = context.packageManager
-        val launchable = pm.queryIntentActivities(
-            Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER), 0
-        ).mapTo(mutableSetOf()) { it.activityInfo.packageName }
-        homePackage()?.let { launchable -= it }
-        launchable -= context.packageName
-        launchable -= AppUsageEntity.DEVICE_ROW
-        return launchable
-    }
-
-    /**
-     * The current default launcher only. Matching every package that declares a
-     * CATEGORY_HOME activity would also swallow Settings, which ships the boot-time
-     * FallbackHome and is a perfectly normal app to track.
-     */
-    private fun homePackage(): String? =
-        context.packageManager.resolveActivity(
-            Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME),
-            PackageManager.MATCH_DEFAULT_ONLY
-        )?.activityInfo?.packageName
-
-    /**
      * Splits foreground sessions from raw UsageEvents into 24 clock-hour buckets.
      * Only works within the system's event retention window (~last 7 days);
      * older dates return all zeros.
@@ -143,10 +113,10 @@ class UsageRepositoryImpl @Inject constructor(
         val dayEnd = minOf(dayStart + 24 * 3_600_000L, System.currentTimeMillis())
         if (dayEnd <= dayStart) return buckets.toList()
 
-        val trackable = trackablePackages()
-        foldForegroundSessions(dayStart, dayEnd) { pkg, from, to ->
+        val trackable = sessions.trackablePackages()
+        sessions.fold(dayStart, dayEnd) { pkg, from, to ->
             // Same filter as the totals, or the peak chart disagrees with the daily total.
-            if (pkg !in trackable) return@foldForegroundSessions
+            if (pkg !in trackable) return@fold
             var cursor = from
             while (cursor < to) {
                 val hour = ((cursor - dayStart) / 3_600_000L).toInt().coerceIn(0, 23)
@@ -156,60 +126,6 @@ class UsageRepositoryImpl @Inject constructor(
             }
         }
         return buckets.toList()
-    }
-
-    /**
-     * Folds raw UsageEvents into non-overlapping foreground sessions clamped to
-     * [windowStartMs, windowEndMs] using a single-current-foreground model: only
-     * one app counts at a time; a RESUMED of another package, a PAUSED/STOPPED of
-     * the current activity, or screen-off/keyguard/shutdown ends the session.
-     * (A per-package map double-counted apps with several activities: the second
-     * RESUMED was swallowed, so its PAUSED fell back to the window start and a
-     * day could sum to 20h+.) Activity identity (pkg+class) guards against a
-     * stale PAUSED arriving after a same-package activity switch.
-     */
-    private fun foldForegroundSessions(
-        windowStartMs: Long,
-        windowEndMs: Long,
-        onSession: (pkg: String, fromMs: Long, toMs: Long) -> Unit
-    ) {
-        // Look back so a session straddling the window start still counts from it.
-        val events = usageStatsManager.queryEvents(windowStartMs - LOOKBACK_MS, windowEndMs) ?: return
-        val event = UsageEvents.Event()
-        var currentPkg: String? = null
-        var currentClass: String? = null
-        var currentSince = 0L
-
-        fun close(endMs: Long) {
-            val pkg = currentPkg ?: return
-            currentPkg = null
-            val from = maxOf(currentSince, windowStartMs)
-            val to = minOf(endMs, windowEndMs)
-            if (to > from) onSession(pkg, from, to)
-        }
-
-        while (events.hasNextEvent()) {
-            events.getNextEvent(event)
-            when (event.eventType) {
-                UsageEvents.Event.ACTIVITY_RESUMED -> {
-                    val pkg = event.packageName ?: continue
-                    if (pkg != currentPkg) {
-                        close(event.timeStamp)
-                        currentPkg = pkg
-                        currentSince = event.timeStamp
-                    }
-                    currentClass = event.className
-                }
-                UsageEvents.Event.ACTIVITY_PAUSED, UsageEvents.Event.ACTIVITY_STOPPED ->
-                    if (event.packageName == currentPkg && event.className == currentClass) {
-                        close(event.timeStamp)
-                    }
-                UsageEvents.Event.SCREEN_NON_INTERACTIVE,
-                UsageEvents.Event.KEYGUARD_SHOWN,
-                UsageEvents.Event.DEVICE_SHUTDOWN -> close(event.timeStamp)
-            }
-        }
-        close(windowEndMs)
     }
 
     override suspend fun incrementUnlock(date: String) {
@@ -233,7 +149,6 @@ class UsageRepositoryImpl @Inject constructor(
     }
 
     private companion object {
-        const val LOOKBACK_MS = 6 * 3_600_000L
         const val OPEN_GAP_MS = 5_000L
         const val DAY_MS = 24 * 3_600_000L
     }

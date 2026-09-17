@@ -95,17 +95,63 @@
                     android:layout_marginTop="@dimen/spacing_lg"
                     android:text="@string/onboarding_report_label" />
 
-                <TextView
-                    android:id="@+id/tv_report_total"
-                    style="@style/Skor.Display"
-                    android:layout_marginTop="6dp"
-                    tools:text="29h 14m" />
+                <LinearLayout
+                    android:id="@+id/report_metrics"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/Skor.Caption"
+                            android:text="@string/onboarding_report_total_label" />
+
+                        <TextView
+                            android:id="@+id/tv_report_total"
+                            style="@style/Skor.Metric"
+                            android:layout_marginTop="4dp"
+                            android:maxLines="1"
+                            tools:text="52h 10m" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginHorizontal="@dimen/spacing_md"
+                        android:background="@color/skor_line" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/Skor.Caption"
+                            android:text="@string/onboarding_report_daily_label" />
+
+                        <TextView
+                            android:id="@+id/tv_report_daily"
+                            style="@style/Skor.Metric"
+                            android:layout_marginTop="4dp"
+                            android:maxLines="1"
+                            tools:text="7h 26m" />
+                    </LinearLayout>
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/tv_report_sub"
                     style="@style/Skor.Micro"
+                    android:layout_width="match_parent"
                     android:layout_marginTop="8dp"
-                    tools:text="4h 11m dnevno" />
+                    android:visibility="gone"
+                    tools:text="Prosek iz 4 dana koje je telefon sacuvao" />
 
                 <com.example.stayfree.ui.common.BarChartView
                     android:id="@+id/chart_report"

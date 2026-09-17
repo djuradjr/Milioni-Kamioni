@@ -295,10 +295,15 @@
     <string name="category_productive">Produktivno</string>
     <string name="onboarding_privacy_note">Nista ne napusta telefon. Aplikacija uopste nema pristup internetu.</string>
     <string name="onboarding_report_label">Tvojih poslednjih 7 dana</string>
-    <string name="onboarding_report_sub">%1$s dnevno · %2$d otkljucavanja dnevno</string>
-    <string name="onboarding_report_sub_short">%1$s dnevno</string>
+    <string name="onboarding_report_total_label">Ukupno</string>
+    <string name="onboarding_report_daily_label">Dnevno u proseku</string>
+    <plurals name="onboarding_report_days_measured">
+        <item quantity="one">Prosek iz %d dana koji je telefon sacuvao</item>
+        <item quantity="few">Prosek iz %d dana koje je telefon sacuvao</item>
+        <item quantity="other">Prosek iz %d dana koje je telefon sacuvao</item>
+    </plurals>
     <string name="onboarding_goal_label">Predlog dnevnog cilja</string>
-    <string name="onboarding_goal_hint_less">%1$s manje nego sada — dostizno</string>
+    <string name="onboarding_goal_hint_less">%1$s manje od tvog dnevnog proseka (−%2$d%%)</string>
     <string name="onboarding_goal_hint_start">podesicemo ga kad skupimo nedelju</string>
     <string name="onboarding_first_run_title">Merimo od danas</string>
     <string name="onboarding_first_run_desc">Tvoj telefon nije sacuvao raniju istoriju, pa krecemo od nule. Prvi skor stize veceras, prva prava nedelja za sedam dana.</string>
@@ -312,6 +317,6 @@
     <string name="onboarding_target_limit_off">blokira odmah</string>
     <string name="onboarding_target_limit_minutes">%1$d min dnevno</string>
     <string name="onboarding_target_name_whole">%1$s · cela aplikacija</string>
-    <string name="onboarding_goal_hint_already">vec si ispod ovoga — drzi tako</string>
+    <string name="onboarding_goal_hint_already">Tvoj dnevni prosek vec staje u ovaj cilj</string>
     <string name="block_app_limit_pending">%1$s od sutra</string>
 </resources>

@@ -18,6 +18,7 @@ import com.example.stayfree.R
 import com.example.stayfree.data.local.preferences.AppPreferences
 import com.example.stayfree.domain.content.ContentBlockTarget
 import com.example.stayfree.domain.content.ContentSignatures
+import com.example.stayfree.domain.onboarding.DailyGoal
 import com.example.stayfree.domain.onboarding.UsageHistory
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.example.stayfree.databinding.ActivityOnboardingBinding
@@ -26,7 +27,6 @@ import com.example.stayfree.service.TrackingScheduler
 import com.example.stayfree.ui.MainActivity
 import com.example.stayfree.util.AppInfoUtils
 import com.example.stayfree.util.PermissionUtils
-import com.example.stayfree.util.TimeUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -75,8 +75,8 @@ class OnboardingActivity : AppCompatActivity() {
         binding.btnGrant.setOnClickListener { onPrimaryClick() }
         binding.btnNext.setOnClickListener { advance() }
         binding.btnSkip.setOnClickListener { advance() }
-        binding.btnGoalMinus.setOnClickListener { nudgeGoal(-GOAL_STEP_MINUTES) }
-        binding.btnGoalPlus.setOnClickListener { nudgeGoal(GOAL_STEP_MINUTES) }
+        binding.btnGoalMinus.setOnClickListener { nudgeGoal(-1) }
+        binding.btnGoalPlus.setOnClickListener { nudgeGoal(1) }
     }
 
     /** Resumes where the user stopped: a cold start must not rewind a granted step. */
@@ -245,27 +245,30 @@ class OnboardingActivity : AppCompatActivity() {
         if (!result.hasData) {
             // No history on this device: say so plainly and start from the default.
             binding.tvReportLabel.setText(R.string.onboarding_first_run_title)
-            binding.tvReportTotal.visibility = View.GONE
+            binding.reportMetrics.visibility = View.GONE
             binding.chartReport.visibility = View.GONE
             binding.reportTopApps.visibility = View.GONE
             binding.tvReportSub.setText(R.string.onboarding_first_run_desc)
+            binding.tvReportSub.visibility = View.VISIBLE
             binding.tvGoalHint.setText(R.string.onboarding_goal_hint_start)
             goalMinutes = AppPreferences.DEFAULT_DAILY_GOAL_MINUTES
             renderGoal()
             return
         }
 
-        binding.tvReportTotal.text = TimeUtils.formatDuration(result.totalMs)
-        binding.tvReportSub.text = getString(
-            R.string.onboarding_report_sub_short,
-            TimeUtils.formatDuration(result.dailyAverageMs)
-        )
+        // Both in whole minutes, so total, average and the goal hint below add up exactly.
+        binding.tvReportTotal.text = formatMinutesCompact((result.totalMs / 60_000L).toInt())
+        binding.tvReportDaily.text = formatMinutesCompact(averageMinutes())
+        if (result.measuredDays < result.dailyTotals.size) {
+            binding.tvReportSub.text = resources.getQuantityString(
+                R.plurals.onboarding_report_days_measured, result.measuredDays, result.measuredDays
+            )
+            binding.tvReportSub.visibility = View.VISIBLE
+        }
         binding.chartReport.setData(result.dailyTotals.map { it / 60_000f })
         bindTopApps(result.topApps)
 
-        // Suggest a quarter less than the current average, rounded to a tidy step.
-        val suggested = (result.dailyAverageMs / 60_000L * (1.0 - GOAL_CUT)).toInt()
-        goalMinutes = roundToStep(suggested).coerceIn(GOAL_MIN_MINUTES, GOAL_MAX_MINUTES)
+        goalMinutes = DailyGoal.suggest(averageMinutes())
         renderGoal()
     }
 
@@ -275,7 +278,8 @@ class OnboardingActivity : AppCompatActivity() {
         apps.take(TOP_APPS_SHOWN).forEach { app ->
             val row = layoutInflater.inflate(R.layout.item_onboarding_app, host, false)
             row.findViewById<TextView>(R.id.tv_name).text = app.label
-            row.findViewById<TextView>(R.id.tv_time).text = TimeUtils.formatDuration(app.totalMs)
+            row.findViewById<TextView>(R.id.tv_time).text =
+                formatMinutesCompact((app.totalMs / 60_000L).toInt())
             AppInfoUtils.getAppIcon(this, app.packageName)?.let {
                 row.findViewById<ImageView>(R.id.iv_icon).setImageDrawable(it)
             }
@@ -283,26 +287,28 @@ class OnboardingActivity : AppCompatActivity() {
         }
     }
 
-    private fun nudgeGoal(deltaMinutes: Int) {
-        goalMinutes = (goalMinutes + deltaMinutes).coerceIn(GOAL_MIN_MINUTES, GOAL_MAX_MINUTES)
+    private fun nudgeGoal(steps: Int) {
+        goalMinutes = DailyGoal.nudge(goalMinutes, steps)
         renderGoal()
     }
 
     private fun renderGoal() {
         binding.tvGoalValue.text = formatMinutesCompact(goalMinutes)
-        val averageMinutes = (report?.dailyAverageMs ?: 0L) / 60_000L
-        if (averageMinutes > goalMinutes) {
-            binding.tvGoalHint.text = getString(
-                R.string.onboarding_goal_hint_less,
-                formatMinutesCompact((averageMinutes - goalMinutes).toInt())
-            )
-        } else if (report?.hasData == true) {
-            // Goal already above the measured average: say that, don't promise tuning.
+        if (report?.hasData != true) {
+            binding.tvGoalHint.setText(R.string.onboarding_goal_hint_start)
+            return
+        }
+        val cut = DailyGoal.cut(averageMinutes(), goalMinutes)
+        if (cut == null) {
             binding.tvGoalHint.setText(R.string.onboarding_goal_hint_already)
         } else {
-            binding.tvGoalHint.setText(R.string.onboarding_goal_hint_start)
+            binding.tvGoalHint.text = getString(
+                R.string.onboarding_goal_hint_less, formatMinutesCompact(cut.minutes), cut.percent
+            )
         }
     }
+
+    private fun averageMinutes(): Int = ((report?.dailyAverageMs ?: 0L) / 60_000L).toInt()
 
     // ---------------------------------------------------------------- phase 3
 
@@ -424,9 +430,6 @@ class OnboardingActivity : AppCompatActivity() {
         }
     }
 
-    private fun roundToStep(minutes: Int): Int =
-        ((minutes + GOAL_STEP_MINUTES / 2) / GOAL_STEP_MINUTES) * GOAL_STEP_MINUTES
-
     private fun complete() {
         finishing = true
         pollJob?.cancel()
@@ -441,10 +444,6 @@ class OnboardingActivity : AppCompatActivity() {
     }
 
     private companion object {
-        const val GOAL_CUT = 0.25
-        const val GOAL_STEP_MINUTES = 10
-        const val GOAL_MIN_MINUTES = 30
-        const val GOAL_MAX_MINUTES = 12 * 60
         const val TOP_APPS_SHOWN = 3
         const val SURFACE_LIMIT_MINUTES = 15
         const val WHOLE_APP_LIMIT_MINUTES = 15
