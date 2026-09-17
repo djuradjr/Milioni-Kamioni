@@ -30,7 +30,7 @@ adb shell appops set com.djuki.blockbrainrot.debug SYSTEM_ALERT_WINDOW allow
 Poll `adb shell dumpsys accessibility | grep 'Block Brainrot Screen Monitor'`
 until bound (a few seconds; re-set `accessibility_enabled 1` while waiting).
 ⚠️ Zombie binding: `Crashed services` non-empty, or "bound" under the app label
-("Block Brainrot Dev") instead of the a11y label = events are NOT delivered.
+("Block Brainrot Test") instead of the a11y label = events are NOT delivered.
 Reset: `settings put secure enabled_accessibility_services none` → force-stop
 the app → re-run step 4.
 

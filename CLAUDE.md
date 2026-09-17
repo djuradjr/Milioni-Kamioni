@@ -13,7 +13,7 @@ or manifest/permission change), **bb-billing** (payments/premium work).
 - Work on branch **`main`**. Remote: `https://github.com/djuradjr/Milioni-Kamioni.git`.
   Privacy URL (already wired in `SettingsFragment`):
   `https://djuradjr.github.io/Milioni-Kamioni/privacy.html`.
-- Public app name **"Block Brainrot"** (release) / **"Block Brainrot Dev"** (debug),
+- Public app name **"Block Brainrot"** (release) / **"Block Brainrot Test"** (debug),
   set via `resValue` in `app/build.gradle.kts`.
 - Package rebrand is **partial by design**: `namespace = com.example.stayfree` stays
   (never rename packages); `applicationId = com.djuki.blockbrainrot` (debug adds
@@ -50,7 +50,7 @@ adb shell settings put secure accessibility_enabled 1
 adb shell appops set com.djuki.blockbrainrot.debug SYSTEM_ALERT_WINDOW allow
 ```
 Then poll `dumpsys accessibility | grep 'Block Brainrot Screen Monitor'` until bound (may take a few s; re-set `accessibility_enabled 1` while waiting). Without this, NOTHING blocks — the #1 cause of "it doesn't work".
-⚠️ **Zombie binding**: if dumpsys shows the service under `Crashed services` or it's "bound" under the app label ("Block Brainrot Dev") instead of the a11y label, events are NOT delivered. Reset with `settings put secure enabled_accessibility_services none`, force-stop the app, then re-run the commands above.
+⚠️ **Zombie binding**: if dumpsys shows the service under `Crashed services` or it's "bound" under the app label ("Block Brainrot Test") instead of the a11y label, events are NOT delivered. Reset with `settings put secure enabled_accessibility_services none`, force-stop the app, then re-run the commands above.
 
 ## 5. Emulator testing
 - AVD `Pixel_9`; boot: `emulator -avd Pixel_9 -gpu host -no-snapshot-load` (run in background), then wait `getprop sys.boot_completed == 1`.
