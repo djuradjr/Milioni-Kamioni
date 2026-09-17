@@ -9,9 +9,7 @@ Project skills in `.claude/skills/`: **bb-code-review** (every diff review),
 or manifest/permission change), **bb-billing** (payments/premium work).
 
 ## 1. Project & location (critical)
-- **Repo lives at `C:\Users\djuki\IdeaProjects\Block Brainrot main`** — folder history:
-  `StayFree` → `MoreMoney` (2026-07-03) → `Block Brainrot main` (2026-07-06); the old
-  paths no longer exist. Work ONLY in this C: folder — never in any old location.
+- **Repo lives at `C:\Users\djuki\IdeaProjects\Block Brainrot main`** — work ONLY here.
 - Work on branch **`main`**. Remote: `https://github.com/djuradjr/Milioni-Kamioni.git`.
   Privacy URL (already wired in `SettingsFragment`):
   `https://djuradjr.github.io/Milioni-Kamioni/privacy.html`.
@@ -19,25 +17,15 @@ or manifest/permission change), **bb-billing** (payments/premium work).
   set via `resValue` in `app/build.gradle.kts`.
 - Package rebrand is **partial by design**: `namespace = com.example.stayfree` stays
   (never rename packages); `applicationId = com.djuki.blockbrainrot` (debug adds
-  `.debug`, installs alongside release). ⚠️ applicationId locks at first Play publish.
+  `.debug`, installs alongside release). applicationId is locked (1.0.0 is on Play).
 
-## 2a. Redizajn "Skor" (u toku, od 2026-09-12)
-Ceo UI prelazi na **Skor** dizajn sistem — zamenjuje narandzasti "Ink/Puls"
-dashboard. Heroj Home-a je **Fokus skor 0-100** u prstenu, ispod sat-po-sat
-stubici u dve boje. Tokeni `skor_*`, font Archivo, **tamna tema podrazumevana**.
-Kljucno pravilo: **narandzasta vise nije boja brenda u UI-ju** — znaci samo
-distrakciju/blokiranje; teal je jedina boja akcije. Detalji: `bb-ui` skill.
-Mockapi svih 15 ekrana: https://claude.ai/code/artifact/ba2e1c37-ee17-4af5-aadf-101452e7f066
-
-Stanje: faze 1-3 gotove (tokeni, `domain/score/`, `ScoreRingView` +
-`HourlyBarsView`) + Pregled/Dan. Preostalo: Zastita hub (redosled alata:
-Aplikacije i sadrzaj -> Sajtovi -> Fokus -> San), Aplikacije, Detalj, Fokus,
-San, Sajtovi, Podesavanja, Blok ekran, Onboarding (+2 nova koraka: izvestaj o
-prosloj nedelji i izbor meta), nedeljni/mesecni prikaz, svetla tema u praksi.
+## 2a. Dizajn: Skor
+Ceo UI je na **Skor** dizajn sistemu: Fokus skor 0-100 u prstenu, tokeni `skor_*`,
+font Archivo, tamna tema podrazumevana. Pravila i komponente: `bb-ui` skill.
 
 ## 2. Product direction: paid SaaS (decided 2026-07-06)
 - Block Brainrot is a **paid product** — NOT ad-supported. Do not add AdMob/rewarded
-  ads; the AdMob template comments in `RewardGateActivity` are legacy reference only.
+  ads.
 - **2026-07-07: the timed-unlock model is REMOVED from code** — detected content
   gets a branded hard-block screen (`ContentBlockActivity`): no unlock path,
   Exit/Back → home. Since 2026-07-14 each content target can carry a per-target
@@ -99,27 +87,14 @@ No `INTERNET` permission (Data Safety = "no data collected", a big review advant
 This stays true under SaaS: Google Play Billing talks through the Play Store app, so
 keep the app itself networkless unless a future explicit decision changes that.
 
-## 8. Working rules (from the user — non-negotiable)
-- **NEVER `git push` unless the user explicitly says "push" in that moment.**
-  Local commits are fine.
-- **Token economy**: code quality unchanged, but no wasted tokens — no comments that
-  narrate code (only non-obvious constraints), no dead code, docs proportional to
-  the codebase.
-- **Verify before "done"**: never declare a feature working without proof — build
-  green + behavior exercised. Blocking features: **3/3 in a row** on the emulator.
-- Feature commit messages in **Serbian**, ending with the `Co-Authored-By: Claude` trailer.
-- Work only in `C:\Users\djuki\IdeaProjects\Block Brainrot main` — no other folder location exists.
-
-## 9. Play / release state
+## 8. Play / release state
 - `keystore.properties` (repo root, gitignored) drives release signing; absent →
   release stays unsigned. See `docs/PLAY_RELEASE_CHECKLIST.md` + `docs/PRIVACY_POLICY.md`
   + `docs/MANUAL_TEST_SCRIPT.md`.
 - `versionCode=2`, `versionName=1.0.1`, `targetSdk=36`; release has R8 minify + shrink — test minified
   builds on a real device (R8 bugs only show there).
-- Privacy policy URL is DONE (GitHub Pages, wired in Settings). The old stub
-  "Watch ad" button (a Play policy risk) is gone with the unlock model.
+- Privacy policy URL is DONE (GitHub Pages, wired in Settings).
 
-## 10. Known dead ends (don't re-investigate)
+## 9. Known dead ends (don't re-investigate)
 - **X / Twitter** (`com.twitter.android`): crashes on the x86_64 emulator — `UnsatisfiedLinkError: libyoga.so not found`. X's x86_64 split genuinely omits `libyoga.so` (confirmed by unzipping the split); Play serves the same broken build. It's X's bug — works on a real arm64 phone, not on this emulator.
 - **Snapchat** (`com.snapchat.android`): opens fine but blocks emulator **login** (anti-bot). Test on a real device. Also the worst content-detection candidate (exposes ~nothing to a11y; not all short-form, so whole-app is wrong).
-- **Legacy in-app back-kick** (`ui/inapp/InAppBlockViewModel` defaults): signatures like Twitter `explore` were too broad and kicked the user out of the WHOLE app (Twitter removed for this reason). Snapchat `spotlight` / Facebook `reels` remain and carry the same risk — they are opt-in (`isActive=false`) but a landmine.
