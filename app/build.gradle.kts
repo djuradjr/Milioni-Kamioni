@@ -113,6 +113,9 @@ dependencies {
     // WorkManager
     implementation(libs.workmanager.ktx)
 
+    // Billing
+    implementation(libs.billing)
+
     // Coroutines
     implementation(libs.coroutines.core)
     implementation(libs.coroutines.android)

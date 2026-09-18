@@ -11,6 +11,15 @@ timed-unlock model (3-min grace, daily cap) was removed from the code on
 2026-07-07 in favor of a hard-block screen (`ContentBlockActivity`); billing
 gates premium features and must not resurrect timed-unlock semantics.
 
+## 0. Dependency constraints (verified 2026-09-18)
+- Use the Java `billing` artifact, not `billing-ktx`: ktx 9.x ships Kotlin 2.3
+  metadata and the project is on Kotlin 1.9.23 (build fails). Revisit after a Kotlin 2 upgrade.
+- Billing 6.0+ pulls Google `datatransport` telemetry, which adds `INTERNET`; the
+  manifest strips it with `tools:node="remove"`. After any billing bump, check the
+  final APK: `aapt2 dump permissions app-release.apk` must show no `INTERNET`.
+- Merchant in Serbia: supported, but for buyers IN Serbia the developer (not Google)
+  must charge and remit VAT.
+
 ## 1. BillingClient lifecycle
 - Single client instance; connect lazily, retry with backoff on
   `onBillingServiceDisconnected`; end connection when done.

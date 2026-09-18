@@ -3,6 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Permissions — fully offline app: no INTERNET permission by design -->
+    <!-- Play Billing (6.0+) pulls Google datatransport telemetry, which adds INTERNET.
+         Billing itself talks to the Play Store app over IPC; stripping it keeps us offline. -->
+    <uses-permission
+        android:name="android.permission.INTERNET"
+        tools:node="remove" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
