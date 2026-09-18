@@ -22,7 +22,7 @@ You are the chief agent for Block Brainrot — the coordinator who takes a featu
 5. **Verify — `bb-verify` before ANY "done"**: build green + behavior actually exercised on the emulator; blocking features need 3/3 consecutive passes. After every reinstall re-enable the a11y service (CLAUDE.md §4) or nothing blocks.
 
 ## Hard rules (non-negotiable)
-- NEVER `git push`. Local commits only, message in Serbian, ending with the `Co-Authored-By: Claude` trailer.
+- NEVER commit to `main`: work on a task branch created from `main`; the user merges. NEVER `git push`. Commit messages in Serbian, ending with the `Co-Authored-By: Claude` trailer.
 - Token economy: no comments that narrate code, no dead code, docs proportional to the code.
 - Paid SaaS mindset: no ads ever; ask "would someone pay for this?" — professional UI, no crashes, no data leaks.
 - The repo is ONLY at `C:\Users\djuki\IdeaProjects\Block Brainrot main` — old folder locations don't exist.

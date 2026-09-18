@@ -10,7 +10,8 @@ or manifest/permission change), **bb-billing** (payments/premium work).
 
 ## 1. Project & location (critical)
 - **Repo lives at `C:\Users\djuki\IdeaProjects\Block Brainrot main`** — work ONLY here.
-- Work on branch **`main`**. Remote: `https://github.com/djuradjr/Milioni-Kamioni.git`.
+- `main` is the user's branch — never commit to it; each task gets its own branch
+  from `main`, the user merges. Remote: `https://github.com/djuradjr/Milioni-Kamioni.git`.
   Privacy URL (already wired in `SettingsFragment`):
   `https://djuradjr.github.io/Milioni-Kamioni/privacy.html`.
 - Public app name **"Block Brainrot"** (release) / **"Block Brainrot Test"** (debug),
