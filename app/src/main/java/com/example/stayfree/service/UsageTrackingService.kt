@@ -78,6 +78,8 @@ class UsageTrackingService : LifecycleService() {
     }
 
     private suspend fun checkBeforeTimeoutWarnings(date: String) {
+        // No subscription means no block follows, so there is nothing to warn about.
+        if (!prefs.premiumActive.first()) return
         if (!prefs.notificationsMaster.first() || !prefs.notifBeforeTimeout.first()) return
         val enabledPkgs = prefs.blockAppsEnabledPkgs.first()
         if (enabledPkgs.isEmpty()) return

@@ -80,6 +80,9 @@ class StayFreeAccessibilityService : AccessibilityService() {
     @Volatile private var focusModeEndTime = 0L
     @Volatile private var focusModeWhitelist = emptySet<String>()
     @Volatile private var focusModeIsWhitelist = true // true=whitelist, false=blacklist
+    // Blocking is the paid feature: without an active subscription nothing fires, but every
+    // configured block stays stored and resumes as soon as premium is back.
+    @Volatile private var premiumActive = false
 
     companion object {
         private const val TAG = "MoreMoneyA11y"
@@ -125,6 +128,7 @@ class StayFreeAccessibilityService : AccessibilityService() {
         startCacheRefresh()
         collectFocusModeState()
         collectContentBlockState()
+        serviceScope.launch { prefs.premiumActive.collect { premiumActive = it } }
     }
 
     private fun collectContentBlockState() {
@@ -166,6 +170,8 @@ class StayFreeAccessibilityService : AccessibilityService() {
         }
 
         serviceScope.launch(Dispatchers.Main) {
+            if (!premiumActive) return@launch
+
             // 0) Whole-app block (Block Apps screen) — explicit per-app choice with
             // a daily time allowance (0 min = block on open). Under the allowance
             // we fall through so the other rules still apply.
@@ -328,6 +334,7 @@ class StayFreeAccessibilityService : AccessibilityService() {
      * full-screen block simply covers the app instead.
      */
     private fun launchContentBlock(target: ContentBlockTarget) {
+        if (!premiumActive) return
         lastContentBlockAt = System.currentTimeMillis()
         Log.d(TAG, "Content surface: ${target.displayName} in ${target.packageName}")
 
@@ -411,7 +418,7 @@ class StayFreeAccessibilityService : AccessibilityService() {
     }
 
     private fun showBlockOverlay(pkg: String, reason: String) {
-        if (!Settings.canDrawOverlays(this)) return
+        if (!premiumActive || !Settings.canDrawOverlays(this)) return
         val intent = Intent(this, BlockOverlayActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or
                     Intent.FLAG_ACTIVITY_CLEAR_TOP or
@@ -436,7 +443,7 @@ class StayFreeAccessibilityService : AccessibilityService() {
      */
     private fun updateBrowserPoll(pkg: String) {
         browserUrlPollJob?.cancel()
-        if (pkg !in BROWSER_URL_VIEW_IDS) return
+        if (pkg !in BROWSER_URL_VIEW_IDS || !premiumActive) return
         browserUrlPollJob = serviceScope.launch {
             while (isActive && currentForegroundPackage == pkg) {
                 checkBrowserUrl(pkg)
