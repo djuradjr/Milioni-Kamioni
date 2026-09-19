@@ -357,4 +357,7 @@
     <string name="settings_premium">Premium</string>
     <string name="settings_premium_active">Aktivan · upravljaj u Google Play-u</string>
     <string name="settings_premium_inactive">Nije aktivan · pogledaj planove</string>
+    <string name="blocking_premium_title">Blokiranje je deo Premium-a</string>
+    <string name="blocking_premium_desc">Tvoje blokade su sačuvane. Uključuju se čim aktiviraš Premium.</string>
+    <string name="blocking_premium_cta">Aktiviraj Premium</string>
 </resources>

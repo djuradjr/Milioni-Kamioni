@@ -386,4 +386,7 @@
     <string name="settings_premium">Premium</string>
     <string name="settings_premium_active">Active · manage in Google Play</string>
     <string name="settings_premium_inactive">Not active · see plans</string>
+    <string name="blocking_premium_title">Blocking is part of Premium</string>
+    <string name="blocking_premium_desc">Your blocks are saved. They turn on as soon as you activate Premium.</string>
+    <string name="blocking_premium_cta">Get Premium</string>
 </resources>

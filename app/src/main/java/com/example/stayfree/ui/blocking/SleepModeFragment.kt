@@ -14,6 +14,9 @@ import com.example.stayfree.util.TimeUtils
 import java.util.Locale
 import com.example.stayfree.ui.common.bindBackHeader
 import dagger.hilt.android.AndroidEntryPoint
+import com.example.stayfree.data.billing.PremiumRepository
+import com.example.stayfree.ui.premium.requirePremium
+import javax.inject.Inject
 
 private const val MINUTES_PER_DAY = 1440
 private const val ARC_STEP_MINUTES = 15
@@ -23,6 +26,8 @@ private const val DEFAULT_END_MINUTES = 7 * 60
 
 @AndroidEntryPoint
 class SleepModeFragment : Fragment() {
+
+    @Inject lateinit var premium: PremiumRepository
 
     private var _binding: FragmentSleepModeBinding? = null
     private val binding get() = _binding!!
@@ -50,6 +55,7 @@ class SleepModeFragment : Fragment() {
         renderWindow(DEFAULT_START_MINUTES, DEFAULT_END_MINUTES)
 
         binding.btnSave.setOnClickListener {
+            if (!requirePremium(premium)) return@setOnClickListener
             val daysSelected = buildSelectedDays()
             val startMinutes = binding.arcNight.startValue
             val endMinutes = binding.arcNight.endValue ?: DEFAULT_END_MINUTES

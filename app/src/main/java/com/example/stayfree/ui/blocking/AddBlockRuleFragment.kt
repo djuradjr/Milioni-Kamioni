@@ -16,9 +16,14 @@ import com.example.stayfree.util.AppInfoUtils
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.AndroidEntryPoint
+import com.example.stayfree.data.billing.PremiumRepository
+import com.example.stayfree.ui.premium.requirePremium
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class AddBlockRuleFragment : Fragment() {
+
+    @Inject lateinit var premium: PremiumRepository
 
     private var _binding: FragmentAddBlockRuleBinding? = null
     private val binding get() = _binding!!
@@ -62,7 +67,7 @@ class AddBlockRuleFragment : Fragment() {
         setupTimeField(binding.etSessionMinutes, maxValue = 59)
         setupTimeField(binding.etBreakMinutes, maxValue = 59)
 
-        binding.btnSave.setOnClickListener { saveRule() }
+        binding.btnSave.setOnClickListener { if (requirePremium(premium)) saveRule() }
         binding.btnCancel.setOnClickListener { findNavController().popBackStack() }
     }
 

@@ -15,12 +15,17 @@ import com.example.stayfree.ui.common.bindBackHeader
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import com.example.stayfree.data.billing.PremiumRepository
+import com.example.stayfree.ui.premium.requirePremium
+import javax.inject.Inject
 
 private const val ARC_RANGE_MINUTES = 120
 private const val ARC_STEP_MINUTES = 5
 
 @AndroidEntryPoint
 class FocusModeFragment : Fragment() {
+
+    @Inject lateinit var premium: PremiumRepository
 
     private var _binding: FragmentFocusModeBinding? = null
     private val binding get() = _binding!!
@@ -61,6 +66,7 @@ class FocusModeFragment : Fragment() {
         }
 
         binding.btnStartFocus.setOnClickListener {
+            if (!requirePremium(premium)) return@setOnClickListener
             viewModel.startFocusMode()
             findNavController().popBackStack()
         }

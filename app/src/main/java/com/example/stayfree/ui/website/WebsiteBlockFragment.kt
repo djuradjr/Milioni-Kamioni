@@ -16,9 +16,14 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import com.example.stayfree.data.billing.PremiumRepository
+import com.example.stayfree.ui.premium.requirePremium
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class WebsiteBlockFragment : Fragment() {
+
+    @Inject lateinit var premium: PremiumRepository
 
     private var _binding: FragmentWebsiteBlockBinding? = null
     private val binding get() = _binding!!
@@ -36,7 +41,10 @@ class WebsiteBlockFragment : Fragment() {
         bindBackHeader(binding.backHeader)
 
         adapter = WebsiteBlockAdapter(
-            onToggle = { entity -> viewModel.toggleWebsite(entity) },
+            onToggle = { entity ->
+                if (entity.isActive || requirePremium(premium)) viewModel.toggleWebsite(entity)
+                else adapter.notifyDataSetChanged()
+            },
             onDelete = { id -> viewModel.deleteWebsite(id) }
         )
         binding.rvWebsites.apply {
@@ -44,7 +52,7 @@ class WebsiteBlockFragment : Fragment() {
             this.adapter = this@WebsiteBlockFragment.adapter
         }
 
-        binding.fab.setOnClickListener { showAddDialog() }
+        binding.fab.setOnClickListener { if (requirePremium(premium)) showAddDialog() }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.websites.collectLatest { list ->

@@ -23,8 +23,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -54,6 +56,10 @@ class PremiumRepository @Inject constructor(
     @Volatile private var connected = false
     // Needed to launch the purchase sheet for a plan picked from the last loadPlans().
     @Volatile private var premiumDetails: ProductDetails? = null
+
+    /** Current premium state for UI gates; follows every refresh. */
+    val isPremium: StateFlow<Boolean> =
+        prefs.premiumActive.stateIn(scope, SharingStarted.Eagerly, false)
 
     private val _purchasePending = MutableStateFlow(false)
     /** A purchase paid by a slow method (cash, bank transfer) that Play hasn't confirmed yet. */

@@ -20,9 +20,13 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.example.stayfree.data.billing.PremiumRepository
+import com.example.stayfree.ui.premium.requirePremium
 
 @AndroidEntryPoint
 class BlockAppsFragment : Fragment() {
+
+    @Inject lateinit var premium: PremiumRepository
 
     private var _binding: FragmentBlockAppsBinding? = null
     private val binding get() = _binding!!
@@ -47,8 +51,10 @@ class BlockAppsFragment : Fragment() {
         // tightening is always free.
         adapter = BlockAppsAdapter(
             onToggle = { pkg, blocked ->
-                if (blocked) viewModel.setBlocked(pkg, true)
-                else withPinGate(onDenied = { adapter.notifyDataSetChanged() }) {
+                if (blocked) {
+                    if (requirePremium(premium)) viewModel.setBlocked(pkg, true)
+                    else adapter.notifyDataSetChanged()
+                } else withPinGate(onDenied = { adapter.notifyDataSetChanged() }) {
                     viewModel.setBlocked(pkg, false)
                 }
             },
@@ -57,8 +63,10 @@ class BlockAppsFragment : Fragment() {
                 else withPinGate { viewModel.setLimit(pkg, minutes) }
             },
             onContentToggle = { id, enabled ->
-                if (enabled) viewModel.setContentEnabled(id, true)
-                else withPinGate(onDenied = { adapter.notifyDataSetChanged() }) {
+                if (enabled) {
+                    if (requirePremium(premium)) viewModel.setContentEnabled(id, true)
+                    else adapter.notifyDataSetChanged()
+                } else withPinGate(onDenied = { adapter.notifyDataSetChanged() }) {
                     viewModel.setContentEnabled(id, false)
                 }
             },
@@ -78,7 +86,7 @@ class BlockAppsFragment : Fragment() {
         }
 
         binding.btnAddRule.setOnClickListener {
-            findNavController().navigate(R.id.action_blockApps_to_addRule)
+            if (requirePremium(premium)) findNavController().navigate(R.id.action_blockApps_to_addRule)
         }
 
         viewLifecycleOwner.lifecycleScope.launch {

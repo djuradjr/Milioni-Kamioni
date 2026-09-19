@@ -19,9 +19,14 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.Locale
+import com.example.stayfree.data.billing.PremiumRepository
+import com.example.stayfree.ui.premium.requirePremium
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class BlockingFragment : Fragment() {
+
+    @Inject lateinit var premium: PremiumRepository
 
     private var _binding: FragmentBlockingBinding? = null
     private val binding get() = _binding!!
@@ -44,7 +49,10 @@ class BlockingFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         adapter = BlockRulesAdapter(
-            onToggle = { id, active -> viewModel.toggleRule(id, active) },
+            onToggle = { id, active ->
+                if (!active || requirePremium(premium)) viewModel.toggleRule(id, active)
+                else adapter.notifyDataSetChanged()
+            },
             onDelete = { id -> viewModel.deleteRule(id) },
             onOpenApps = { findNavController().navigate(R.id.action_blocking_to_blockApps) },
             onOpenSites = { findNavController().navigate(R.id.action_blocking_to_website) }
@@ -70,11 +78,30 @@ class BlockingFragment : Fragment() {
             findNavController().navigate(R.id.action_blocking_to_blockApps)
         }
 
+        binding.btnPremium.setOnClickListener { requirePremium(premium) }
+
         observeData()
+    }
+
+    private fun lockIcon() = ContextCompat.getDrawable(requireContext(), R.drawable.ic_lock)?.mutate()?.apply {
+        val size = resources.getDimensionPixelSize(R.dimen.premium_lock_size)
+        setBounds(0, 0, size, size)
+        setTint(ContextCompat.getColor(requireContext(), R.color.skor_text_dim))
     }
 
     private fun observeData() {
         viewLifecycleOwner.lifecycleScope.launch {
+            launch {
+                premium.isPremium.collectLatest { active ->
+                    binding.cardPremium.visibility = if (active) View.GONE else View.VISIBLE
+                    val lock = if (active) null else lockIcon()
+                    listOf(binding.statusBlockApps, binding.statusWebsites, binding.statusFocus, binding.statusSleep)
+                        .forEach {
+                            it.setCompoundDrawablesRelative(null, null, lock, null)
+                            it.compoundDrawablePadding = resources.getDimensionPixelSize(R.dimen.premium_lock_gap)
+                        }
+                }
+            }
             launch {
                 viewModel.activeBlocks.collectLatest { items ->
                     adapter.submitList(items)

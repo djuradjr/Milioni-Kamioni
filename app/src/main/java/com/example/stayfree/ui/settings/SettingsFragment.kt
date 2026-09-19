@@ -37,9 +37,12 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.example.stayfree.ui.premium.requirePremium
 
 @AndroidEntryPoint
 class SettingsFragment : Fragment() {
+
+    @Inject lateinit var premium: PremiumRepository
 
     companion object {
         // Hosted on GitHub Pages (gh-pages branch of the app repo); the same URL
@@ -117,7 +120,7 @@ class SettingsFragment : Fragment() {
 
         binding.btnSetPin.setOnClickListener {
             if (viewModel.pinEnabled.value) showPinActionsDialog()
-            else findNavController().navigate(R.id.action_settings_to_pin)
+            else if (requirePremium(premium)) findNavController().navigate(R.id.action_settings_to_pin)
         }
 
         binding.btnResetTime.setOnClickListener {

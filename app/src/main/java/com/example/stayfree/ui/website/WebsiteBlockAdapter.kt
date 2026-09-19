@@ -31,6 +31,8 @@ class WebsiteBlockAdapter(
             } else {
                 "Daily cap: ${TimeUtils.formatDuration(entity.dailyCapMs)} (used: ${TimeUtils.formatDuration(entity.timeUsedTodayMs)})"
             }
+            // Clear the recycled listener first or setting the state toggles the previous row.
+            binding.switchActive.setOnCheckedChangeListener(null)
             binding.switchActive.isChecked = entity.isActive
             binding.switchActive.setOnCheckedChangeListener { _, _ -> onToggle(entity) }
             binding.btnDelete.setOnClickListener { onDelete(entity.id) }
