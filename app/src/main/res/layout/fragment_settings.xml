@@ -49,6 +49,22 @@
             </LinearLayout>
         </LinearLayout>
 
+        <com.google.android.material.card.MaterialCardView style="@style/Settings.Card">
+            <LinearLayout
+                android:id="@+id/btn_premium"
+                style="@style/Settings.Row">
+
+                <ImageView style="@style/Settings.RowIcon" android:src="@drawable/ic_shield" app:tint="@color/skor_focus" />
+
+                <LinearLayout style="@style/Settings.RowText">
+                    <TextView style="@style/Settings.RowTitle" android:text="@string/settings_premium" />
+                    <TextView android:id="@+id/tv_premium_status" style="@style/Settings.RowSubtitle" />
+                </LinearLayout>
+
+                <ImageView style="@style/Settings.RowChevron" android:src="@drawable/ic_chevron_right" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
         <!-- Account (local-only profile) -->
         <TextView style="@style/Settings.SectionHeader" android:text="@string/settings_account" />
 

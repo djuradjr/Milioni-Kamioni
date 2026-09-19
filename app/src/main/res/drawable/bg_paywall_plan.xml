@@ -1,0 +1,17 @@
+<!-- Plan card: flat Skor card; the chosen plan gets a teal outline, never a fill change. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_selected="true">
+        <shape android:shape="rectangle">
+            <corners android:radius="14dp" />
+            <solid android:color="@color/skor_card" />
+            <stroke android:width="1.5dp" android:color="@color/skor_focus" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="14dp" />
+            <solid android:color="@color/skor_card" />
+            <stroke android:width="1.5dp" android:color="@color/skor_card" />
+        </shape>
+    </item>
+</selector>

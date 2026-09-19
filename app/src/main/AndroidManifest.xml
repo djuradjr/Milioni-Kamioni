@@ -82,6 +82,11 @@
             android:taskAffinity=""
             android:theme="@style/Theme.StayFree.ContentBlock" />
 
+        <activity
+            android:name=".ui.premium.PaywallActivity"
+            android:exported="false"
+            android:theme="@style/Theme.StayFree" />
+
         <!-- Foreground Service — specialUse: continuous on-device screen-time
              tracking; dataSync would get a 6h timeout + boot-launch ban on
              targetSdk 35 -->

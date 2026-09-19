@@ -21,9 +21,11 @@ import androidx.core.os.ConfigurationCompat
 import androidx.core.os.LocaleListCompat
 import androidx.navigation.fragment.findNavController
 import com.example.stayfree.R
+import com.example.stayfree.data.billing.PremiumRepository
 import com.example.stayfree.data.local.preferences.AppPreferences
 import com.example.stayfree.databinding.DialogAccountEditBinding
 import com.example.stayfree.databinding.FragmentSettingsBinding
+import com.example.stayfree.ui.premium.PaywallActivity
 import com.example.stayfree.util.AppearanceModes
 import com.example.stayfree.util.PermissionUtils
 import com.example.stayfree.util.PinGate
@@ -81,6 +83,20 @@ class SettingsFragment : Fragment() {
         binding.btnLanguage.setOnClickListener { showLanguageDialog() }
         binding.btnAppearance.setOnClickListener { showAppearanceDialog() }
         binding.btnAccount.setOnClickListener { showAccountDialog() }
+        binding.btnPremium.setOnClickListener {
+            if (!viewModel.premiumActive.value) {
+                startActivity(PaywallActivity.newIntent(requireContext()))
+                return@setOnClickListener
+            }
+            // Cancelling or switching plans happens in Play; there is no in-app path.
+            val manage = "https://play.google.com/store/account/subscriptions" +
+                "?sku=${PremiumRepository.PREMIUM_PRODUCT_ID}&package=${requireContext().packageName}"
+            try {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(manage)))
+            } catch (e: Exception) {
+                // Neither Play Store nor a browser — nothing to open.
+            }
+        }
 
         binding.switchNotifMaster.setOnCheckedChangeListener { btn, checked ->
             if (!btn.isPressed) return@setOnCheckedChangeListener
@@ -121,6 +137,19 @@ class SettingsFragment : Fragment() {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
+            launch {
+                viewModel.premiumActive.collectLatest { active ->
+                    binding.tvPremiumStatus.setText(
+                        if (active) R.string.settings_premium_active else R.string.settings_premium_inactive
+                    )
+                    binding.tvPremiumStatus.setTextColor(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            if (active) R.color.accent_teal else R.color.on_surface_variant
+                        )
+                    )
+                }
+            }
             launch {
                 viewModel.pinEnabled.collectLatest { enabled ->
                     binding.tvPinSubtitle.setText(

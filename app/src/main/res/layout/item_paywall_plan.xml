@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:background="@drawable/bg_paywall_plan"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="14dp">
+
+    <View
+        android:id="@+id/radio"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:background="@drawable/bg_paywall_radio"
+        android:duplicateParentState="true" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="14dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_plan_title"
+            style="@style/Skor.Body"
+            android:textFontWeight="700"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            tools:text="3 months" />
+
+        <TextView
+            android:id="@+id/tv_plan_price"
+            style="@style/Skor.Caption"
+            android:layout_marginTop="2dp"
+            android:fontFeatureSettings="tnum"
+            android:textSize="13sp"
+            tools:text="€9.99 · €3.33 / mo" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_plan_badge"
+        style="@style/Skor.Chip"
+        android:layout_marginStart="8dp"
+        android:textColor="@color/skor_focus"
+        android:visibility="gone"
+        tools:text="Best value −29%"
+        tools:visibility="visible" />
+</LinearLayout>

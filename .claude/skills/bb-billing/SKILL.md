@@ -52,6 +52,9 @@ no pre-selected upsells, cancel path obvious.
   (`adb shell run-as com.djuki.blockbrainrot.debug sh -c 'echo 1 > files/premium_override'`,
   then bring the app to the foreground; `rm` the file to return to Play). The release
   source set ships a no-op `DebugPremium` — confirm with a dex grep for `premium_override`.
+- Debug builds: `files/fake_plans` (any content) makes the paywall show sample plans and
+  "buying" flips the override on — exercises the paywall before Play has products.
+  Without it (and without Console products) the paywall shows its "plans unavailable" state.
 - `LICENSE_KEY` in `PremiumRepository` holds the Play licensing key (set 2026-09-19);
   a broken key rejects every purchase — `PurchaseVerifierTest` fails if it stops parsing.
 - License-tester accounts + internal testing track (real Play flow, no charge).

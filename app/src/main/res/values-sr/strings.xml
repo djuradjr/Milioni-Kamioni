@@ -317,4 +317,44 @@
     <string name="onboarding_target_limit_minutes">%1$d min dnevno</string>
     <string name="onboarding_target_name_whole">%1$s · cela aplikacija</string>
     <string name="onboarding_goal_hint_already">Tvoj dnevni prosek vec staje u ovaj cilj</string>
+    <!-- Paywall -->
+    <string name="paywall_close">Zatvori</string>
+    <string name="paywall_restore">Vrati kupovinu</string>
+    <string name="paywall_title">Vrati svoje vreme</string>
+    <string name="paywall_stat">Prošle nedelje: %1$s u aplikacijama koje te ometaju</string>
+    <string name="paywall_feature_content">Blokiraj Reels, Stories, Shorts i TikTok</string>
+    <string name="paywall_feature_limits">Dnevni limit za bilo koju aplikaciju</string>
+    <string name="paywall_feature_sites">Blokiranje sajtova u browseru</string>
+    <string name="paywall_feature_modes">Focus i Sleep mode, PIN zaštita</string>
+    <plurals name="paywall_plan_months">
+        <item quantity="one">%d mesec</item>
+        <item quantity="few">%d meseca</item>
+        <item quantity="other">%d meseci</item>
+    </plurals>
+    <string name="paywall_price_monthly">%1$s / mesec</string>
+    <string name="paywall_price_per_month">%1$s · %2$s / mes</string>
+    <string name="paywall_badge_best">Najbolja vrednost −%1$d%%</string>
+    <string name="paywall_badge_discount">−%1$d%%</string>
+    <plurals name="paywall_cta_trial">
+        <item quantity="one">Započni %d dan besplatno</item>
+        <item quantity="few">Započni %d dana besplatno</item>
+        <item quantity="other">Započni %d dana besplatno</item>
+    </plurals>
+    <string name="paywall_cta_subscribe">Pretplati se</string>
+    <plurals name="paywall_every_months">
+        <item quantity="one">mesečno</item>
+        <item quantity="few">na svaka %d meseca</item>
+        <item quantity="other">na svakih %d meseci</item>
+    </plurals>
+    <string name="paywall_terms_trial">%1$d dana besplatno, zatim %2$s %3$s. Otkaži bilo kad u Google Play-u, bez naplate ako otkažeš pre kraja probe.</string>
+    <string name="paywall_terms">%1$s %2$s, obnavlja se automatski. Otkaži bilo kad u Google Play-u.</string>
+    <string name="paywall_unavailable">Planovi trenutno nisu dostupni. Proveri da li je Google Play ažuran i da li si prijavljen, pa pokušaj ponovo.</string>
+    <string name="paywall_retry">Pokušaj ponovo</string>
+    <string name="paywall_pending">Plaćanje je na čekanju. Premium se uključuje čim Google potvrdi uplatu.</string>
+    <string name="paywall_welcome">Premium je uključen</string>
+    <string name="paywall_restore_none">Na ovom Google nalogu nema aktivne pretplate</string>
+    <string name="paywall_error_launch">Google Play nije mogao da se otvori. Pokušaj ponovo.</string>
+    <string name="settings_premium">Premium</string>
+    <string name="settings_premium_active">Aktivan · upravljaj u Google Play-u</string>
+    <string name="settings_premium_inactive">Nije aktivan · pogledaj planove</string>
 </resources>

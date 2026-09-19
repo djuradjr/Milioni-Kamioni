@@ -18,6 +18,9 @@ class SettingsViewModel @Inject constructor(
     val pinEnabled: StateFlow<Boolean> = prefs.pinEnabled
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
+    val premiumActive: StateFlow<Boolean> = prefs.premiumActive
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+
     val dailyResetTime: StateFlow<Int> = prefs.dailyResetTimeMinutes
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
 

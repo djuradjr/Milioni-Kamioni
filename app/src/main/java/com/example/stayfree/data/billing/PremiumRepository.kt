@@ -1,5 +1,6 @@
 package com.example.stayfree.data.billing
 
+import android.app.Activity
 import android.content.Context
 import android.util.Base64
 import android.util.Log
@@ -7,10 +8,13 @@ import com.android.billingclient.api.AcknowledgePurchaseParams
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClient.BillingResponseCode
 import com.android.billingclient.api.BillingClientStateListener
+import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.BillingResult
 import com.android.billingclient.api.PendingPurchasesParams
+import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesUpdatedListener
+import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.QueryPurchasesParams
 import com.example.stayfree.data.local.preferences.AppPreferences
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -18,11 +22,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -44,6 +52,12 @@ class PremiumRepository @Inject constructor(
     private val refreshLock = Mutex()
 
     @Volatile private var connected = false
+    // Needed to launch the purchase sheet for a plan picked from the last loadPlans().
+    @Volatile private var premiumDetails: ProductDetails? = null
+
+    private val _purchasePending = MutableStateFlow(false)
+    /** A purchase paid by a slow method (cash, bank transfer) that Play hasn't confirmed yet. */
+    val purchasePending: StateFlow<Boolean> = _purchasePending
 
     private val billingClient: BillingClient = BillingClient.newBuilder(context)
         .setListener(this)
@@ -64,6 +78,39 @@ class PremiumRepository @Inject constructor(
 
     fun refresh() {
         scope.launch { refreshNow() }
+    }
+
+    /** Null when Play can't list the plans (no Play Store, signed out, products not live). */
+    suspend fun loadPlans(): List<PremiumPlan>? = withContext(Dispatchers.IO) {
+        DebugPremium.fakePlans(context) ?: withTimeoutOrNull(PLAY_TIMEOUT_MS) { queryPlans() }
+    }
+
+    /** Main thread only. False when the Play purchase sheet could not open. */
+    fun launchPurchase(activity: Activity, plan: PremiumPlan): Boolean {
+        if (DebugPremium.fakePurchase(context)) {
+            refresh()
+            return true
+        }
+        val details = premiumDetails ?: return false
+        val params = BillingFlowParams.newBuilder()
+            .setProductDetailsParamsList(
+                listOf(
+                    BillingFlowParams.ProductDetailsParams.newBuilder()
+                        .setProductDetails(details)
+                        .setOfferToken(plan.offerToken)
+                        .build()
+                )
+            )
+            .build()
+        val code = billingClient.launchBillingFlow(activity, params).responseCode
+        if (code != BillingResponseCode.OK) Log.w(TAG, "Purchase sheet failed: $code")
+        return code == BillingResponseCode.OK
+    }
+
+    /** Asks Play right now; true when this Google account already owns premium. */
+    suspend fun restore(): Boolean = withContext(Dispatchers.IO) {
+        refreshNow()
+        prefs.premiumActive.first()
     }
 
     override fun onPurchasesUpdated(result: BillingResult, purchases: MutableList<Purchase>?) {
@@ -93,12 +140,65 @@ class PremiumRepository @Inject constructor(
         val purchased = purchases.filter {
             PREMIUM_PRODUCT_ID in it.products && it.purchaseState == Purchase.PurchaseState.PURCHASED
         }
+        _purchasePending.value = purchases.any {
+            PREMIUM_PRODUCT_ID in it.products && it.purchaseState == Purchase.PurchaseState.PENDING
+        }
         val genuine = purchased.filter(::isSignedByPlay)
         if (genuine.size < purchased.size) {
             Log.w(TAG, "Rejected ${purchased.size - genuine.size} purchase(s) with a bad signature")
         }
         genuine.filterNot { it.isAcknowledged }.forEach { acknowledge(it) }
         return genuine.isNotEmpty()
+    }
+
+    private suspend fun queryPlans(): List<PremiumPlan>? {
+        if (!connect()) return null
+        val params = QueryProductDetailsParams.newBuilder()
+            .setProductList(
+                listOf(
+                    QueryProductDetailsParams.Product.newBuilder()
+                        .setProductId(PREMIUM_PRODUCT_ID)
+                        .setProductType(BillingClient.ProductType.SUBS)
+                        .build()
+                )
+            )
+            .build()
+        val (result, details) = suspendCancellableCoroutine { cont ->
+            billingClient.queryProductDetailsAsync(params) { result, found ->
+                if (cont.isActive) cont.resume(result to found.productDetailsList.firstOrNull())
+            }
+        }
+        if (result.responseCode != BillingResponseCode.OK || details == null) {
+            Log.w(TAG, "No plans: code=${result.responseCode}, product found=${details != null}")
+            return null
+        }
+        premiumDetails = details
+        return details.subscriptionOfferDetails.orEmpty()
+            .groupBy { it.basePlanId }
+            .mapNotNull { (_, offers) -> toPlan(offers) }
+            .sortedBy { it.months }
+            .ifEmpty { null }
+    }
+
+    // Play returns only the offers this user is eligible for, so a free-phase offer here is a
+    // trial they can actually take; without one the plain base plan is sold.
+    private fun toPlan(offers: List<ProductDetails.SubscriptionOfferDetails>): PremiumPlan? {
+        val offer = offers.firstOrNull { o -> o.pricingPhases.pricingPhaseList.any { it.priceAmountMicros == 0L } }
+            ?: offers.firstOrNull { it.offerId == null }
+            ?: return null
+        val phases = offer.pricingPhases.pricingPhaseList
+        val recurring = phases.lastOrNull() ?: return null
+        val months = PremiumPlan.months(recurring.billingPeriod) ?: return null
+        val trialDays = phases.firstOrNull { it.priceAmountMicros == 0L }
+            ?.let { PremiumPlan.days(it.billingPeriod) } ?: 0
+        return PremiumPlan(
+            months = months,
+            price = recurring.formattedPrice,
+            priceMicros = recurring.priceAmountMicros,
+            currencyCode = recurring.priceCurrencyCode,
+            trialDays = trialDays,
+            offerToken = offer.offerToken
+        )
     }
 
     private suspend fun connect(): Boolean {

@@ -349,4 +349,41 @@
     <string name="notif_before_timeout_text">Daily limit almost reached. Time for a break?</string>
     <string name="notif_daily_summary_title">Daily screen time summary</string>
     <string name="notif_daily_summary_text">Total screen time yesterday: %1$s</string>
+    <!-- Paywall -->
+    <string name="paywall_close">Close</string>
+    <string name="paywall_restore">Restore purchase</string>
+    <string name="paywall_title">Take back your time</string>
+    <string name="paywall_stat">Last week: %1$s in distracting apps</string>
+    <string name="paywall_feature_content">Block Reels, Stories, Shorts and TikTok</string>
+    <string name="paywall_feature_limits">A daily limit for any app</string>
+    <string name="paywall_feature_sites">Block websites in your browser</string>
+    <string name="paywall_feature_modes">Focus and Sleep mode, PIN lock</string>
+    <plurals name="paywall_plan_months">
+        <item quantity="one">%d month</item>
+        <item quantity="other">%d months</item>
+    </plurals>
+    <string name="paywall_price_monthly">%1$s / month</string>
+    <string name="paywall_price_per_month">%1$s · %2$s / mo</string>
+    <string name="paywall_badge_best">Best value −%1$d%%</string>
+    <string name="paywall_badge_discount">−%1$d%%</string>
+    <plurals name="paywall_cta_trial">
+        <item quantity="one">Start %d day free</item>
+        <item quantity="other">Start %d days free</item>
+    </plurals>
+    <string name="paywall_cta_subscribe">Subscribe</string>
+    <plurals name="paywall_every_months">
+        <item quantity="one">every month</item>
+        <item quantity="other">every %d months</item>
+    </plurals>
+    <string name="paywall_terms_trial">%1$d days free, then %2$s %3$s. Cancel anytime in Google Play — you won\'t be charged if you cancel before the trial ends.</string>
+    <string name="paywall_terms">%1$s %2$s, renews automatically. Cancel anytime in Google Play.</string>
+    <string name="paywall_unavailable">Plans aren\'t available right now. Make sure Google Play is up to date and you\'re signed in, then try again.</string>
+    <string name="paywall_retry">Try again</string>
+    <string name="paywall_pending">Your payment is pending. Premium turns on as soon as Google confirms it.</string>
+    <string name="paywall_welcome">Premium is on</string>
+    <string name="paywall_restore_none">No active subscription on this Google account</string>
+    <string name="paywall_error_launch">Couldn\'t open Google Play. Try again.</string>
+    <string name="settings_premium">Premium</string>
+    <string name="settings_premium_active">Active · manage in Google Play</string>
+    <string name="settings_premium_inactive">Not active · see plans</string>
 </resources>

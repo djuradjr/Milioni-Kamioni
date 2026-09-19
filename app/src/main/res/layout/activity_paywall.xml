@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paywall: value first, then the plans. The CTA and the billing terms stay pinned
+     below the scroll so the price and the cancel path are always in view. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/skor_ground"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="8dp"
+        android:paddingTop="8dp">
+
+        <ImageButton
+            android:id="@+id/btn_close"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/paywall_close"
+            android:src="@drawable/ic_close"
+            app:tint="@color/skor_text_dim" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/btn_restore"
+            style="@style/Skor.Caption"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:paddingHorizontal="12dp"
+            android:text="@string/paywall_restore"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp"
+            android:paddingBottom="16dp">
+
+            <TextView
+                style="@style/Skor.Text"
+                android:layout_marginTop="12dp"
+                android:letterSpacing="-0.025"
+                android:text="@string/paywall_title"
+                android:textFontWeight="700"
+                android:textSize="28sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_stat"
+                style="@style/Skor.Caption"
+                android:layout_width="match_parent"
+                android:layout_marginTop="8dp"
+                android:textSize="14sp"
+                android:visibility="gone"
+                tools:text="Last week: 6h 12m in distracting apps"
+                tools:visibility="visible" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/Skor.Body"
+                    android:drawablePadding="12dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/paywall_feature_content"
+                    app:drawableStartCompat="@drawable/ic_check"
+                    app:drawableTint="@color/skor_focus" />
+
+                <TextView
+                    style="@style/Skor.Body"
+                    android:layout_marginTop="12dp"
+                    android:drawablePadding="12dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/paywall_feature_limits"
+                    app:drawableStartCompat="@drawable/ic_check"
+                    app:drawableTint="@color/skor_focus" />
+
+                <TextView
+                    style="@style/Skor.Body"
+                    android:layout_marginTop="12dp"
+                    android:drawablePadding="12dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/paywall_feature_sites"
+                    app:drawableStartCompat="@drawable/ic_check"
+                    app:drawableTint="@color/skor_focus" />
+
+                <TextView
+                    style="@style/Skor.Body"
+                    android:layout_marginTop="12dp"
+                    android:drawablePadding="12dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/paywall_feature_modes"
+                    app:drawableStartCompat="@drawable/ic_check"
+                    app:drawableTint="@color/skor_focus" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/plans"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:orientation="vertical" />
+
+            <ProgressBar
+                android:id="@+id/progress"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="36dp"
+                android:indeterminateTint="@color/skor_focus" />
+
+            <LinearLayout
+                android:id="@+id/group_unavailable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:background="@drawable/bg_skor_card"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    style="@style/Skor.Body"
+                    android:layout_width="match_parent"
+                    android:lineSpacingMultiplier="1.25"
+                    android:text="@string/paywall_unavailable" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_retry"
+                    style="@style/Skor.Button.Neutral"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:text="@string/paywall_retry" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_pending"
+                style="@style/Skor.Body"
+                android:layout_width="match_parent"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_skor_chip"
+                android:backgroundTint="@color/skor_warn_soft"
+                android:lineSpacingMultiplier="1.25"
+                android:padding="14dp"
+                android:text="@string/paywall_pending"
+                android:textColor="@color/skor_warn"
+                android:visibility="gone"
+                tools:visibility="visible" />
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/group_cta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="24dp"
+        android:paddingBottom="16dp"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_subscribe"
+            style="@style/Skor.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Start 7 days free" />
+
+        <TextView
+            android:id="@+id/tv_terms"
+            style="@style/Skor.Caption"
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:lineSpacingMultiplier="1.3"
+            android:textSize="11sp"
+            tools:text="7 days free, then €3.99 every month. Cancel anytime in Google Play." />
+    </LinearLayout>
+</LinearLayout>
