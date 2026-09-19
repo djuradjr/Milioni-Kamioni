@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
+import com.example.stayfree.data.billing.PremiumRepository
 import com.example.stayfree.data.local.preferences.AppPreferences
 import com.example.stayfree.data.repository.BlockingRepository
 import com.example.stayfree.service.TrackingScheduler
@@ -25,6 +26,7 @@ class StayFreeApp : Application(), Configuration.Provider {
     @Inject lateinit var workerFactory: HiltWorkerFactory
     @Inject lateinit var prefs: AppPreferences
     @Inject lateinit var blockingRepository: BlockingRepository
+    @Inject lateinit var premiumRepository: PremiumRepository
 
     private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
@@ -35,6 +37,7 @@ class StayFreeApp : Application(), Configuration.Provider {
         val appearance = runBlocking { prefs.appearanceMode.first() }
         AppCompatDelegate.setDefaultNightMode(AppearanceModes.toNightMode(appearance))
         NotificationUtils.createChannels(this)
+        premiumRepository.start()
         applicationScope.launch {
             val resetTime = prefs.dailyResetTimeMinutes.first()
             TrackingScheduler.ensureWorkScheduled(this@StayFreeApp, resetTime)

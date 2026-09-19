@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.stayfree.R
+import com.example.stayfree.data.billing.PremiumRepository
 import com.example.stayfree.data.local.preferences.AppPreferences
 import com.example.stayfree.databinding.ActivityMainBinding
 import com.example.stayfree.service.TrackingScheduler
@@ -26,6 +27,7 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity() {
 
     @Inject lateinit var prefs: AppPreferences
+    @Inject lateinit var premiumRepository: PremiumRepository
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,5 +88,11 @@ class MainActivity : AppCompatActivity() {
             TrackingScheduler.ensureWorkScheduled(this@MainActivity, resetTime)
             TrackingScheduler.ensureStarted(this@MainActivity)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Catches purchases, renewals and refunds that happened while we were away.
+        premiumRepository.refresh()
     }
 }

@@ -72,6 +72,9 @@ class AppPreferences @Inject constructor(
         // Only packages the user actually changed are stored; everything else
         // resolves through AppCategory.defaultFor so the seed list can evolve.
         val APP_CATEGORIES = stringPreferencesKey("app_categories_json")
+        // Cache of the last Play-verified subscription state, written only by
+        // PremiumRepository; every successful Play query overwrites it.
+        val PREMIUM_ACTIVE = booleanPreferencesKey("premium_active")
     }
 
     val dailyResetTimeMinutes: Flow<Int> = dataStore.data.map { it[DAILY_RESET_TIME_MINUTES] ?: 0 }
@@ -115,6 +118,8 @@ class AppPreferences @Inject constructor(
             emptyMap()
         }
     }
+
+    val premiumActive: Flow<Boolean> = dataStore.data.map { it[PREMIUM_ACTIVE] ?: false }
 
     val dailyGoalMinutes: Flow<Int> =
         dataStore.data.map { it[DAILY_GOAL_MINUTES] ?: DEFAULT_DAILY_GOAL_MINUTES }
@@ -295,6 +300,10 @@ class AppPreferences @Inject constructor(
             prefs[CONTENT_TARGET_USAGE] = JSONObject().put("date", date).put("usage", usage).toString()
         }
         return newTotal
+    }
+
+    suspend fun setPremiumActive(active: Boolean) {
+        dataStore.edit { it[PREMIUM_ACTIVE] = active }
     }
 
     suspend fun setDailyGoalMinutes(minutes: Int) {
