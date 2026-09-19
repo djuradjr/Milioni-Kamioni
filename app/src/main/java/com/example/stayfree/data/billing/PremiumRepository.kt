@@ -163,7 +163,14 @@ class PremiumRepository @Inject constructor(
         private const val PLAY_TIMEOUT_MS = 30_000L
 
         // Play Console → Monetize with Play → Monetization setup → Licensing. A public
-        // key, safe to ship; while blank every purchase fails verification (fail closed).
-        private const val LICENSE_KEY = ""
+        // key, safe to ship; a broken one makes every purchase fail verification.
+        internal const val LICENSE_KEY =
+            "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6re054AeCK8u8b1N/JHw" +
+            "PQXIjEsyUeXY4fo2sLU4WIS2O/vyyihhNUA0AIvx3m38QKbnXPtrRlvM/Gi7CkX/" +
+            "uS+MOg6t0nACtMvQn2Met4FxUQngYX7OwMHOHB7V8LYIg3wsDDCC7acvT94whGbf" +
+            "HpFnHatcZhCJHsFKALQCnufnhzznvNh9FaieOzDl17J8UZaV567NOALHD4MfZMEo" +
+            "PWDNW1+OyRiVEVgg0LPmFEqeoFn7dGLV/FxaL5eYyZtg0ak6F4zdpVclQmgcsnHQ" +
+            "LviDEIdhLCde+gjWdOOjES8Tzq+5pOS6e0Hpa5bOXXPnXsXCYCViNkknSvIzwZOV" +
+            "lwIDAQAB"
     }
 }

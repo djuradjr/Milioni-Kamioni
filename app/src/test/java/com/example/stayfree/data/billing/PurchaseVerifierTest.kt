@@ -3,9 +3,12 @@ package com.example.stayfree.data.billing
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.security.KeyFactory
 import java.security.KeyPair
 import java.security.KeyPairGenerator
 import java.security.Signature
+import java.security.spec.X509EncodedKeySpec
+import java.util.Base64
 
 class PurchaseVerifierTest {
 
@@ -40,6 +43,12 @@ class PurchaseVerifierTest {
     fun `garbage signature fails closed`() {
         assertFalse(PurchaseVerifier.verify(play.public.encoded, json, ByteArray(0)))
         assertFalse(PurchaseVerifier.verify(play.public.encoded, json, byteArrayOf(9, 9, 9)))
+    }
+
+    @Test
+    fun `shipped license key is a valid RSA public key`() {
+        val der = Base64.getDecoder().decode(PremiumRepository.LICENSE_KEY)
+        KeyFactory.getInstance("RSA").generatePublic(X509EncodedKeySpec(der))
     }
 
     private fun newKeyPair(): KeyPair =
