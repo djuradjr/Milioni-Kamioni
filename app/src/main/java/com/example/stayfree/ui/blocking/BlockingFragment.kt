@@ -12,15 +12,17 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.stayfree.R
+import com.example.stayfree.data.billing.PremiumRepository
 import com.example.stayfree.databinding.FragmentBlockingBinding
 import com.example.stayfree.ui.common.CountUp
+import com.example.stayfree.ui.onboarding.OnboardingActivity
+import com.example.stayfree.ui.premium.requirePremium
+import com.example.stayfree.util.PermissionUtils
 import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.Locale
-import com.example.stayfree.data.billing.PremiumRepository
-import com.example.stayfree.ui.premium.requirePremium
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -79,8 +81,24 @@ class BlockingFragment : Fragment() {
         }
 
         binding.btnPremium.setOnClickListener { requirePremium(premium) }
+        binding.btnSetup.setOnClickListener {
+            startActivity(OnboardingActivity.protectionIntent(requireContext()))
+        }
 
         observeData()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Permissions change in system settings while we are away.
+        bindSetupCard(premium.isPremium.value)
+    }
+
+    /** A paying user without the blocking permissions gets nothing blocked — say so. */
+    private fun bindSetupCard(premiumActive: Boolean) {
+        val ctx = requireContext()
+        val ready = PermissionUtils.hasAccessibilityServiceEnabled(ctx) && PermissionUtils.hasOverlayPermission(ctx)
+        binding.cardSetup.visibility = if (premiumActive && !ready) View.VISIBLE else View.GONE
     }
 
     private fun lockIcon() = ContextCompat.getDrawable(requireContext(), R.drawable.ic_lock)?.mutate()?.apply {
@@ -94,6 +112,7 @@ class BlockingFragment : Fragment() {
             launch {
                 premium.isPremium.collectLatest { active ->
                     binding.cardPremium.visibility = if (active) View.GONE else View.VISIBLE
+                    bindSetupCard(active)
                     val lock = if (active) null else lockIcon()
                     listOf(binding.statusBlockApps, binding.statusWebsites, binding.statusFocus, binding.statusSleep)
                         .forEach {

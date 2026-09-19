@@ -389,4 +389,7 @@
     <string name="blocking_premium_title">Blocking is part of Premium</string>
     <string name="blocking_premium_desc">Your blocks are saved. They turn on as soon as you activate Premium.</string>
     <string name="blocking_premium_cta">Get Premium</string>
+    <string name="blocking_setup_title">Protection needs one more step</string>
+    <string name="blocking_setup_desc">Premium is on, but blocking needs a couple of permissions. Until you allow them, nothing gets blocked.</string>
+    <string name="blocking_setup_cta">Set up protection</string>
 </resources>

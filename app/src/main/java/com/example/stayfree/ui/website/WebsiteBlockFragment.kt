@@ -9,15 +9,15 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.stayfree.R
+import com.example.stayfree.data.billing.PremiumRepository
 import com.example.stayfree.databinding.DialogAddWebsiteBinding
 import com.example.stayfree.databinding.FragmentWebsiteBlockBinding
 import com.example.stayfree.ui.common.bindBackHeader
+import com.example.stayfree.ui.premium.requirePremium
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import com.example.stayfree.data.billing.PremiumRepository
-import com.example.stayfree.ui.premium.requirePremium
 import javax.inject.Inject
 
 @AndroidEntryPoint

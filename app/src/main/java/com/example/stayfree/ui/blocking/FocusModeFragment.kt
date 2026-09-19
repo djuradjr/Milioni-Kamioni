@@ -10,13 +10,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.core.content.ContextCompat
 import com.example.stayfree.R
+import com.example.stayfree.data.billing.PremiumRepository
 import com.example.stayfree.databinding.FragmentFocusModeBinding
 import com.example.stayfree.ui.common.bindBackHeader
+import com.example.stayfree.ui.premium.requirePremium
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import com.example.stayfree.data.billing.PremiumRepository
-import com.example.stayfree.ui.premium.requirePremium
 import javax.inject.Inject
 
 private const val ARC_RANGE_MINUTES = 120

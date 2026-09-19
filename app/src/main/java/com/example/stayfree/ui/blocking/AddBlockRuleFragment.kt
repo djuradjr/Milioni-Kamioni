@@ -10,14 +10,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.stayfree.R
+import com.example.stayfree.data.billing.PremiumRepository
 import com.example.stayfree.databinding.FragmentAddBlockRuleBinding
 import com.example.stayfree.ui.common.bindBackHeader
+import com.example.stayfree.ui.premium.requirePremium
 import com.example.stayfree.util.AppInfoUtils
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.AndroidEntryPoint
-import com.example.stayfree.data.billing.PremiumRepository
-import com.example.stayfree.ui.premium.requirePremium
 import javax.inject.Inject
 
 @AndroidEntryPoint

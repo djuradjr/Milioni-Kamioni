@@ -31,10 +31,14 @@ font Archivo, tamna tema podrazumevana. Pravila i komponente: `bb-ui` skill.
   gets a branded hard-block screen (`ContentBlockActivity`): no unlock path,
   Exit/Back → home. Since 2026-07-14 each content target can carry a per-target
   **daily allowance** (0 = block immediately); once spent, the same no-unlock
-  hard block fires. Premium via Google Play Billing is still planned —
-  see `bb-billing`.
-- When billing lands, the `bb-security` skill's payments section is MANDATORY
-  (paywall-bypass + data-leak tests, 3/3 each).
+  hard block fires.
+- **Blocking is the paid feature** (Play Billing, branch `placanje-billing`): without
+  premium the a11y service fires nothing, but stored blocks survive and resume.
+  Every UI path that turns a block ON calls `requirePremium()`; turning one OFF never
+  does. Onboarding asks only usage access before the paywall — the blocking
+  permissions come after it. Details, debug flags and tests: `bb-billing`.
+- Before release, the `bb-security` payments section is MANDATORY (paywall-bypass +
+  data-leak tests, 3/3 each).
 
 ## 3. Build & run
 - Export JDK before every Gradle call: `export JAVA_HOME="$HOME/.jdks/openjdk-22.0.2"`
@@ -44,7 +48,7 @@ font Archivo, tamna tema podrazumevana. Pravila i komponente: `bb-ui` skill.
   breaks local paths — only set it for adb *remote* (device) paths.
 
 ## 4. ⚠️ Gotcha #1 — reinstall DISABLES the accessibility service
-Every `adb install -r` turns the a11y service off (Android security). After EVERY reinstall re-run:
+Every `adb install -r` — and every `am force-stop` — turns the a11y service off (Android security). After EVERY reinstall re-run:
 ```
 adb shell settings put secure enabled_accessibility_services com.djuki.blockbrainrot.debug/com.example.stayfree.service.StayFreeAccessibilityService
 adb shell settings put secure accessibility_enabled 1

@@ -12,16 +12,16 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.stayfree.R
+import com.example.stayfree.data.billing.PremiumRepository
 import com.example.stayfree.databinding.FragmentBlockAppsBinding
 import com.example.stayfree.ui.common.bindBackHeader
+import com.example.stayfree.ui.premium.requirePremium
 import com.example.stayfree.util.PinGate
 import com.example.stayfree.util.PinPrompt
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.example.stayfree.data.billing.PremiumRepository
-import com.example.stayfree.ui.premium.requirePremium
 
 @AndroidEntryPoint
 class BlockAppsFragment : Fragment() {

@@ -1,6 +1,7 @@
 package com.example.stayfree.ui.onboarding
 
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -10,23 +11,26 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.stayfree.R
+import com.example.stayfree.data.billing.PremiumRepository
 import com.example.stayfree.data.local.preferences.AppPreferences
 import com.example.stayfree.domain.content.ContentBlockTarget
 import com.example.stayfree.domain.content.ContentSignatures
 import com.example.stayfree.domain.onboarding.DailyGoal
 import com.example.stayfree.domain.onboarding.UsageHistory
+import com.example.stayfree.ui.premium.PaywallActivity
+import com.example.stayfree.util.PermissionUtils
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.example.stayfree.databinding.ActivityOnboardingBinding
 import com.example.stayfree.service.StayFreeAccessibilityService
 import com.example.stayfree.service.TrackingScheduler
 import com.example.stayfree.ui.MainActivity
 import com.example.stayfree.util.AppInfoUtils
-import com.example.stayfree.util.PermissionUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -39,18 +43,30 @@ class OnboardingActivity : AppCompatActivity() {
 
     @Inject lateinit var prefs: AppPreferences
     @Inject lateinit var usageHistory: UsageHistory
+    @Inject lateinit var premium: PremiumRepository
 
     private lateinit var binding: ActivityOnboardingBinding
 
-    private val steps = listOf(
-        OnboardingStep.USAGE_ACCESS,
+    // Tracking is free and needs only usage access. The blocking permissions come after the
+    // paywall, so nobody grants accessibility to an app that then can't use it.
+    private val trackingSteps = listOf(OnboardingStep.USAGE_ACCESS)
+    private val protectionSteps = listOf(
         OnboardingStep.ACCESSIBILITY,
         OnboardingStep.OVERLAY,
         OnboardingStep.NOTIFICATIONS,
         OnboardingStep.BATTERY
     )
-    /** Phase 1 is the permission run; 2 and 3 are the report and target picks. */
-    private enum class Phase { PERMISSIONS, REPORT, TARGETS }
+    private var steps = trackingSteps
+    /** Tracking permission, report, target picks, then — with premium — the blocking permissions. */
+    private enum class Phase { PERMISSIONS, REPORT, TARGETS, PROTECTION }
+
+    /** Opened from the app (premium bought later, or a permission revoked): only the protection run. */
+    private val protectionOnly by lazy { intent.getBooleanExtra(EXTRA_PROTECTION_ONLY, false) }
+
+    private val paywall = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        // Closing the paywall finishes onboarding as a tracker; the picked blocks stay saved.
+        if (result.resultCode == RESULT_OK || premium.isPremium.value) enterProtection() else complete()
+    }
 
     private var phase = Phase.PERMISSIONS
     private var report: UsageHistory.Report? = null
@@ -67,10 +83,14 @@ class OnboardingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityOnboardingBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        currentStep = firstUngrantedStep()
-        showStep(currentStep)
-
         buildProgress()
+        // Resumes from the real permission state: a cold start must not rewind a granted step.
+        val usageGranted = isStepGranted(OnboardingStep.USAGE_ACCESS)
+        when {
+            protectionOnly || (usageGranted && premium.isPremium.value) -> enterProtection()
+            usageGranted -> enterReport()
+            else -> showStep(0)
+        }
 
         binding.btnGrant.setOnClickListener { onPrimaryClick() }
         binding.btnNext.setOnClickListener { advance() }
@@ -78,10 +98,6 @@ class OnboardingActivity : AppCompatActivity() {
         binding.btnGoalMinus.setOnClickListener { nudgeGoal(-1) }
         binding.btnGoalPlus.setOnClickListener { nudgeGoal(1) }
     }
-
-    /** Resumes where the user stopped: a cold start must not rewind a granted step. */
-    private fun firstUngrantedStep(): Int =
-        steps.indexOfFirst { !isStepGranted(it) }.let { if (it == -1) steps.lastIndex else it }
 
     override fun onResume() {
         super.onResume()
@@ -104,10 +120,11 @@ class OnboardingActivity : AppCompatActivity() {
         val step = steps[index]
         binding.tvTitle.setText(step.titleRes)
         binding.tvDescription.setText(step.descriptionRes)
+        val position = if (phase == Phase.PROTECTION) trackingSteps.size + 2 + index else index
         binding.tvStepIndicator.text = getString(
-            R.string.onboarding_step_indicator, index + 1, totalSteps()
+            R.string.onboarding_step_indicator, position + 1, totalSteps()
         )
-        updateProgress(index)
+        updateProgress(position)
         refresh()
     }
 
@@ -118,8 +135,8 @@ class OnboardingActivity : AppCompatActivity() {
      */
     private fun refresh(): Boolean {
         if (finishing) return true
-        // Only the permission phase depends on system toggles.
-        if (phase != Phase.PERMISSIONS) return true
+        // Only the permission phases depend on system toggles.
+        if (phase != Phase.PERMISSIONS && phase != Phase.PROTECTION) return true
         val granted = isStepGranted(steps[currentStep])
         binding.btnGrant.isEnabled = !granted
         binding.btnGrant.setText(
@@ -205,18 +222,23 @@ class OnboardingActivity : AppCompatActivity() {
                 }
             Phase.REPORT -> enterTargets()
             Phase.TARGETS -> complete()
+            Phase.PROTECTION ->
+                if (currentStep >= steps.lastIndex) complete() else {
+                    currentStep++
+                    showStep(currentStep)
+                }
         }
     }
 
     /** The primary button means something different in each phase. */
     private fun onPrimaryClick() {
         when (phase) {
-            Phase.PERMISSIONS -> requestCurrentPermission()
+            Phase.PERMISSIONS, Phase.PROTECTION -> requestCurrentPermission()
             Phase.REPORT -> {
                 lifecycleScope.launch { prefs.setDailyGoalMinutes(goalMinutes) }
                 enterTargets()
             }
-            Phase.TARGETS -> saveTargetsAndFinish()
+            Phase.TARGETS -> saveTargetsAndProtect()
         }
     }
 
@@ -232,7 +254,7 @@ class OnboardingActivity : AppCompatActivity() {
         binding.btnSkip.visibility = View.VISIBLE
         binding.btnGrant.isEnabled = true
         binding.btnGrant.setText(R.string.onboarding_set_goal)
-        updateProgress(steps.size)
+        updateProgress(trackingSteps.size)
 
         lifecycleScope.launch {
             val result = usageHistory.lastWeek()
@@ -322,7 +344,7 @@ class OnboardingActivity : AppCompatActivity() {
             if (report?.hasData == true) R.string.onboarding_targets_desc
             else R.string.onboarding_targets_desc_blind
         )
-        updateProgress(steps.size + 1)
+        updateProgress(trackingSteps.size + 1)
         buildTargetRows()
     }
 
@@ -377,7 +399,7 @@ class OnboardingActivity : AppCompatActivity() {
         if (minutes <= 0) getString(R.string.onboarding_target_limit_off)
         else getString(R.string.onboarding_target_limit_minutes, minutes)
 
-    private fun saveTargetsAndFinish() {
+    private fun saveTargetsAndProtect() {
         finishing = true
         lifecycleScope.launch {
             chosenTargets.forEach { (id, minutes) ->
@@ -385,13 +407,33 @@ class OnboardingActivity : AppCompatActivity() {
                 prefs.setContentTargetLimitMinutes(id, minutes)
             }
             finishing = false
-            complete()
+            if (premium.isPremium.value) enterProtection()
+            else paywall.launch(PaywallActivity.newIntent(this@OnboardingActivity))
         }
+    }
+
+    // ---------------------------------------------------------------- phase 4
+
+    private fun enterProtection() {
+        val first = protectionSteps.indexOfFirst { !isStepGranted(it) }
+        if (first == -1) {
+            complete()
+            return
+        }
+        phase = Phase.PROTECTION
+        steps = protectionSteps
+        currentStep = first
+        binding.groupReport.visibility = View.GONE
+        binding.groupTargets.visibility = View.GONE
+        binding.groupPermission.visibility = View.VISIBLE
+        binding.btnNext.visibility = View.VISIBLE
+        binding.btnSkip.visibility = View.GONE
+        showStep(currentStep)
     }
 
     // ---------------------------------------------------------------- progress
 
-    /** One segment per step across all three phases. */
+    /** One segment per step across all four phases. */
     private fun buildProgress() {
         val host = binding.progressRow
         host.removeAllViews()
@@ -415,7 +457,7 @@ class OnboardingActivity : AppCompatActivity() {
         }
     }
 
-    private fun totalSteps() = steps.size + 2
+    private fun totalSteps() = trackingSteps.size + 2 + protectionSteps.size
 
     private fun dp(value: Int) = (value * resources.displayMetrics.density).toInt()
 
@@ -433,6 +475,10 @@ class OnboardingActivity : AppCompatActivity() {
     private fun complete() {
         finishing = true
         pollJob?.cancel()
+        if (protectionOnly) {
+            finish()
+            return
+        }
         lifecycleScope.launch {
             prefs.setOnboardingComplete(true)
             val resetTime = prefs.dailyResetTimeMinutes.first()
@@ -443,12 +489,16 @@ class OnboardingActivity : AppCompatActivity() {
         }
     }
 
-    private companion object {
-        const val TOP_APPS_SHOWN = 3
-        const val SURFACE_LIMIT_MINUTES = 15
-        const val WHOLE_APP_LIMIT_MINUTES = 15
-        const val POLL_ATTEMPTS = 12
-        const val POLL_INTERVAL_MS = 500L
-        const val SETTINGS_ARGS_KEY = ":settings:fragment_args_key"
+    companion object {
+        private const val TOP_APPS_SHOWN = 3
+        private const val SURFACE_LIMIT_MINUTES = 15
+        private const val WHOLE_APP_LIMIT_MINUTES = 15
+        private const val POLL_ATTEMPTS = 12
+        private const val POLL_INTERVAL_MS = 500L
+        private const val SETTINGS_ARGS_KEY = ":settings:fragment_args_key"
+        private const val EXTRA_PROTECTION_ONLY = "protection_only"
+
+        fun protectionIntent(context: Context) =
+            Intent(context, OnboardingActivity::class.java).putExtra(EXTRA_PROTECTION_ONLY, true)
     }
 }

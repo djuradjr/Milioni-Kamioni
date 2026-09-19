@@ -9,13 +9,13 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.core.content.ContextCompat
 import com.example.stayfree.R
+import com.example.stayfree.data.billing.PremiumRepository
 import com.example.stayfree.databinding.FragmentSleepModeBinding
+import com.example.stayfree.ui.premium.requirePremium
 import com.example.stayfree.util.TimeUtils
 import java.util.Locale
 import com.example.stayfree.ui.common.bindBackHeader
 import dagger.hilt.android.AndroidEntryPoint
-import com.example.stayfree.data.billing.PremiumRepository
-import com.example.stayfree.ui.premium.requirePremium
 import javax.inject.Inject
 
 private const val MINUTES_PER_DAY = 1440

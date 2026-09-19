@@ -43,6 +43,9 @@ never fire if the app died mid-purchase).
   user-editable (known weakness of the old unlock model).
 
 ## 4. UX (per bb-ui)
+Built: `ui/premium/PaywallActivity` (plans shortest-first, monthly pre-selected, terms under
+the CTA), hub cards in `BlockingFragment` (premium card; "set up protection" card when
+premium lacks a11y/overlay → `OnboardingActivity.protectionIntent`).
 Paywall branded, immersive, professional — clear price from `ProductDetails`,
 what's included, restore-purchases action. No dark patterns: no fake urgency,
 no pre-selected upsells, cancel path obvious.

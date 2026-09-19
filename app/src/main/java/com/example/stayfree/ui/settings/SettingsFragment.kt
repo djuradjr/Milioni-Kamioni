@@ -26,6 +26,7 @@ import com.example.stayfree.data.local.preferences.AppPreferences
 import com.example.stayfree.databinding.DialogAccountEditBinding
 import com.example.stayfree.databinding.FragmentSettingsBinding
 import com.example.stayfree.ui.premium.PaywallActivity
+import com.example.stayfree.ui.premium.requirePremium
 import com.example.stayfree.util.AppearanceModes
 import com.example.stayfree.util.PermissionUtils
 import com.example.stayfree.util.PinGate
@@ -37,7 +38,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.example.stayfree.ui.premium.requirePremium
 
 @AndroidEntryPoint
 class SettingsFragment : Fragment() {
