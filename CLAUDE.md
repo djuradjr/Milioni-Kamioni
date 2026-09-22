@@ -40,30 +40,17 @@ font Archivo, tamna tema podrazumevana. Pravila i komponente: `bb-ui` skill.
 - Before release, the `bb-security` payments section is MANDATORY (paywall-bypass +
   data-leak tests, 3/3 each).
 
-## 3. Build & run
-- Export JDK before every Gradle call: `export JAVA_HOME="$HOME/.jdks/openjdk-22.0.2"`
-- Build: `./gradlew :app:assembleDebug` · release APK: `assembleRelease` · Play bundle: `bundleRelease` (→ `app/build/outputs/bundle/release/app-release.aab`).
-- adb: `$LOCALAPPDATA/Android/Sdk/platform-tools/adb.exe`
-- Install with a **Windows-style path** (`C:\...\app-debug.apk`); `MSYS_NO_PATHCONV=1`
-  breaks local paths — only set it for adb *remote* (device) paths.
+## 3. Build, run, verify
+- JDK before every Gradle call: `export JAVA_HOME="$HOME/.jdks/openjdk-22.0.2"`;
+  build with `./gradlew :app:assembleDebug`.
+- ⚠️ **Gotcha #1**: every `adb install -r` and every `am force-stop` turns the
+  accessibility service off, and then NOTHING blocks — the #1 cause of "it doesn't
+  work". Re-enable it before judging any blocking behaviour.
+- The full runbook — emulator boot, install paths, re-enabling a11y, the 3/3
+  protocol, usage-stats checks, seeing what the service sees — is the **`bb-verify`**
+  skill. Follow it instead of improvising.
 
-## 4. ⚠️ Gotcha #1 — reinstall DISABLES the accessibility service
-Every `adb install -r` — and every `am force-stop` — turns the a11y service off (Android security). After EVERY reinstall re-run:
-```
-adb shell settings put secure enabled_accessibility_services com.djuki.blockbrainrot.debug/com.example.stayfree.service.StayFreeAccessibilityService
-adb shell settings put secure accessibility_enabled 1
-adb shell appops set com.djuki.blockbrainrot.debug SYSTEM_ALERT_WINDOW allow
-```
-Then poll `dumpsys accessibility | grep 'Block Brainrot Screen Monitor'` until bound (may take a few s; re-set `accessibility_enabled 1` while waiting). Without this, NOTHING blocks — the #1 cause of "it doesn't work".
-⚠️ **Zombie binding**: if dumpsys shows the service under `Crashed services` or it's "bound" under the app label ("Block Brainrot Test") instead of the a11y label, events are NOT delivered. Reset with `settings put secure enabled_accessibility_services none`, force-stop the app, then re-run the commands above.
-
-## 5. Emulator testing
-- AVD `Pixel_9`; boot: `emulator -avd Pixel_9 -gpu host -no-snapshot-load` (run in background), then wait `getprop sys.boot_completed == 1`.
-- `uiautomator dump` **fails on autoplay video** ("could not get idle state") — IG feed/Reels, TikTok For You, YouTube Shorts. Workarounds: `screencap` (always works) or a **temporary in-service debug logger** (walk the tree in `handleContentBlock`, `Log.d` every visible node's `viewIdResourceName`+bounds) — the only reliable way to see obfuscated ids the service actually sees. Remove the logger before committing.
-- Screenshots come back scaled; multiply displayed coords by the given factor (≈1.21) to get device px.
-- Verify a block via logcat: `logcat -s MoreMoneyA11y` → look for `Content surface: <Name>`.
-
-## 6. Content-blocking architecture (the heart of the app)
+## 4. Content-blocking architecture (the heart of the app)
 Flow: **`ContentSignatures.kt` → `StayFreeAccessibilityService.handleContentBlock` → `ContentBlockActivity`**
 - `domain/content/ContentSignatures.kt` — the SINGLE source of detection signatures.
   When detection breaks after an app update, **edit ONLY this file** (details in the
@@ -87,19 +74,19 @@ Flow: **`ContentSignatures.kt` → `StayFreeAccessibilityService.handleContentBl
 (`reel_viewer_*`), YouTube Shorts (`reel_watch_*`/`shorts`) — id-match; TikTok
 (`com.zhiliaoapp.musically`) — whole-app.
 
-## 7. Offline by design
+## 5. Offline by design
 No `INTERNET` permission (Data Safety = "no data collected", a big review advantage).
 This stays true under SaaS: Google Play Billing talks through the Play Store app, so
 keep the app itself networkless unless a future explicit decision changes that.
 
-## 8. Play / release state
+## 6. Play / release state
 - `keystore.properties` (repo root, gitignored) drives release signing; absent →
   release stays unsigned. See `docs/PLAY_RELEASE_CHECKLIST.md` + `docs/PRIVACY_POLICY.md`
   + `docs/MANUAL_TEST_SCRIPT.md`.
-- `versionCode=2`, `versionName=1.0.1`, `targetSdk=36`; release has R8 minify + shrink — test minified
+- `versionCode=3`, `versionName=1.1.0` (first build with billing, internal track only), `targetSdk=36`; release has R8 minify + shrink — test minified
   builds on a real device (R8 bugs only show there).
 - Privacy policy URL is DONE (GitHub Pages, wired in Settings).
 
-## 9. Known dead ends (don't re-investigate)
+## 7. Known dead ends (don't re-investigate)
 - **X / Twitter** (`com.twitter.android`): crashes on the x86_64 emulator — `UnsatisfiedLinkError: libyoga.so not found`. X's x86_64 split genuinely omits `libyoga.so` (confirmed by unzipping the split); Play serves the same broken build. It's X's bug — works on a real arm64 phone, not on this emulator.
 - **Snapchat** (`com.snapchat.android`): opens fine but blocks emulator **login** (anti-bot). Test on a real device. Also the worst content-detection candidate (exposes ~nothing to a11y; not all short-form, so whole-app is wrong).
