@@ -1,6 +1,6 @@
 # Block Brainrot — Privacy Policy
 
-_Last updated: 2026-07-06_
+_Last updated: 2026-09-23_
 
 Block Brainrot is a screen-time tracking and app-blocking application. This policy
 explains what data the app handles and where it goes.
@@ -9,8 +9,12 @@ explains what data the app handles and where it goes.
 
 **All data stays on your device.** Block Brainrot has **no internet access** — the
 app does not declare the INTERNET permission, so it is technically incapable of
-sending any data anywhere. There are no accounts, no analytics, no ads, and no
-third-party SDKs that collect data.
+sending any data anywhere. There are no accounts, no analytics and no ads.
+
+The app includes Google Play Billing so you can subscribe. It talks to the
+Google Play Store app already installed on your phone, not to the internet
+directly — and because the app has no INTERNET permission, it cannot transmit
+anything on its own.
 
 ## Data the app processes on your device
 
@@ -32,6 +36,15 @@ website at the moment it is opened. The information read this way is:
 - used **only** to enforce the rules you created;
 - **never** stored beyond aggregate usage time;
 - **never** transmitted off the device (the app cannot access the internet).
+
+## Purchases and subscriptions
+
+Subscriptions are sold and processed by Google Play. Block Brainrot never sees
+your card, billing address, or Google account details. The app asks Google Play
+only one question — whether this Google account currently has an active
+subscription — and stores only the yes/no answer on your device. Cancel anytime
+in the Google Play app; your purchase history lives in your Google account, not
+in this app.
 
 ## Backups
 
@@ -55,4 +68,4 @@ and the "Last updated" date will change.
 
 ## Contact
 
-Questions about this policy: djukids028@gmail.com
+Questions about this policy: supportsocobit@gmail.com

@@ -5,7 +5,7 @@ Kad se ponašanje app-a promeni, prvo izmeni ovde, pa u Konzoli — tako je
 diffabilno po release-u (najčešći razlog odbijanja a11y aplikacija je
 deklaracija koja se razišla sa stvarnim ponašanjem).
 
-Provereno prema kodu na commit-u `c7a2e03`:
+Provereno prema kodu na grani `placanje-billing` (verzija 1.1.0, versionCode 3):
 - app: `com.djuki.blockbrainrot` (debug `.debug`)
 - a11y klasa: `com.example.stayfree.service.StayFreeAccessibilityService`
 - config: `flagReportViewIds|flagRetrieveInteractiveWindows`, `canRetrieveWindowContent=true`
@@ -74,11 +74,20 @@ disclosure → Accessibility settings flow.
 ## 3. App access (instrukcije za reviewera, paste)
 
 > No account or login exists — the app opens straight to onboarding.
-> To exercise the full feature set, grant these permissions when onboarding
-> asks (it walks through each): Usage access, Accessibility, Display over other
-> apps, Notifications. Then add an app (e.g. Instagram) or a website to the
-> block list and open it — the block screen appears. Everything is on-device;
-> there is no server.
+>
+> Blocking is a paid feature. Onboarding asks for Usage access, then shows the
+> subscription screen. REDEEM THE PROMO CODE BELOW in the Google Play app first
+> (Play Store → profile → Payments & subscriptions → Redeem code); the app then
+> unlocks and onboarding continues with the permissions blocking needs
+> (Accessibility, Display over other apps, Notifications, Battery). Grant them
+> when asked — onboarding walks through each.
+>
+> Then add an app (e.g. Instagram) or a website to the block list and open it —
+> the block screen appears. Screen-time tracking and statistics work without a
+> subscription. Everything is on-device; there is no server.
+>
+> Promo code (one-time, subscription free): <PASTE FROM Play Console →
+> Monetize with Play → Promotional codes>
 
 ---
 
@@ -87,7 +96,14 @@ disclosure → Accessibility settings flow.
 - Data collected: **None.** Data shared: **None.**
 - No INTERNET permission → nothing can leave the device.
 - Account username/email (if set) is local-only (DataStore, backup-excluded).
-- Play Billing (kad stigne) ne menja ovaj odgovor — Google procesira te podatke.
+- Play Billing ne menja ovaj odgovor — Google procesira te podatke. Provereno
+  2026-09-23 na pravoj kupovini: u aplikaciji se čuva samo `premium_active`
+  (boolean), bez tokena, broja porudžbine i mejla; u logovima nema ničega od toga.
+- Billing biblioteka nosi Google-ov `datatransport` (telemetrija o korišćenju
+  API-ja) koji bi inače tražio INTERNET. Dozvola je uklonjena iz manifesta
+  (`tools:node="remove"`), pa aplikacija fizički ne može ništa da pošalje —
+  provereno: nula egressa iz našeg procesa. Posle svake nadogradnje Billing-a
+  proveri `aapt2 dump permissions` na release APK-u.
 
 ---
 
@@ -95,3 +111,21 @@ disclosure → Accessibility settings flow.
 
 - Category: **Tools** (ili Health & Fitness). **NIKAD Parenting/Families.**
 - Target audience: **NOT children.** Self-blocking alat za vlasnika uređaja.
+- Listing mora da kaže da je blokiranje deo pretplate (merenje vremena i
+  statistika ostaju besplatni) — opis koji to prećuti je obmanjujuć.
+- Screenshot-ovi moraju da prikažu i ekran sa pretplatom.
+
+---
+
+## 6. Pretplata (Play Billing)
+
+- Proizvod: `premium`, bazni planovi `monthly` / `quarterly` / `semiannual`,
+  ponude `trial-monthly` / `trial-quarterly` / `trial-semiannual` (7 dana,
+  samo za one koji pretplatu nikad nisu imali).
+- Paywall pre kupovine prikazuje: cenu iz Play-a, period, dužinu probe, kada
+  počinje naplata i da se otkazuje u Google Play-u. Bez lažne hitnosti; mesečni
+  plan je unapred izabran, nijedan skuplji nije.
+- Otkazivanje ide kroz Play (Podešavanja → Premium → upravljanje pretplatom).
+  U aplikaciji nema zasebnog toka otkazivanja.
+- Kad pretplata istekne ili bude povučena, blokade se GASE i korisnik ih uvek
+  može isključiti bez plaćanja — aplikacija nikad ne drži uređaj zaključan.
