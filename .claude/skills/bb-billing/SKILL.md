@@ -60,7 +60,13 @@ no pre-selected upsells, cancel path obvious.
   Without it (and without Console products) the paywall shows its "plans unavailable" state.
 - `LICENSE_KEY` in `PremiumRepository` holds the Play licensing key (set 2026-09-19);
   a broken key rejects every purchase — `PurchaseVerifierTest` fails if it stops parsing.
-- License-tester accounts + internal testing track (real Play flow, no charge).
+- License-tester accounts + internal testing track (real Play flow, no charge). Play accelerates
+  test subscriptions: a 7-day trial runs 3 minutes and a monthly period 5 minutes.
+- Play offers exactly three test instruments for subscriptions: always approves, always declines,
+  approves-then-charges-back. There is NO slow card, so a PENDING subscription cannot be
+  reproduced on a test account — that path stays code-reviewed only.
+- The emulator's Play Store binds to the FIRST device account; with several accounts it ignores the
+  tester one ("Item not found"). Leave only the tester account on the device.
 - Flows to exercise end-to-end, **3/3 each**: purchase → cancel mid-flow →
   refund (via Play Console) → restore on reinstall → pending→purchased.
 - Test the entire flow in a **minified release build on a real device** — R8 +
