@@ -120,9 +120,12 @@ class PaywallActivity : AppCompatActivity() {
             row.root.isSelected = index == selected
             row.root.setOnClickListener { viewModel.select(index) }
             row.tvPlanTitle.text = resources.getQuantityString(R.plurals.paywall_plan_months, plan.months, plan.months)
-            row.tvPlanPrice.text =
-                if (plan.months == 1) getString(R.string.paywall_price_monthly, plan.price)
-                else getString(R.string.paywall_price_per_month, plan.price, perMonth(plan))
+            val perMonth = if (plan.months == 1) null else perMonth(plan)
+            row.tvPlanPrice.text = when {
+                plan.months == 1 -> getString(R.string.paywall_price_monthly, plan.price)
+                perMonth != null -> getString(R.string.paywall_price_per_month, plan.price, perMonth)
+                else -> plan.price
+            }
             val discount = monthly?.let { PremiumPlan.discountPercent(plan, it) } ?: 0
             row.tvPlanBadge.isVisible = discount > 0
             row.tvPlanBadge.text =
@@ -142,10 +145,13 @@ class PaywallActivity : AppCompatActivity() {
         }
     }
 
-    private fun perMonth(plan: PremiumPlan): String =
+    // An ISO code this Android version doesn't know throws; the plan line then drops the
+    // per-month figure rather than taking the paywall down with it.
+    private fun perMonth(plan: PremiumPlan): String? = runCatching {
         NumberFormat.getCurrencyInstance().apply {
             currency = Currency.getInstance(plan.currencyCode)
         }.format(plan.perMonthMicros / 1_000_000.0)
+    }.getOrNull()
 
     companion object {
         fun newIntent(context: Context) = Intent(context, PaywallActivity::class.java)
