@@ -15,13 +15,15 @@ poll `adb shell getprop sys.boot_completed` until it prints `1`.
 
 ## 2. Build
 `export JAVA_HOME="$HOME/.jdks/openjdk-22.0.2"` then
-`./gradlew :app:assembleDebug`.
+`./gradlew :app:assembleDebug`. Release APK: `assembleRelease`; Play bundle:
+`bundleRelease` (→ `app/build/outputs/bundle/release/app-release.aab`).
 
 ## 3. Install
+adb lives at `$LOCALAPPDATA/Android/Sdk/platform-tools/adb.exe`.
 `adb install -r` with a **Windows-style local path** (`C:\...\app-debug.apk`).
 `MSYS_NO_PATHCONV=1` is only for device-side paths — it breaks local ones.
 
-## 4. ⚠️ Re-enable the accessibility service (EVERY reinstall disables it)
+## 4. ⚠️ Gotcha #1 — re-enable the accessibility service (every reinstall AND every `am force-stop` disables it)
 ```
 adb shell settings put secure enabled_accessibility_services com.djuki.blockbrainrot.debug/com.example.stayfree.service.StayFreeAccessibilityService
 adb shell settings put secure accessibility_enabled 1
