@@ -80,7 +80,7 @@
     <string name="app_detail_block_this_app">Blokiraj ovu aplikaciju</string>
 
     <!-- Blocking screen detail -->
-    <string name="blocking_tools_title">Zastita</string>
+    <string name="blocking_tools_title">Zaštita</string>
     <string name="blocking_focus_desc">Utišaj sve na određeno vreme</string>
     <string name="blocking_sleep_desc">Mirni sati svake noći</string>
     <string name="blocking_websites_desc">Blokiraj sajtove u pregledaču</string>
@@ -264,9 +264,9 @@
     <string name="dashboard_legend_distraction">Distrakcija %1$s</string>
     <string name="dashboard_legend_other">Ostalo %1$s</string>
     <string name="dashboard_streak_record">Rekord niza</string>
-    <string name="dashboard_goal_chip_left">jos %1$s</string>
+    <string name="dashboard_goal_chip_left">još %1$s</string>
     <string name="dashboard_goal_chip_over">%1$s preko cilja</string>
-    <string name="dashboard_score_waiting">Skor stize veceras</string>
+    <string name="dashboard_score_waiting">Skor stiže večeras</string>
     <string name="blocking_tools_section">Alati</string>
     <string name="blocking_blocks_today">presretanja danas</string>
     <plurals name="blocking_active_tools">
@@ -275,17 +275,17 @@
         <item quantity="other">%1$d aktivnih</item>
     </plurals>
     <string name="content_block_count">%1$d.</string>
-    <string name="content_block_count_caption">put danas da te Block Brainrot zaustavio</string>
+    <string name="content_block_count_caption">put danas da te je Block Brainrot zaustavio</string>
     <string name="focus_minutes_label">minuta</string>
-    <string name="focus_drag_hint">Prevuci po prstenu za tacan broj minuta</string>
-    <string name="focus_whitelist_desc">Prolaze samo aplikacije koje dozvolis</string>
+    <string name="focus_drag_hint">Prevuci po prstenu za tačan broj minuta</string>
+    <string name="focus_whitelist_desc">Prolaze samo aplikacije koje dozvoliš</string>
     <string name="focus_start_with_length">Pokreni fokus · %1$d min</string>
-    <string name="sleep_drag_hint">Prevuci kuglice da pomeris noc</string>
-    <string name="sleep_quiet_length">%1$s tisine</string>
-    <string name="app_detail_category_hint">Dodirni oznaku da promenis kako se racuna</string>
+    <string name="sleep_drag_hint">Prevuci kuglice da pomeriš noć</string>
+    <string name="sleep_quiet_length">%1$s tišine</string>
+    <string name="app_detail_category_hint">Dodirni oznaku da promeniš kako se računa</string>
     <string name="app_detail_score_impact">Uticaj na skor</string>
     <string name="app_detail_score_impact_sub">poena danas</string>
-    <string name="app_detail_score_impact_none">ne uzima ti nista</string>
+    <string name="app_detail_score_impact_none">ne uzima ti ništa</string>
     <string name="app_detail_last_days">Poslednjih 7 dana</string>
     <string name="app_detail_today">Danas</string>
     <string name="app_detail_opens">Otvaranja</string>
@@ -293,30 +293,30 @@
     <string name="category_distraction">Distrakcija</string>
     <string name="category_neutral">Neutralno</string>
     <string name="category_productive">Produktivno</string>
-    <string name="onboarding_privacy_note">Nista ne napusta telefon. Aplikacija uopste nema pristup internetu.</string>
+    <string name="onboarding_privacy_note">Ništa ne napušta telefon. Aplikacija uopšte nema pristup internetu.</string>
     <string name="onboarding_report_label">Tvojih poslednjih 7 dana</string>
     <string name="onboarding_report_total_label">Ukupno</string>
     <string name="onboarding_report_daily_label">Dnevno u proseku</string>
     <plurals name="onboarding_report_days_measured">
-        <item quantity="one">Prosek iz %d dana koji je telefon sacuvao</item>
-        <item quantity="few">Prosek iz %d dana koje je telefon sacuvao</item>
-        <item quantity="other">Prosek iz %d dana koje je telefon sacuvao</item>
+        <item quantity="one">Prosek iz %d dana koji je telefon sačuvao</item>
+        <item quantity="few">Prosek iz %d dana koje je telefon sačuvao</item>
+        <item quantity="other">Prosek iz %d dana koje je telefon sačuvao</item>
     </plurals>
     <string name="onboarding_goal_label">Predlog dnevnog cilja</string>
     <string name="onboarding_goal_hint_less">%1$s manje od tvog dnevnog proseka (−%2$d%%)</string>
-    <string name="onboarding_goal_hint_start">podesicemo ga kad skupimo nedelju</string>
+    <string name="onboarding_goal_hint_start">podesićemo ga kad skupimo nedelju</string>
     <string name="onboarding_first_run_title">Merimo od danas</string>
-    <string name="onboarding_first_run_desc">Tvoj telefon nije sacuvao raniju istoriju, pa krecemo od nule. Prvi skor stize veceras, prva prava nedelja za sedam dana.</string>
-    <string name="onboarding_targets_title">Sta te najvise vuce?</string>
-    <string name="onboarding_targets_desc">Izabrali smo ove na osnovu tvoje nedelje. Limit mozes da menjas kad god.</string>
-    <string name="onboarding_targets_desc_blind">Ovo su povrsine koje Block Brainrot ume da prepozna. Ukljuci one koje te vuku.</string>
-    <string name="onboarding_decide_later">Odluci kasnije</string>
+    <string name="onboarding_first_run_desc">Tvoj telefon nije sačuvao raniju istoriju, pa krećemo od nule. Prvi skor stiže večeras, prva prava nedelja za sedam dana.</string>
+    <string name="onboarding_targets_title">Šta te najviše vuče?</string>
+    <string name="onboarding_targets_desc">Izabrali smo ove na osnovu tvoje nedelje. Limit možeš da menjaš kad god.</string>
+    <string name="onboarding_targets_desc_blind">Ovo su površine koje Block Brainrot ume da prepozna. Uključi one koje te vuku.</string>
+    <string name="onboarding_decide_later">Odluči kasnije</string>
     <string name="onboarding_set_goal">Postavi cilj</string>
-    <string name="onboarding_turn_on_protection">Ukljuci zastitu</string>
+    <string name="onboarding_turn_on_protection">Uključi zaštitu</string>
     <string name="onboarding_target_limit_off">blokira odmah</string>
     <string name="onboarding_target_limit_minutes">%1$d min dnevno</string>
     <string name="onboarding_target_name_whole">%1$s · cela aplikacija</string>
-    <string name="onboarding_goal_hint_already">Tvoj dnevni prosek vec staje u ovaj cilj</string>
+    <string name="onboarding_goal_hint_already">Tvoj dnevni prosek već staje u ovaj cilj</string>
     <!-- Paywall -->
     <string name="paywall_close">Zatvori</string>
     <string name="paywall_restore">Vrati kupovinu</string>
