@@ -83,7 +83,7 @@ keep the app itself networkless unless a future explicit decision changes that.
 - `keystore.properties` (repo root, gitignored) drives release signing; absent →
   release stays unsigned. See `docs/PLAY_RELEASE_CHECKLIST.md` + `docs/PRIVACY_POLICY.md`
   + `docs/MANUAL_TEST_SCRIPT.md`.
-- `versionCode=3`, `versionName=1.1.0` (first build with billing, internal track only), `targetSdk=36`; release has R8 minify + shrink — test minified
+- `versionCode=6`, `versionName=1.1.0` (production candidate; 3–5 were used on the internal track), `targetSdk=36`; release has R8 minify + shrink — test minified
   builds on a real device (R8 bugs only show there).
 - Privacy policy URL is DONE (GitHub Pages, wired in Settings).
 

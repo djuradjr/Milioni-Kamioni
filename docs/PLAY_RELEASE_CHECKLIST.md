@@ -6,7 +6,7 @@
 ## Pre-flight (code, already done in repo)
 
 - [x] `applicationId = com.djuki.blockbrainrot` (debug `.debug`), `versionName = 1.1.0`
-      (`versionCode 3` — prvi build sa plaćanjem)
+      (`versionCode 6` — kandidat za produkciju; 3–5 potrošeni na internom testiranju)
 - [x] `compileSdk` / `targetSdk = 36` (Play requirement as of 31 Aug 2026; needs AGP 8.12.0)
 - [x] `allowBackup = false`, backup/data-extraction rules exclude everything
 - [x] No INTERNET permission (strong Data Safety argument)
