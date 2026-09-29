@@ -6,7 +6,7 @@
 ## Pre-flight (code, already done in repo)
 
 - [x] `applicationId = com.djuki.blockbrainrot` (debug `.debug`), `versionName = 1.1.0`
-      (`versionCode 6` — kandidat za produkciju; 3–5 potrošeni na internom testiranju)
+      (`versionCode 7` — kandidat za produkciju; 3–6 potrošeni ili napravljeni ranije)
 - [x] `compileSdk` / `targetSdk = 36` (Play requirement as of 31 Aug 2026; needs AGP 8.12.0)
 - [x] `allowBackup = false`, backup/data-extraction rules exclude everything
 - [x] No INTERNET permission (strong Data Safety argument)
@@ -24,7 +24,8 @@
 - [x] Paywall i kupovina provereni na pravom Play nalogu (kupovina, otkazivanje,
       istek, chargeback, vraćanje kupovine) — vidi `bb-billing` §5
 - [x] U DataStore-u samo `premium_active`; u logovima nema tokena/mejla/order id-a
-- [ ] Promo kod za Google recenzenta napravljen i ubačen u App access
+- [ ] Promo kod za Google recenzenta napravljen za jednokratni proizvod
+      `premium_review` (ne za pretplatu) i ubačen u App access
       (Monetize with Play → Promotional codes) — bez njega recenzent ne može
       da isproba blokiranje
 - [ ] Store listing kaže da je blokiranje deo pretplate + screenshot paywall-a

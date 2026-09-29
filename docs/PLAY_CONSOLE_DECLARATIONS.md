@@ -86,8 +86,12 @@ disclosure → Accessibility settings flow.
 > the block screen appears. Screen-time tracking and statistics work without a
 > subscription. Everything is on-device; there is no server.
 >
-> Promo code (one-time, subscription free): <PASTE FROM Play Console →
-> Monetize with Play → Promotional codes>
+> Promo code: <CODE> — it grants a one-time item that unlocks premium for free.
+> It is not a trial: no payment method is needed and nothing is charged later.
+
+Kod se pravi za jednokratni proizvod `premium_review`, NIKAKO za pretplatu:
+promo kod pretplate je besplatna proba sa karticom i automatskom naplatom, a
+recenzenti probe ne koriste (piše na samoj stranici App access).
 
 ---
 
@@ -122,6 +126,9 @@ disclosure → Accessibility settings flow.
 - Proizvod: `premium`, bazni planovi `monthly` / `quarterly` / `semiannual`,
   ponude `trial-monthly` / `trial-quarterly` / `trial-semiannual` (7 dana,
   samo za one koji pretplatu nikad nisu imali).
+- `premium_review`: jednokratni proizvod koji aplikacija nikad ne nudi — dobija
+  se samo promo kodom, za recenzente. Opcija kupovine „Buy" (ne „Rent", ona
+  ističe), cena najviše kao 6-mesečni plan da ne širi raspon cena na listingu.
 - Paywall pre kupovine prikazuje: cenu iz Play-a, period, dužinu probe, kada
   počinje naplata i da se otkazuje u Google Play-u. Bez lažne hitnosti; mesečni
   plan je unapred izabran, nijedan skuplji nije.

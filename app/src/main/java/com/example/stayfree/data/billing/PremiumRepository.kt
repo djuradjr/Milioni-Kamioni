@@ -138,16 +138,20 @@ class PremiumRepository @Inject constructor(
     /** Null when Play could not answer: the cached state stays rather than revoking a payer. */
     private suspend fun queryPlay(): Boolean? {
         if (!connect()) return null
-        val (result, purchases) = querySubscriptions()
-        if (result.responseCode != BillingResponseCode.OK) {
-            Log.w(TAG, "Purchase query failed: ${result.responseCode}")
-            return null
-        }
-        val purchased = purchases.filter {
-            PREMIUM_PRODUCT_ID in it.products && it.purchaseState == Purchase.PurchaseState.PURCHASED
-        }
-        _purchasePending.value = purchases.any {
+        val subscriptions = queryPurchases(BillingClient.ProductType.SUBS) ?: return null
+        _purchasePending.value = subscriptions.any {
             PREMIUM_PRODUCT_ID in it.products && it.purchaseState == Purchase.PurchaseState.PENDING
+        }
+        if (grantsPremium(subscriptions, PREMIUM_PRODUCT_ID)) return true
+        // Google's reviewers won't take a free trial, and a subscription promo code is one.
+        // This one-time product is never offered in the app; only a Play promo code grants it.
+        val oneTime = queryPurchases(BillingClient.ProductType.INAPP) ?: return null
+        return grantsPremium(oneTime, REVIEW_PRODUCT_ID)
+    }
+
+    private suspend fun grantsPremium(purchases: List<Purchase>, productId: String): Boolean {
+        val purchased = purchases.filter {
+            productId in it.products && it.purchaseState == Purchase.PurchaseState.PURCHASED
         }
         val genuine = purchased.filter(::isSignedByPlay)
         if (genuine.size < purchased.size) {
@@ -223,15 +227,15 @@ class PremiumRepository @Inject constructor(
         }
     }
 
-    // Suspended (payment-hold) subscriptions are excluded by default — exactly the
-    // "not entitled" case.
-    private suspend fun querySubscriptions(): Pair<BillingResult, List<Purchase>> =
+    // Null when Play could not answer. Suspended (payment-hold) subscriptions are excluded
+    // by default — exactly the "not entitled" case.
+    private suspend fun queryPurchases(type: String): List<Purchase>? =
         suspendCancellableCoroutine { cont ->
-            val params = QueryPurchasesParams.newBuilder()
-                .setProductType(BillingClient.ProductType.SUBS)
-                .build()
+            val params = QueryPurchasesParams.newBuilder().setProductType(type).build()
             billingClient.queryPurchasesAsync(params) { result, purchases ->
-                if (cont.isActive) cont.resume(result to purchases)
+                val ok = result.responseCode == BillingResponseCode.OK
+                if (!ok) Log.w(TAG, "Purchase query failed ($type): ${result.responseCode}")
+                if (cont.isActive) cont.resume(purchases.takeIf { ok })
             }
         }
 
@@ -265,6 +269,7 @@ class PremiumRepository @Inject constructor(
     companion object {
         private const val TAG = "PremiumBilling"
         const val PREMIUM_PRODUCT_ID = "premium"
+        const val REVIEW_PRODUCT_ID = "premium_review"
         private const val PERIODIC_REFRESH_MS = 6 * 60 * 60 * 1000L
         private const val PLAY_TIMEOUT_MS = 30_000L
 

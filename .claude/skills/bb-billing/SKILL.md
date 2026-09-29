@@ -58,6 +58,9 @@ no pre-selected upsells, cancel path obvious.
 - Debug builds: `files/fake_plans` (any content) makes the paywall show sample plans and
   "buying" flips the override on — exercises the paywall before Play has products.
   Without it (and without Console products) the paywall shows its "plans unavailable" state.
+- Google reviewers: one-time product `premium_review` (never offered in the app) also grants
+  premium; give them a promo code for IT. A subscription promo code is a free trial with a card
+  and auto-renewal, which reviewers refuse.
 - `LICENSE_KEY` in `PremiumRepository` holds the Play licensing key (set 2026-09-19);
   a broken key rejects every purchase — `PurchaseVerifierTest` fails if it stops parsing.
 - License-tester accounts + internal testing track (real Play flow, no charge). Play accelerates
