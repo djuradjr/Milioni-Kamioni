@@ -83,7 +83,7 @@
                 android:layout_weight="1"
                 android:layout_marginStart="14dp"
                 android:lineSpacingMultiplier="1.25"
-                tools:text="put danas da te Block Brainrot zaustavio" />
+                tools:text="put danas da te Block Doomscroll zaustavio" />
         </LinearLayout>
 
         <com.google.android.material.button.MaterialButton

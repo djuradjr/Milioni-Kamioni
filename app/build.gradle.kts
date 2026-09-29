@@ -25,7 +25,7 @@ android {
         applicationId = "com.djuki.blockbrainrot"
         minSdk = 23
         targetSdk = 36
-        versionCode = 7
+        versionCode = 8
         versionName = "1.1.0"
     }
 
@@ -50,13 +50,13 @@ android {
             )
             signingConfig = signingConfigs.findByName("release")
             // Production identity + name.
-            resValue("string", "app_name", "Block Brainrot")
+            resValue("string", "app_name", "Block Doomscroll")
         }
         debug {
             // Separate package + name so a debug build installs ALONGSIDE the
             // release one (two independent copies on the same phone).
             applicationIdSuffix = ".debug"
-            resValue("string", "app_name", "Block Brainrot Test")
+            resValue("string", "app_name", "Block Doomscroll Test")
         }
     }
 

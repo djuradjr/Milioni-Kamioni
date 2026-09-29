@@ -7,13 +7,13 @@
     <string name="nav_settings">Podešavanja</string>
 
     <!-- Accessibility Service -->
-    <string name="accessibility_service_description">Block Brainrot koristi uslugu pristupačnosti da prepozna koja je aplikacija ili sajt trenutno otvoren i primeni tvoja pravila blokiranja.</string>
+    <string name="accessibility_service_description">Block Doomscroll koristi uslugu pristupačnosti da prepozna koja je aplikacija ili sajt trenutno otvoren i primeni tvoja pravila blokiranja.</string>
 
     <!-- Onboarding -->
     <string name="onboarding_usage_title">Pristup korišćenju</string>
-    <string name="onboarding_usage_desc">Block Brainrot treba dozvolu da vidi statistiku korišćenja aplikacija. Tako ti pokazujemo tačno koliko vremena provodiš u svakoj aplikaciji.</string>
+    <string name="onboarding_usage_desc">Block Doomscroll treba dozvolu da vidi statistiku korišćenja aplikacija. Tako ti pokazujemo tačno koliko vremena provodiš u svakoj aplikaciji.</string>
     <string name="onboarding_accessibility_title">Usluga pristupačnosti</string>
-    <string name="onboarding_accessibility_desc">Uključi Block Brainrot u podešavanjima pristupačnosti da bi prepoznao aktivnu aplikaciju i primenio pravila blokiranja.</string>
+    <string name="onboarding_accessibility_desc">Uključi Block Doomscroll u podešavanjima pristupačnosti da bi prepoznao aktivnu aplikaciju i primenio pravila blokiranja.</string>
 
     <!-- Prominent disclosure (Play policy) -->
     <string name="disclosure_title">Dozvola za pristupačnost</string>
@@ -21,11 +21,11 @@
     <string name="disclosure_accept">Prihvati i nastavi</string>
     <string name="disclosure_decline">Ne sada</string>
     <string name="onboarding_overlay_title">Prikaz preko drugih aplikacija</string>
-    <string name="onboarding_overlay_desc">Block Brainrot mora da crta preko drugih aplikacija da bi prikazao ekran blokade kad pokušaš da otvoriš blokiranu aplikaciju.</string>
+    <string name="onboarding_overlay_desc">Block Doomscroll mora da crta preko drugih aplikacija da bi prikazao ekran blokade kad pokušaš da otvoriš blokiranu aplikaciju.</string>
     <string name="onboarding_notifications_title">Obaveštenja</string>
-    <string name="onboarding_notifications_desc">Dozvoli obaveštenja da te Block Brainrot upozori kada se približavaš dnevnim limitima.</string>
+    <string name="onboarding_notifications_desc">Dozvoli obaveštenja da te Block Doomscroll upozori kada se približavaš dnevnim limitima.</string>
     <string name="onboarding_battery_title">Optimizacija baterije</string>
-    <string name="onboarding_battery_desc">Izuzmi Block Brainrot iz optimizacije baterije da bi pratio vreme i kad je ekran ugašen.</string>
+    <string name="onboarding_battery_desc">Izuzmi Block Doomscroll iz optimizacije baterije da bi pratio vreme i kad je ekran ugašen.</string>
 
     <!-- Content descriptions -->
     <string name="cd_delete_rule">Obriši pravilo</string>
@@ -243,7 +243,7 @@
 
     <!-- Notifications -->
     <string name="notif_channel_foreground_name">Praćenje korišćenja</string>
-    <string name="notif_channel_foreground_desc">Block Brainrot prati tvoje vreme korišćenja</string>
+    <string name="notif_channel_foreground_desc">Block Doomscroll prati tvoje vreme korišćenja</string>
     <string name="notif_channel_alerts_name">Upozorenja o korišćenju</string>
     <string name="notif_channel_alerts_desc">Upozorenja kada dostigneš limite korišćenja</string>
     <string name="notif_channel_summary_name">Dnevni pregled</string>
@@ -275,7 +275,7 @@
         <item quantity="other">%1$d aktivnih</item>
     </plurals>
     <string name="content_block_count">%1$d.</string>
-    <string name="content_block_count_caption">put danas da te je Block Brainrot zaustavio</string>
+    <string name="content_block_count_caption">put danas da te je Block Doomscroll zaustavio</string>
     <string name="focus_minutes_label">minuta</string>
     <string name="focus_drag_hint">Prevuci po prstenu za tačan broj minuta</string>
     <string name="focus_whitelist_desc">Prolaze samo aplikacije koje dozvoliš</string>
@@ -309,7 +309,7 @@
     <string name="onboarding_first_run_desc">Tvoj telefon nije sačuvao raniju istoriju, pa krećemo od nule. Prvi skor stiže večeras, prva prava nedelja za sedam dana.</string>
     <string name="onboarding_targets_title">Šta te najviše vuče?</string>
     <string name="onboarding_targets_desc">Izabrali smo ove na osnovu tvoje nedelje. Limit možeš da menjaš kad god.</string>
-    <string name="onboarding_targets_desc_blind">Ovo su površine koje Block Brainrot ume da prepozna. Uključi one koje te vuku.</string>
+    <string name="onboarding_targets_desc_blind">Ovo su površine koje Block Doomscroll ume da prepozna. Uključi one koje te vuku.</string>
     <string name="onboarding_decide_later">Odluči kasnije</string>
     <string name="onboarding_set_goal">Postavi cilj</string>
     <string name="onboarding_turn_on_protection">Uključi zaštitu</string>

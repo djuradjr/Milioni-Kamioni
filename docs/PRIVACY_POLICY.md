@@ -1,13 +1,13 @@
-# Block Brainrot — Privacy Policy
+# Block Doomscroll — Privacy Policy
 
-_Last updated: 2026-09-23_
+_Last updated: 2026-09-29_
 
-Block Brainrot is a screen-time tracking and app-blocking application. This policy
+Block Doomscroll is a screen-time tracking and app-blocking application. This policy
 explains what data the app handles and where it goes.
 
 ## The short version
 
-**All data stays on your device.** Block Brainrot has **no internet access** — the
+**All data stays on your device.** Block Doomscroll has **no internet access** — the
 app does not declare the INTERNET permission, so it is technically incapable of
 sending any data anywhere. There are no accounts, no analytics and no ads.
 
@@ -28,7 +28,7 @@ anything on its own.
 
 ## Accessibility Service disclosure
 
-Block Brainrot uses Android's Accessibility Service to detect which app is in the
+Block Doomscroll uses Android's Accessibility Service to detect which app is in the
 foreground and, when you have configured website blocking, to read the browser
 address bar. This is the only mechanism Android provides to block an app or
 website at the moment it is opened. The information read this way is:
@@ -39,7 +39,7 @@ website at the moment it is opened. The information read this way is:
 
 ## Purchases and subscriptions
 
-Subscriptions are sold and processed by Google Play. Block Brainrot never sees
+Subscriptions are sold and processed by Google Play. Block Doomscroll never sees
 your card, billing address, or Google account details. The app asks Google Play
 only one question — whether this Google account currently has an active
 subscription — and stores only the yes/no answer on your device. Cancel anytime
@@ -59,7 +59,7 @@ uninstalling the app — there is no server-side copy to delete.
 
 ## Children
 
-Block Brainrot does not collect personal data from anyone, including children.
+Block Doomscroll does not collect personal data from anyone, including children.
 
 ## Changes
 

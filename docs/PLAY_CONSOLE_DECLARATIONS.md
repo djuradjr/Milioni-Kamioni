@@ -20,7 +20,7 @@ active window info).
 
 **Describe the functionality this enables (paste):**
 
-> Block Brainrot is a self-control tool that the device owner configures to
+> Block Doomscroll is a self-control tool that the device owner configures to
 > block distracting apps and websites on their own device. The Accessibility
 > Service is used only to detect what is currently on screen so the block
 > screen can appear at the right moment:

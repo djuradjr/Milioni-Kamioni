@@ -1,4 +1,4 @@
-# Block Brainrot — Google Play Release Checklist
+# Block Doomscroll — Google Play Release Checklist
 
 > Deklaracioni tekst (a11y, FGS, App access, Data safety) živi u
 > `docs/PLAY_CONSOLE_DECLARATIONS.md` — copy-paste odatle.
@@ -6,7 +6,7 @@
 ## Pre-flight (code, already done in repo)
 
 - [x] `applicationId = com.djuki.blockbrainrot` (debug `.debug`), `versionName = 1.1.0`
-      (`versionCode 7` — kandidat za produkciju; 3–6 potrošeni ili napravljeni ranije)
+      (`versionCode 8` — kandidat za produkciju; 3–7 potrošeni ili napravljeni ranije)
 - [x] `compileSdk` / `targetSdk = 36` (Play requirement as of 31 Aug 2026; needs AGP 8.12.0)
 - [x] `allowBackup = false`, backup/data-extraction rules exclude everything
 - [x] No INTERNET permission (strong Data Safety argument)

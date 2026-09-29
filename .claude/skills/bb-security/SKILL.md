@@ -1,9 +1,9 @@
 ---
 name: bb-security
-description: Security review for Block Brainrot. Use before every release, after touching the accessibility service, PIN handling, DataStore, the manifest, and MANDATORY for any payment/billing/subscription code. Covers data-leak prevention, paywall integrity and the full future-payments checklist.
+description: Security review for Block Doomscroll. Use before every release, after touching the accessibility service, PIN handling, DataStore, the manifest, and MANDATORY for any payment/billing/subscription code. Covers data-leak prevention, paywall integrity and the full future-payments checklist.
 ---
 
-# Block Brainrot — security review
+# Block Doomscroll — security review
 
 The app's core promise is **"no data leaves the device"**. Any finding that breaks
 that promise is CRITICAL. Report findings ranked, each with a concrete exploit or

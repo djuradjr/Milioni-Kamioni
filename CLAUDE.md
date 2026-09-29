@@ -1,4 +1,4 @@
-# CLAUDE.md — Block Brainrot (screen-time tracker/blocker → paid SaaS)
+# CLAUDE.md — Block Doomscroll (screen-time tracker/blocker → paid SaaS)
 
 Guidance for AI agents working in this repo. Read this first.
 Scoped docs: `app/src/main/java/com/example/stayfree/domain/content/CLAUDE.md`
@@ -14,7 +14,8 @@ or manifest/permission change), **bb-billing** (payments/premium work).
   from `main`, the user merges. Remote: `https://github.com/djuradjr/Milioni-Kamioni.git`.
   Privacy URL (already wired in `SettingsFragment`):
   `https://djuradjr.github.io/Milioni-Kamioni/privacy.html`.
-- Public app name **"Block Brainrot"** (release) / **"Block Brainrot Test"** (debug),
+- Public app name **"Block Doomscroll"** (release) / **"Block Doomscroll Test"** (debug) —
+  renamed from "Block Brainrot" on 2026-09-29; package ids and repo paths keep the old name,
   set via `resValue` in `app/build.gradle.kts`.
 - Package rebrand is **partial by design**: `namespace = com.example.stayfree` stays
   (never rename packages); `applicationId = com.djuki.blockbrainrot` (debug adds
@@ -25,7 +26,7 @@ Ceo UI je na **Skor** dizajn sistemu: Fokus skor 0-100 u prstenu, tokeni `skor_*
 font Archivo, tamna tema podrazumevana. Pravila i komponente: `bb-ui` skill.
 
 ## 2. Product direction: paid SaaS (decided 2026-07-06)
-- Block Brainrot is a **paid product** — NOT ad-supported. Do not add AdMob/rewarded
+- Block Doomscroll is a **paid product** — NOT ad-supported. Do not add AdMob/rewarded
   ads.
 - **2026-07-07: the timed-unlock model is REMOVED from code** — detected content
   gets a branded hard-block screen (`ContentBlockActivity`): no unlock path,
@@ -83,7 +84,7 @@ keep the app itself networkless unless a future explicit decision changes that.
 - `keystore.properties` (repo root, gitignored) drives release signing; absent →
   release stays unsigned. See `docs/PLAY_RELEASE_CHECKLIST.md` + `docs/PRIVACY_POLICY.md`
   + `docs/MANUAL_TEST_SCRIPT.md`.
-- `versionCode=7`, `versionName=1.1.0` (production candidate; 3–6 were used earlier), `targetSdk=36`; release has R8 minify + shrink — test minified
+- `versionCode=8`, `versionName=1.1.0` (production candidate; 3–7 were used earlier), `targetSdk=36`; release has R8 minify + shrink — test minified
   builds on a real device (R8 bugs only show there).
 - Privacy policy URL is DONE (GitHub Pages, wired in Settings).
 

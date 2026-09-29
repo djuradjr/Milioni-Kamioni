@@ -1,9 +1,9 @@
 ---
 name: bb-play-policy
-description: Google Play compliance for Block Brainrot. Use before any release/submission, when touching the manifest or permissions, when writing store-listing or declaration text, and whenever Data Safety consistency is in question. An a11y-based blocker lives or dies on this.
+description: Google Play compliance for Block Doomscroll. Use before any release/submission, when touching the manifest or permissions, when writing store-listing or declaration text, and whenever Data Safety consistency is in question. An a11y-based blocker lives or dies on this.
 ---
 
-# Block Brainrot — Play policy
+# Block Doomscroll — Play policy
 
 The app uses an AccessibilityService + PACKAGE_USAGE_STATS — two of the most
 scrutinized capabilities on Play. Rejection is a bigger business risk than any

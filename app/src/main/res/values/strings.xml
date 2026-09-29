@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- app_name is provided per build type in build.gradle.kts (Block Brainrot / Block Brainrot Dev) -->
+    <!-- app_name is provided per build type in build.gradle.kts (Block Doomscroll / Block Doomscroll Test) -->
 
     <!-- Navigation -->
     <string name="nav_dashboard">Dashboard</string>
@@ -9,8 +9,8 @@
 
     <!-- Accessibility Service -->
     <!-- Untranslated: dumpsys tooling and the Play a11y declaration reference this exact label -->
-    <string name="accessibility_service_label" translatable="false">Block Brainrot Screen Monitor</string>
-    <string name="accessibility_service_description">Block Brainrot uses the Accessibility Service to detect which app or website is currently open so it can enforce your blocking rules.</string>
+    <string name="accessibility_service_label" translatable="false">Block Doomscroll Screen Monitor</string>
+    <string name="accessibility_service_description">Block Doomscroll uses the Accessibility Service to detect which app or website is currently open so it can enforce your blocking rules.</string>
 
     <!-- Onboarding -->
     <string name="onboarding_step_indicator" translatable="false">%1$d / %2$d</string>
@@ -37,16 +37,16 @@
     <string name="onboarding_first_run_desc">Your phone kept no earlier history, so we begin from zero. The first score arrives tonight, the first real week in seven days.</string>
     <string name="onboarding_targets_title">What pulls you in most?</string>
     <string name="onboarding_targets_desc">We picked these from your week. You can change any limit later.</string>
-    <string name="onboarding_targets_desc_blind">These are the surfaces Block Brainrot can detect. Turn on the ones that pull you in.</string>
+    <string name="onboarding_targets_desc_blind">These are the surfaces Block Doomscroll can detect. Turn on the ones that pull you in.</string>
     <string name="onboarding_decide_later">Decide later</string>
     <string name="onboarding_set_goal">Set goal</string>
     <string name="onboarding_turn_on_protection">Turn on protection</string>
     <string name="onboarding_target_limit_off">blocks right away</string>
     <string name="onboarding_target_limit_minutes">%1$d min a day</string>
     <string name="onboarding_usage_title">Usage Access</string>
-    <string name="onboarding_usage_desc">Block Brainrot needs permission to view your app usage statistics. This lets us show you exactly how much time you spend in each app.</string>
+    <string name="onboarding_usage_desc">Block Doomscroll needs permission to view your app usage statistics. This lets us show you exactly how much time you spend in each app.</string>
     <string name="onboarding_accessibility_title">Accessibility Service</string>
-    <string name="onboarding_accessibility_desc">Enable Block Brainrot in Accessibility Settings to allow it to detect your active app and enforce blocking rules.</string>
+    <string name="onboarding_accessibility_desc">Enable Block Doomscroll in Accessibility Settings to allow it to detect your active app and enforce blocking rules.</string>
 
     <!-- Prominent disclosure (Play policy) -->
     <string name="disclosure_title">Accessibility access</string>
@@ -54,11 +54,11 @@
     <string name="disclosure_accept">Accept and continue</string>
     <string name="disclosure_decline">Not now</string>
     <string name="onboarding_overlay_title">Display Over Other Apps</string>
-    <string name="onboarding_overlay_desc">Block Brainrot needs to draw over other apps to show the block screen when you try to open a blocked app.</string>
+    <string name="onboarding_overlay_desc">Block Doomscroll needs to draw over other apps to show the block screen when you try to open a blocked app.</string>
     <string name="onboarding_notifications_title">Notifications</string>
-    <string name="onboarding_notifications_desc">Allow notifications so Block Brainrot can alert you when you are approaching your daily limits.</string>
+    <string name="onboarding_notifications_desc">Allow notifications so Block Doomscroll can alert you when you are approaching your daily limits.</string>
     <string name="onboarding_battery_title">Battery Optimization</string>
-    <string name="onboarding_battery_desc">Exclude Block Brainrot from battery optimization so it keeps tracking even when your screen is off.</string>
+    <string name="onboarding_battery_desc">Exclude Block Doomscroll from battery optimization so it keeps tracking even when your screen is off.</string>
 
     <!-- Content descriptions -->
     <string name="cd_delete_rule">Delete rule</string>
@@ -264,9 +264,9 @@
     <!-- Content hard-block screen -->
     <string name="content_block_title">%1$s blocked</string>
     <string name="content_block_message">You blocked this to protect your focus. Take a break.</string>
-    <string name="content_block_brand" translatable="false">Block Brainrot</string>
+    <string name="content_block_brand" translatable="false">Block Doomscroll</string>
     <string name="content_block_count">%1$d</string>
-    <string name="content_block_count_caption">times today Block Brainrot stopped you</string>
+    <string name="content_block_count_caption">times today Block Doomscroll stopped you</string>
     <string name="content_block_exit">Exit</string>
 
     <!-- PIN -->
@@ -339,7 +339,7 @@
 
     <!-- Notifications -->
     <string name="notif_channel_foreground_name">Usage Tracking</string>
-    <string name="notif_channel_foreground_desc">Block Brainrot is tracking your screen time</string>
+    <string name="notif_channel_foreground_desc">Block Doomscroll is tracking your screen time</string>
     <string name="notif_channel_alerts_name">Usage Alerts</string>
     <string name="notif_channel_alerts_desc">Alerts when you reach app usage limits</string>
     <string name="notif_channel_summary_name">Daily Summary</string>

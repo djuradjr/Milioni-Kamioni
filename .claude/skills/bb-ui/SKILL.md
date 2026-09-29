@@ -1,9 +1,9 @@
 ---
 name: bb-ui
-description: UI design system and the user's visual preferences for Block Brainrot. Use whenever creating or changing screens, layouts, colors, animations, or any user-facing surface in this repo.
+description: UI design system and the user's visual preferences for Block Doomscroll. Use whenever creating or changing screens, layouts, colors, animations, or any user-facing surface in this repo.
 ---
 
-# Block Brainrot — UI
+# Block Doomscroll — UI
 
 Goal: every screen must look **worth paying for**. The user likes **interactive
 and professional** interfaces — alive, but never gimmicky.

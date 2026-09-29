@@ -1,9 +1,9 @@
 ---
 name: bb-code-review
-description: Code review infrastructure for Block Brainrot. Use for every review of this repo's diffs or PRs, before merging any feature, and whenever asked to check code quality. Covers correctness, future crash-risk analysis, token economy and the mandatory verification bar.
+description: Code review infrastructure for Block Doomscroll. Use for every review of this repo's diffs or PRs, before merging any feature, and whenever asked to check code quality. Covers correctness, future crash-risk analysis, token economy and the mandatory verification bar.
 ---
 
-# Block Brainrot — code review
+# Block Doomscroll — code review
 
 Run this checklist over the diff. Report findings ranked by severity, each with a
 concrete failure scenario. A feature passes review only if the build is green AND

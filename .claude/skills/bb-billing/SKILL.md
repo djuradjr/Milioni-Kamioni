@@ -1,9 +1,9 @@
 ---
 name: bb-billing
-description: Google Play Billing implementation runbook for Block Brainrot. Use when implementing payments, subscriptions, premium entitlements, or a paywall. Pairs with bb-security section 6 (mandatory) and bb-play-policy.
+description: Google Play Billing implementation runbook for Block Doomscroll. Use when implementing payments, subscriptions, premium entitlements, or a paywall. Pairs with bb-security section 6 (mandatory) and bb-play-policy.
 ---
 
-# Block Brainrot — Play Billing runbook
+# Block Doomscroll — Play Billing runbook
 
 Context: paid SaaS, app is offline by design (no `INTERNET` permission — the
 Billing library talks through the Play Store app, so this holds). The old
