@@ -25,6 +25,7 @@ import com.example.stayfree.util.DomainUtils
 import com.example.stayfree.util.TimeUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import org.json.JSONObject
 import javax.inject.Inject
@@ -40,7 +41,7 @@ class StayFreeAccessibilityService : AccessibilityService() {
 
     private val serviceScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
-    // In-memory cache of packages with active rules (incl. sleep sentinel) — refreshed every 30s
+    // Packages with active rules (incl. sleep sentinel); follows the rules table, 30s loop as backup
     @Volatile private var blockedPackagesCache = emptySet<String>()
     // Packages never blocked by global modes (focus/sleep): self, launcher, systemui, dialer, settings
     @Volatile private var exemptPackages = emptySet<String>()
@@ -599,6 +600,12 @@ class StayFreeAccessibilityService : AccessibilityService() {
     }
 
     private fun startCacheRefresh() {
+        // With only the 30s loop, a rule saved seconds ago missed the next open of its app.
+        serviceScope.launch {
+            blockingRepository.getActiveRules()
+                .catch { /* the loop below still refreshes the cache */ }
+                .collect { rules -> blockedPackagesCache = rules.map { it.packageName }.toSet() }
+        }
         serviceScope.launch {
             while (isActive) {
                 try {
