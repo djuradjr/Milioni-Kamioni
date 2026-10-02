@@ -85,7 +85,8 @@
         <activity
             android:name=".ui.premium.PaywallActivity"
             android:exported="false"
-            android:theme="@style/Theme.StayFree" />
+            android:theme="@style/Theme.StayFree"
+            android:windowSoftInputMode="adjustResize" />
 
         <!-- Foreground Service — specialUse: continuous on-device screen-time
              tracking; dataSync would get a 6h timeout + boot-launch ban on

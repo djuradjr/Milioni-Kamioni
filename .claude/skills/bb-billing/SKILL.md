@@ -60,7 +60,9 @@ no pre-selected upsells, cancel path obvious.
   Without it (and without Console products) the paywall shows its "plans unavailable" state.
 - Google reviewers: one-time product `premium_review` (never offered in the app) also grants
   premium; give them a promo code for IT. A subscription promo code is a free trial with a card
-  and auto-renewal, which reviewers refuse.
+  and auto-renewal, which reviewers refuse. The paywall's "Have a promo code?" field hands the
+  code to Play's redeem sheet (`play.google.com/redeem?code=`); Billing has no in-app redeem API.
+  Play leaves its home screen under the sheet, so getting back takes Back presses — the copy says so.
 - `LICENSE_KEY` in `PremiumRepository` holds the Play licensing key (set 2026-09-19);
   a broken key rejects every purchase — `PurchaseVerifierTest` fails if it stops parsing.
 - License-tester accounts + internal testing track (real Play flow, no charge). Play accelerates

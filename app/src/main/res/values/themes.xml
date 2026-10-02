@@ -126,6 +126,12 @@
 
     <style name="Theme.StayFree" parent="Base.Theme.StayFree" />
 
+    <!-- Text fields on Skor screens: focus state in the action colour, never brand orange. -->
+    <style name="ThemeOverlay.Skor.Input" parent="">
+        <item name="colorPrimary">@color/skor_focus</item>
+        <item name="colorControlActivated">@color/skor_focus</item>
+    </style>
+
     <style name="Theme.StayFree.Overlay">
         <item name="android:windowIsTranslucent">false</item>
         <item name="android:windowBackground">@drawable/bg_overlay_gradient</item>

@@ -382,6 +382,11 @@
     <string name="paywall_pending">Your payment is pending. Premium turns on as soon as Google confirms it.</string>
     <string name="paywall_welcome">Premium is on</string>
     <string name="paywall_restore_none">No active subscription on this Google account</string>
+    <string name="paywall_promo_link">Have a promo code?</string>
+    <string name="paywall_promo_hint">Promo code</string>
+    <string name="paywall_promo_note">Google Play opens to confirm the code. When it\'s done, press Back to return here.</string>
+    <string name="paywall_promo_redeem">Redeem in Google Play</string>
+    <string name="paywall_promo_error">Couldn\'t open Google Play</string>
     <string name="paywall_error_launch">Couldn\'t open Google Play. Try again.</string>
     <string name="settings_premium">Premium</string>
     <string name="settings_premium_active">Active · manage in Google Play</string>

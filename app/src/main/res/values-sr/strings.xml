@@ -353,6 +353,11 @@
     <string name="paywall_pending">Plaćanje je na čekanju. Premium se uključuje čim Google potvrdi uplatu.</string>
     <string name="paywall_welcome">Premium je uključen</string>
     <string name="paywall_restore_none">Na ovom Google nalogu nema aktivne pretplate</string>
+    <string name="paywall_promo_link">Imaš promo kod?</string>
+    <string name="paywall_promo_hint">Promo kod</string>
+    <string name="paywall_promo_note">Google Play se otvara da potvrdi kod. Kad završiš, pritisni Nazad da se vratiš ovde.</string>
+    <string name="paywall_promo_redeem">Iskoristi u Google Play-u</string>
+    <string name="paywall_promo_error">Google Play nije moguće otvoriti</string>
     <string name="paywall_error_launch">Google Play nije mogao da se otvori. Pokušaj ponovo.</string>
     <string name="settings_premium">Premium</string>
     <string name="settings_premium_active">Aktivan · upravljaj u Google Play-u</string>

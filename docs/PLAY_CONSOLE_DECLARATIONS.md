@@ -76,11 +76,13 @@ disclosure → Accessibility settings flow.
 > No account or login exists — the app opens straight to onboarding.
 >
 > Blocking is a paid feature. Onboarding asks for Usage access, then shows the
-> subscription screen. REDEEM THE PROMO CODE BELOW in the Google Play app first
-> (Play Store → profile → Payments & subscriptions → Redeem code); the app then
-> unlocks and onboarding continues with the permissions blocking needs
-> (Accessibility, Display over other apps, Notifications, Battery). Grant them
-> when asked — onboarding walks through each.
+> subscription screen. On that screen tap "Have a promo code?", enter the code
+> below and tap "Redeem in Google Play"; confirm in Google Play, then press Back
+> to return. The app unlocks and onboarding continues with the permissions
+> blocking needs (Accessibility, Display over other apps, Notifications,
+> Battery). Grant them when asked — onboarding walks through each.
+> (The code also works in Play Store → profile → Payments & subscriptions →
+> Redeem code.)
 >
 > Then add an app (e.g. Instagram) or a website to the block list and open it —
 > the block screen appears. Screen-time tracking and statistics work without a

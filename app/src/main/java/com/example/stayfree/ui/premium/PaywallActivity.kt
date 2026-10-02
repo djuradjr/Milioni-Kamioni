@@ -1,18 +1,24 @@
 package com.example.stayfree.ui.premium
 
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
+import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -36,6 +42,8 @@ class PaywallActivity : AppCompatActivity() {
     @Inject lateinit var premium: PremiumRepository
     private val viewModel: PaywallViewModel by viewModels()
     private lateinit var binding: ActivityPaywallBinding
+    private var plansReady = false
+    private var imeVisible = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +56,21 @@ class PaywallActivity : AppCompatActivity() {
         binding.btnRetry.setOnClickListener { viewModel.loadPlans() }
         binding.btnRestore.setOnClickListener { restore() }
         binding.btnSubscribe.setOnClickListener { subscribe() }
+        binding.btnPromo.setOnClickListener { showPromo() }
+        binding.etPromo.doAfterTextChanged { binding.btnPromoRedeem.isEnabled = promoCode().isNotEmpty() }
+        binding.etPromo.setOnEditorActionListener { _, action, _ ->
+            (action == EditorInfo.IME_ACTION_GO && promoCode().isNotEmpty()).also { if (it) redeemPromo() }
+        }
+        binding.btnPromoRedeem.setOnClickListener { redeemPromo() }
+        // The pinned CTA rides up with the keyboard and would cover the code field.
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
+            imeVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
+            bindCta()
+            if (imeVisible && binding.groupPromo.isVisible) {
+                binding.scroll.post { binding.scroll.smoothScrollTo(0, binding.groupPromo.bottom) }
+            }
+            ViewCompat.onApplyWindowInsets(view, insets)
+        }
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -91,6 +114,30 @@ class PaywallActivity : AppCompatActivity() {
         }
     }
 
+    private fun bindCta() {
+        binding.groupCta.isVisible = plansReady && !imeVisible
+    }
+
+    private fun showPromo() {
+        binding.btnPromo.isVisible = false
+        binding.groupPromo.isVisible = true
+        binding.etPromo.requestFocus()
+        WindowCompat.getInsetsController(window, binding.etPromo).show(WindowInsetsCompat.Type.ime())
+    }
+
+    private fun promoCode() = binding.etPromo.text?.filter { it.isLetterOrDigit() }?.toString()?.uppercase().orEmpty()
+
+    // Billing has no redeem API: Play's own sheet takes the code, and onResume picks the
+    // granted purchase up and closes this screen.
+    private fun redeemPromo() {
+        val uri = Uri.parse(PLAY_REDEEM_URL).buildUpon().appendQueryParameter("code", promoCode()).build()
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW, uri).setPackage(PLAY_STORE_PACKAGE))
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(this, R.string.paywall_promo_error, Toast.LENGTH_SHORT).show()
+        }
+    }
+
     private fun bindStat(ms: Long?) {
         binding.tvStat.isVisible = ms != null
         if (ms == null) return
@@ -108,7 +155,8 @@ class PaywallActivity : AppCompatActivity() {
     private fun bindPlans(state: PaywallViewModel.Plans, selected: Int) {
         binding.progress.isVisible = state is PaywallViewModel.Plans.Loading
         binding.groupUnavailable.isVisible = state is PaywallViewModel.Plans.Unavailable
-        binding.groupCta.isVisible = state is PaywallViewModel.Plans.Ready
+        plansReady = state is PaywallViewModel.Plans.Ready
+        bindCta()
         binding.plans.removeAllViews()
         if (state !is PaywallViewModel.Plans.Ready) return
 
@@ -154,6 +202,9 @@ class PaywallActivity : AppCompatActivity() {
     }.getOrNull()
 
     companion object {
+        private const val PLAY_REDEEM_URL = "https://play.google.com/redeem"
+        private const val PLAY_STORE_PACKAGE = "com.android.vending"
+
         fun newIntent(context: Context) = Intent(context, PaywallActivity::class.java)
     }
 }
