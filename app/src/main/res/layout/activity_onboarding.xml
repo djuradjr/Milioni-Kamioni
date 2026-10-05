@@ -217,41 +217,6 @@
                         tools:text="jedan sat manje nego sada" />
                 </LinearLayout>
             </LinearLayout>
-
-            <!-- Phase 3 · what to protect -->
-            <LinearLayout
-                android:id="@+id/group_targets"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <TextView
-                    style="@style/Skor.Text"
-                    android:layout_width="match_parent"
-                    android:layout_marginTop="@dimen/spacing_lg"
-                    android:textSize="23sp"
-                    android:textFontWeight="700"
-                    android:textStyle="bold"
-                    android:letterSpacing="-0.028"
-                    android:text="@string/onboarding_targets_title" />
-
-                <TextView
-                    android:id="@+id/tv_targets_sub"
-                    style="@style/Skor.Micro"
-                    android:layout_width="match_parent"
-                    android:layout_marginTop="9dp"
-                    android:lineSpacingMultiplier="1.45"
-                    android:text="@string/onboarding_targets_desc" />
-
-                <LinearLayout
-                    android:id="@+id/targets_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginTop="@dimen/spacing_md"
-                    android:background="@drawable/bg_skor_card" />
-            </LinearLayout>
         </FrameLayout>
     </ScrollView>
 
