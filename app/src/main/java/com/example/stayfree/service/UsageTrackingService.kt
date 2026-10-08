@@ -2,6 +2,7 @@ package com.example.stayfree.service
 
 import android.content.Intent
 import android.content.IntentFilter
+import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleService
 import com.example.stayfree.data.local.preferences.AppPreferences
@@ -31,10 +32,19 @@ class UsageTrackingService : LifecycleService() {
 
     override fun onCreate() {
         super.onCreate()
-        startForeground(
-            NotificationUtils.NOTIFICATION_ID_FOREGROUND,
-            NotificationUtils.buildForegroundNotification(this)
-        )
+        try {
+            startForeground(
+                NotificationUtils.NOTIFICATION_ID_FOREGROUND,
+                NotificationUtils.buildForegroundNotification(this)
+            )
+        } catch (e: IllegalStateException) {
+            // Android 12+ refuses this when the system restarts the sticky service from the
+            // background (e.g. after a low-memory kill). The workers keep syncing; the next
+            // app open or boot starts tracking again.
+            Log.w(TAG, "Foreground start refused, stopping: ${e.message}")
+            stopSelf()
+            return
+        }
         registerScreenStateReceiver()
         startPeriodicSync()
     }
@@ -103,6 +113,7 @@ class UsageTrackingService : LifecycleService() {
     }
 
     private companion object {
+        const val TAG = "UsageTracking"
         const val WARN_BEFORE_MS = 5 * 60_000L
     }
 }
