@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 2400" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#080F18"/>
+      <stop offset="0.45" stop-color="#0F1926"/>
+      <stop offset="0.74" stop-color="#18293D"/>
+      <stop offset="0.80" stop-color="#2A2F3A"/>
+    </linearGradient>
+    <radialGradient id="ember" cx="0.38" cy="0.79" r="0.42" gradientTransform="scale(1 0.45) translate(0 0.97)">
+      <stop offset="0" stop-color="#FF6B35" stop-opacity="0.45"/>
+      <stop offset="0.5" stop-color="#FF6B35" stop-opacity="0.10"/>
+      <stop offset="1" stop-color="#FF6B35" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="tealHaze" cx="0.75" cy="0.72" r="0.5">
+      <stop offset="0" stop-color="#3FBFA3" stop-opacity="0.10"/>
+      <stop offset="1" stop-color="#3FBFA3" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="moonGlow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#E7EEF6" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#E7EEF6" stop-opacity="0"/>
+    </radialGradient>
+    <mask id="crescent">
+      <circle cx="810" cy="430" r="64" fill="#fff"/>
+      <circle cx="838" cy="410" r="58" fill="#000"/>
+    </mask>
+    <linearGradient id="lake" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1F3249"/>
+      <stop offset="0.6" stop-color="#13202F"/>
+      <stop offset="1" stop-color="#0B141F"/>
+    </linearGradient>
+    <radialGradient id="emberLake"><stop offset="0" stop-color="#FF6B35" stop-opacity=".32"/><stop offset="1" stop-color="#FF6B35" stop-opacity="0"/></radialGradient>
+    <g id="pine">
+      <path d="M0,-90 L22,-40 L12,-40 L30,0 L-30,0 L-12,-40 L-22,-40 Z"/>
+      <rect x="-4" y="0" width="8" height="14"/>
+    </g>
+  </defs>
+
+  <rect width="1080" height="2400" fill="url(#sky)"/>
+  <rect width="1080" height="2400" fill="url(#tealHaze)"/>
+  <rect width="1080" height="2400" fill="url(#ember)"/>
+
+  <g fill="#E7EEF6">
+    <circle cx="96" cy="160" r="2.4" opacity=".7"/>
+    <circle cx="214" cy="292" r="1.6" opacity=".5"/>
+    <circle cx="332" cy="118" r="2" opacity=".8"/>
+    <circle cx="470" cy="236" r="1.4" opacity=".45"/>
+    <circle cx="560" cy="96" r="2.2" opacity=".65"/>
+    <circle cx="642" cy="318" r="1.5" opacity=".5"/>
+    <circle cx="968" cy="182" r="2.4" opacity=".75"/>
+    <circle cx="1020" cy="402" r="1.6" opacity=".45"/>
+    <circle cx="684" cy="520" r="1.8" opacity=".55"/>
+    <circle cx="140" cy="470" r="1.8" opacity=".6"/>
+    <circle cx="372" cy="430" r="1.3" opacity=".4"/>
+    <circle cx="48" cy="690" r="1.6" opacity=".4"/>
+    <circle cx="930" cy="640" r="1.4" opacity=".35"/>
+    <circle cx="254" cy="640" r="1.2" opacity=".3"/>
+    <circle cx="1010" cy="900" r="1.5" opacity=".25"/>
+    <circle cx="70" cy="1040" r="1.4" opacity=".22"/>
+    <circle cx="1040" cy="1320" r="1.3" opacity=".18"/>
+    <circle cx="36" cy="1480" r="1.3" opacity=".16"/>
+    <path d="M260,190 l5,15 l15,5 l-15,5 l-5,15 l-5,-15 l-15,-5 l15,-5 Z" opacity=".85"/>
+    <path d="M900,300 l3.5,10 l10,3.5 l-10,3.5 l-3.5,10 l-3.5,-10 l-10,-3.5 l10,-3.5 Z" opacity=".6"/>
+    <path d="M520,400 l3,8 l8,3 l-8,3 l-3,8 l-3,-8 l-8,-3 l8,-3 Z" opacity=".5"/>
+  </g>
+
+  <circle cx="810" cy="430" r="190" fill="url(#moonGlow)"/>
+  <rect width="1080" height="900" fill="#E7EEF6" mask="url(#crescent)"/>
+
+  <path d="M0,1830 L90,1770 L170,1800 L280,1700 L380,1785 L470,1745 L560,1800 L680,1690 L790,1780 L880,1740 L1000,1800 L1080,1760 L1080,2400 L0,2400 Z" fill="#1B2C40"/>
+  <path d="M280,1700 L330,1742 L300,1736 L280,1752 L262,1730 Z M680,1690 L726,1728 L700,1724 L680,1742 L660,1720 Z" fill="#E7EEF6" opacity=".10"/>
+  <path d="M0,1900 Q140,1840 300,1880 T620,1870 T900,1850 T1080,1880 L1080,1962 L0,1962 Z" fill="#132134"/>
+
+  <rect y="1960" width="1080" height="440" fill="url(#lake)"/>
+  <rect y="1960" width="1080" height="34" fill="#132134" opacity=".55"/>
+  <ellipse cx="410" cy="1974" rx="340" ry="22" fill="url(#emberLake)"/>
+  <g stroke="#E7EEF6" stroke-linecap="round">
+    <path d="M770,2004 h80" stroke-width="5" opacity=".45"/>
+    <path d="M784,2036 h52" stroke-width="4" opacity=".38"/>
+    <path d="M760,2070 h30 M806,2070 h40" stroke-width="4" opacity=".3"/>
+    <path d="M790,2106 h40" stroke-width="3" opacity=".24"/>
+    <path d="M776,2142 h22 M812,2142 h18" stroke-width="3" opacity=".18"/>
+    <path d="M796,2178 h26" stroke-width="2.5" opacity=".12"/>
+  </g>
+
+  <path d="M0,2196 Q170,2160 360,2176 Q520,2190 650,2236 Q830,2296 1080,2262 L1080,2400 L0,2400 Z" fill="#070D15"/>
+  <g fill="#070D15">
+    <use href="#pine" transform="translate(70,2200) scale(1.5)"/>
+    <use href="#pine" transform="translate(150,2186) scale(1.1)"/>
+    <use href="#pine" transform="translate(960,2272) scale(1.7)"/>
+    <use href="#pine" transform="translate(1040,2266) scale(1.2)"/>
+  </g>
+
+  <g transform="translate(430,2180) scale(2.3)" fill="#070D15">
+    <circle cx="4" cy="-67" r="11"/>
+    <path d="M-16,0 C-18,-20 -14,-42 -4,-54 C2,-56 8,-52 10,-46 L24,-34 L26,-38 C32,-36 34,-30 32,-24 L38,-2 L42,0 Z"/>
+  </g>
+</svg>
