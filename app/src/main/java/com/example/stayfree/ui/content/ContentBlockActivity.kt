@@ -4,9 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.SystemClock
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.lifecycleScope
 import com.example.stayfree.R
 import com.example.stayfree.data.local.preferences.AppPreferences
@@ -31,6 +33,30 @@ class ContentBlockActivity : AppCompatActivity() {
 
     companion object {
         const val EXTRA_DISPLAY_NAME = "extra_display_name"
+        private const val STATE_BACKGROUND = "state_background"
+
+        private val BACKGROUNDS = intArrayOf(
+            R.drawable.blok_bg_zalazak,
+            R.drawable.blok_bg_laptop,
+            R.drawable.blok_bg_sport
+        )
+        // TikTok opens its next screen over the block right after its splash, so the
+        // service re-fires within seconds; keeping the photo stops a visible swap.
+        private const val SAME_BLOCK_WINDOW_MS = 10_000L
+        private var lastBackground = -1
+        private var lastPickAt = 0L
+
+        /** Random, but never the same photo twice in a row across separate blocks. */
+        private fun nextBackground(): Int {
+            val now = SystemClock.elapsedRealtime()
+            val refire = lastBackground >= 0 && now - lastPickAt < SAME_BLOCK_WINDOW_MS
+            lastPickAt = now
+            if (refire) return lastBackground
+            var i: Int
+            do i = BACKGROUNDS.indices.random() while (i == lastBackground)
+            lastBackground = i
+            return i
+        }
 
         fun newIntent(context: Context, displayName: String): Intent =
             Intent(context, ContentBlockActivity::class.java).apply {
@@ -42,12 +68,19 @@ class ContentBlockActivity : AppCompatActivity() {
     }
 
     private lateinit var binding: ActivityContentBlockBinding
+    private var backgroundIndex = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // White copy over a dark photo: the light app theme would turn the text dark.
+        delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_YES
         super.onCreate(savedInstanceState)
         binding = ActivityContentBlockBinding.inflate(layoutInflater)
         setContentView(binding.root)
         goImmersive()
+
+        backgroundIndex = savedInstanceState?.getInt(STATE_BACKGROUND, -1)
+            ?.takeIf { it in BACKGROUNDS.indices } ?: nextBackground()
+        binding.ivBackground.setImageResource(BACKGROUNDS[backgroundIndex])
 
         val displayName = intent.getStringExtra(EXTRA_DISPLAY_NAME) ?: getString(R.string.app_name)
         binding.tvTitle.text = getString(R.string.content_block_title, displayName)
@@ -67,6 +100,11 @@ class ContentBlockActivity : AppCompatActivity() {
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() = goHome()
         })
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(STATE_BACKGROUND, backgroundIndex)
     }
 
     private fun goHome() {
