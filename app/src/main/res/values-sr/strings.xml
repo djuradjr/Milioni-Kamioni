@@ -183,6 +183,14 @@
     <string name="content_block_title">Blokirano: %1$s</string>
     <string name="content_block_message">Blokirano radi zaštite tvog fokusa. Napravi pauzu.</string>
     <string name="content_block_exit">Izađi</string>
+    <string-array name="content_block_motivation">
+        <item>Život se dešava van ekrana.</item>
+        <item>Uradi ono što stalno odlažeš.</item>
+        <item>Mali koraci. Veliki dani.</item>
+        <item>Manje skrolovanja. Više života.</item>
+        <item>Budi ovde. Sada.</item>
+        <item>Neka danas vredi.</item>
+    </string-array>
 
     <!-- PIN -->
     <string name="pin_set_title">Postavi PIN</string>

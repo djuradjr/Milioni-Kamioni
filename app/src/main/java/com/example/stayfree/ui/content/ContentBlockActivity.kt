@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.lifecycleScope
@@ -33,28 +34,37 @@ class ContentBlockActivity : AppCompatActivity() {
 
     companion object {
         const val EXTRA_DISPLAY_NAME = "extra_display_name"
-        private const val STATE_BACKGROUND = "state_background"
+        private const val STATE_PICK = "state_pick"
 
-        private val BACKGROUNDS = intArrayOf(
-            R.drawable.blok_bg_zalazak,
-            R.drawable.blok_bg_laptop,
-            R.drawable.blok_bg_sport
+        private class Backdrop(@DrawableRes val image: Int, @DrawableRes val scrim: Int)
+
+        private val BACKDROPS = arrayOf(
+            Backdrop(R.drawable.blok_bg_kafa, R.drawable.bg_block_scrim_strong),
+            Backdrop(R.drawable.blok_bg_ucenje, R.drawable.bg_block_scrim_strong),
+            Backdrop(R.drawable.blok_bg_sport, R.drawable.bg_block_scrim)
         )
         // TikTok opens its next screen over the block right after its splash, so the
-        // service re-fires within seconds; keeping the photo stops a visible swap.
+        // service re-fires within seconds; keeping the pick stops a visible swap.
         private const val SAME_BLOCK_WINDOW_MS = 10_000L
-        private var lastBackground = -1
+        private var lastBackdrop = -1
+        private var lastLine = -1
         private var lastPickAt = 0L
 
-        /** Random, but never the same photo twice in a row across separate blocks. */
-        private fun nextBackground(): Int {
+        /** [backdrop, motivation line]: random, never repeated across separate blocks. */
+        private fun nextPick(lineCount: Int): IntArray {
             val now = SystemClock.elapsedRealtime()
-            val refire = lastBackground >= 0 && now - lastPickAt < SAME_BLOCK_WINDOW_MS
+            val refire = lastBackdrop >= 0 && now - lastPickAt < SAME_BLOCK_WINDOW_MS
             lastPickAt = now
-            if (refire) return lastBackground
+            if (!refire || lastLine >= lineCount) {
+                lastBackdrop = randomExcept(BACKDROPS.size, lastBackdrop)
+                lastLine = randomExcept(lineCount, lastLine)
+            }
+            return intArrayOf(lastBackdrop, lastLine)
+        }
+
+        private fun randomExcept(size: Int, previous: Int): Int {
             var i: Int
-            do i = BACKGROUNDS.indices.random() while (i == lastBackground)
-            lastBackground = i
+            do i = (0 until size).random() while (i == previous && size > 1)
             return i
         }
 
@@ -68,7 +78,7 @@ class ContentBlockActivity : AppCompatActivity() {
     }
 
     private lateinit var binding: ActivityContentBlockBinding
-    private var backgroundIndex = 0
+    private lateinit var pick: IntArray
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // White copy over a dark photo: the light app theme would turn the text dark.
@@ -78,9 +88,14 @@ class ContentBlockActivity : AppCompatActivity() {
         setContentView(binding.root)
         goImmersive()
 
-        backgroundIndex = savedInstanceState?.getInt(STATE_BACKGROUND, -1)
-            ?.takeIf { it in BACKGROUNDS.indices } ?: nextBackground()
-        binding.ivBackground.setImageResource(BACKGROUNDS[backgroundIndex])
+        val lines = resources.getStringArray(R.array.content_block_motivation)
+        pick = savedInstanceState?.getIntArray(STATE_PICK)
+            ?.takeIf { it.size == 2 && it[0] in BACKDROPS.indices && it[1] in lines.indices }
+            ?: nextPick(lines.size)
+        val backdrop = BACKDROPS[pick[0]]
+        binding.ivBackground.setImageResource(backdrop.image)
+        binding.vScrim.setBackgroundResource(backdrop.scrim)
+        binding.tvMotivation.text = lines[pick[1]]
 
         val displayName = intent.getStringExtra(EXTRA_DISPLAY_NAME) ?: getString(R.string.app_name)
         binding.tvTitle.text = getString(R.string.content_block_title, displayName)
@@ -104,7 +119,7 @@ class ContentBlockActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putInt(STATE_BACKGROUND, backgroundIndex)
+        outState.putIntArray(STATE_PICK, pick)
     }
 
     private fun goHome() {

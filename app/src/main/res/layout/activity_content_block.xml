@@ -15,22 +15,47 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
         android:importantForAccessibility="no"
-        tools:src="@drawable/blok_bg_zalazak" />
+        tools:src="@drawable/blok_bg_sport" />
 
     <View
+        android:id="@+id/v_scrim"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/bg_block_scrim" />
 
-    <FrameLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
 
+        <!-- Sits in the free space above the block card on any screen height. -->
+        <TextView
+            android:id="@+id/tv_motivation"
+            style="@style/Skor.Text"
+            android:layout_width="0dp"
+            android:paddingHorizontal="32dp"
+            android:gravity="center"
+            android:textSize="30sp"
+            android:textFontWeight="700"
+            android:textStyle="bold"
+            android:letterSpacing="-0.02"
+            android:lineSpacingMultiplier="1.1"
+            android:shadowColor="#99000000"
+            android:shadowRadius="16"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/block_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="Your life is happening off-screen." />
+
         <LinearLayout
-            android:layout_width="match_parent"
+            android:id="@+id/block_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             android:orientation="vertical"
             android:gravity="center_horizontal"
             android:paddingHorizontal="32dp">
@@ -111,6 +136,6 @@
                 android:layout_marginTop="26dp"
                 android:text="@string/content_block_exit" />
         </LinearLayout>
-    </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>
