@@ -269,12 +269,12 @@
     <string name="content_block_count_caption">times today Block Doomscroll stopped you</string>
     <string name="content_block_exit">Exit</string>
     <string-array name="content_block_motivation">
-        <item>Your life is happening off-screen.</item>
-        <item>Go do the thing you keep putting off.</item>
-        <item>Small steps. Big days.</item>
-        <item>Less scrolling. More living.</item>
-        <item>Be here. Right now.</item>
-        <item>Make today count.</item>
+        <item>Make it happen.</item>
+        <item>Start now.</item>
+        <item>Do what matters.</item>
+        <item>Get up. Go.</item>
+        <item>Your move.</item>
+        <item>Nothing can stop you.</item>
     </string-array>
 
     <!-- PIN -->

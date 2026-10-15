@@ -184,12 +184,12 @@
     <string name="content_block_message">Blokirano radi zaštite tvog fokusa. Napravi pauzu.</string>
     <string name="content_block_exit">Izađi</string>
     <string-array name="content_block_motivation">
-        <item>Život se dešava van ekrana.</item>
-        <item>Uradi ono što stalno odlažeš.</item>
-        <item>Mali koraci. Veliki dani.</item>
-        <item>Manje skrolovanja. Više života.</item>
-        <item>Budi ovde. Sada.</item>
-        <item>Neka danas vredi.</item>
+        <item>Ostvari to.</item>
+        <item>Počni sada.</item>
+        <item>Radi ono što je bitno.</item>
+        <item>Ustani. Kreni.</item>
+        <item>Tvoj potez.</item>
+        <item>Ništa te ne može zaustaviti.</item>
     </string-array>
 
     <!-- PIN -->
