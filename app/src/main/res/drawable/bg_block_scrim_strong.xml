@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Illustrations are brighter than the photos, so they need a heavier scrim
+     behind the copy to keep the same contrast. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <gradient
+        android:angle="270"
+        android:centerY="0.48"
+        android:startColor="#80080F18"
+        android:centerColor="#C70F1926"
+        android:endColor="#4D080F18" />
+</shape>
