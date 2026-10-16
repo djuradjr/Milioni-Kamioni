@@ -75,6 +75,7 @@ class AppPreferences @Inject constructor(
         // Cache of the last Play-verified subscription state, written only by
         // PremiumRepository; every successful Play query overwrites it.
         val PREMIUM_ACTIVE = booleanPreferencesKey("premium_active")
+        val LANGUAGE_DEFAULT_APPLIED = booleanPreferencesKey("language_default_applied")
     }
 
     val dailyResetTimeMinutes: Flow<Int> = dataStore.data.map { it[DAILY_RESET_TIME_MINUTES] ?: 0 }
@@ -86,6 +87,7 @@ class AppPreferences @Inject constructor(
     val profileUsername: Flow<String> = dataStore.data.map { it[PROFILE_USERNAME] ?: "" }
     val profileEmail: Flow<String> = dataStore.data.map { it[PROFILE_EMAIL] ?: "" }
     val onboardingComplete: Flow<Boolean> = dataStore.data.map { it[ONBOARDING_COMPLETE] ?: false }
+    val languageDefaultApplied: Flow<Boolean> = dataStore.data.map { it[LANGUAGE_DEFAULT_APPLIED] ?: false }
     val notificationsMaster: Flow<Boolean> = dataStore.data.map { it[NOTIFICATIONS_MASTER] ?: true }
     val notifBeforeTimeout: Flow<Boolean> = dataStore.data.map { it[NOTIF_BEFORE_TIMEOUT] ?: true }
     val notifDailySummary: Flow<Boolean> = dataStore.data.map { it[NOTIF_DAILY_SUMMARY] ?: true }
@@ -140,6 +142,10 @@ class AppPreferences @Inject constructor(
 
     suspend fun setAppearanceMode(mode: String) {
         dataStore.edit { it[APPEARANCE_MODE] = mode }
+    }
+
+    suspend fun setLanguageDefaultApplied() {
+        dataStore.edit { it[LANGUAGE_DEFAULT_APPLIED] = true }
     }
 
     suspend fun setPinHash(hash: String?) {
