@@ -47,6 +47,53 @@
             android:orientation="vertical"
             android:padding="@dimen/spacing_md">
 
+            <!-- The system killed the accessibility service: blocking is silently off. -->
+            <LinearLayout
+                android:id="@+id/card_protection_stopped"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_md"
+                android:background="@drawable/bg_skor_card"
+                android:backgroundTint="@color/skor_warn_soft"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_md"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    style="@style/Skor.Body"
+                    android:drawablePadding="10dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/protection_stopped_title"
+                    android:textFontWeight="700"
+                    android:textStyle="bold"
+                    app:drawableStartCompat="@drawable/ic_shield"
+                    app:drawableTint="@color/skor_warn" />
+
+                <TextView
+                    style="@style/Skor.Caption"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="6dp"
+                    android:lineSpacingMultiplier="1.25"
+                    android:text="@string/protection_stopped_desc" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_protection_restart"
+                    style="@style/Skor.Button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/protection_stopped_cta" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_protection_battery"
+                    style="@style/Skor.Button.Neutral"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_sm"
+                    android:text="@string/protection_battery_cta" />
+            </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/daily_content"
                 android:layout_width="match_parent"

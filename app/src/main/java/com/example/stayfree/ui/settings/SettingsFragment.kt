@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Patterns
 import android.widget.Toast
 import android.view.LayoutInflater
@@ -61,9 +62,20 @@ class SettingsFragment : Fragment() {
     // on denial the switch must visually stay off.
     private val notifPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-            if (granted) viewModel.setNotificationsMaster(true)
-            else binding.switchNotifMaster.isChecked = false
+            notifRequestPending = false
+            if (granted) {
+                viewModel.setNotificationsMaster(true)
+                // The stored flag is usually already true, so the collector won't re-emit.
+                bindNotifMaster(true)
+            } else {
+                binding.switchNotifMaster.isChecked = false
+                if (!notifDialogShown) openAppNotificationSettings()
+            }
         }
+    // After two denials Android answers without showing its dialog (we never pause), and this
+    // switch is the only place the app asks — so it sends the user to the system page instead.
+    private var notifRequestPending = false
+    private var notifDialogShown = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,6 +118,8 @@ class SettingsFragment : Fragment() {
             if (checked && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
                 !PermissionUtils.hasNotificationPermission(requireContext())
             ) {
+                notifRequestPending = true
+                notifDialogShown = false
                 notifPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                 return@setOnCheckedChangeListener
             }
@@ -193,11 +207,7 @@ class SettingsFragment : Fragment() {
                 }
             }
             launch {
-                viewModel.notificationsMaster.collectLatest { on ->
-                    binding.switchNotifMaster.isChecked = on
-                    setNotifChildEnabled(binding.rowNotifBeforeTimeout, binding.switchNotifBeforeTimeout, on)
-                    setNotifChildEnabled(binding.rowNotifDailySummary, binding.switchNotifDailySummary, on)
-                }
+                viewModel.notificationsMaster.collectLatest(::bindNotifMaster)
             }
             launch {
                 viewModel.notifBeforeTimeout.collectLatest {
@@ -221,6 +231,39 @@ class SettingsFragment : Fragment() {
             appLocales[0]?.language
         }
         return if (language == "sr") "sr" else "en"
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (notifRequestPending) notifDialogShown = true
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // The permission can change in system settings while we are away.
+        bindNotifMaster(viewModel.notificationsMaster.value)
+    }
+
+    private fun openAppNotificationSettings() {
+        try {
+            startActivity(
+                Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                    .putExtra(Settings.EXTRA_APP_PACKAGE, requireContext().packageName)
+            )
+        } catch (e: Exception) {
+            // No settings screen for it on this ROM — the switch simply stays off.
+        }
+    }
+
+    /**
+     * The stored flag defaults to ON, but onboarding no longer asks for POST_NOTIFICATIONS —
+     * the switch shows ON only when Android lets us post, and turning it on asks then.
+     */
+    private fun bindNotifMaster(enabled: Boolean) {
+        val on = enabled && PermissionUtils.hasNotificationPermission(requireContext())
+        binding.switchNotifMaster.isChecked = on
+        setNotifChildEnabled(binding.rowNotifBeforeTimeout, binding.switchNotifBeforeTimeout, on)
+        setNotifChildEnabled(binding.rowNotifDailySummary, binding.switchNotifDailySummary, on)
     }
 
     private fun setNotifChildEnabled(row: View, switch: MaterialSwitch, enabled: Boolean) {

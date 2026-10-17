@@ -3,8 +3,6 @@ package com.example.stayfree.ui.onboarding
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
@@ -14,6 +12,7 @@ import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.example.stayfree.R
 import com.example.stayfree.data.billing.PremiumRepository
@@ -45,22 +44,20 @@ class OnboardingActivity : AppCompatActivity() {
     private lateinit var binding: ActivityOnboardingBinding
 
     private val trackingSteps = listOf(OnboardingStep.USAGE_ACCESS)
-    private val protectionSteps = listOf(
-        OnboardingStep.ACCESSIBILITY,
-        OnboardingStep.OVERLAY,
-        OnboardingStep.NOTIFICATIONS,
-        OnboardingStep.BATTERY
-    )
+    private val protectionSteps = listOf(OnboardingStep.ACCESSIBILITY)
     private var steps = trackingSteps
-    /** Tracking permission, report, the blocking permissions, then the paywall (skipped with premium). */
+    /**
+     * Usage access, the report, then the paywall (skipped with premium). Accessibility is
+     * asked only of premium users — without premium the service blocks nothing.
+     */
     private enum class Phase { PERMISSIONS, REPORT, PROTECTION }
 
-    /** Opened from the app (premium bought later, or a permission revoked): only the protection run. */
+    /** Opened from the app (premium bought there, a block turned on, access revoked): accessibility only. */
     private val protectionOnly by lazy { intent.getBooleanExtra(EXTRA_PROTECTION_ONLY, false) }
 
-    // The paywall is the last step: bought or closed, onboarding is over.
     private val paywall = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        complete()
+        finishing = false
+        if (premium.isPremium.value) enterProtection() else complete()
     }
 
     private var phase = Phase.PERMISSIONS
@@ -113,6 +110,7 @@ class OnboardingActivity : AppCompatActivity() {
         val step = steps[index]
         binding.tvTitle.setText(step.titleRes)
         binding.tvDescription.setText(step.descriptionRes)
+        binding.a11yGuide.isVisible = step == OnboardingStep.ACCESSIBILITY
         val position = if (phase == Phase.PROTECTION) trackingSteps.size + 1 + index else index
         binding.tvStepIndicator.text = getString(
             R.string.onboarding_step_indicator, position + 1, totalSteps()
@@ -146,9 +144,6 @@ class OnboardingActivity : AppCompatActivity() {
     private fun isStepGranted(step: OnboardingStep): Boolean = when (step) {
         OnboardingStep.USAGE_ACCESS -> PermissionUtils.hasUsageStatsPermission(this)
         OnboardingStep.ACCESSIBILITY -> PermissionUtils.hasAccessibilityServiceEnabled(this)
-        OnboardingStep.OVERLAY -> PermissionUtils.hasOverlayPermission(this)
-        OnboardingStep.NOTIFICATIONS -> PermissionUtils.hasNotificationPermission(this)
-        OnboardingStep.BATTERY -> PermissionUtils.isIgnoringBatteryOptimizations(this)
     }
 
     private fun requestCurrentPermission() {
@@ -158,17 +153,6 @@ class OnboardingActivity : AppCompatActivity() {
                 startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
             OnboardingStep.ACCESSIBILITY ->
                 showAccessibilityDisclosure()
-            OnboardingStep.OVERLAY ->
-                startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                    Uri.parse("package:$packageName")))
-            OnboardingStep.NOTIFICATIONS -> {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 100)
-                }
-            }
-            OnboardingStep.BATTERY ->
-                startActivity(Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
-                    Uri.parse("package:$packageName")))
         }
     }
 
@@ -213,9 +197,9 @@ class OnboardingActivity : AppCompatActivity() {
                     currentStep++
                     showStep(currentStep)
                 }
-            Phase.REPORT -> enterProtection()
+            Phase.REPORT -> afterReport()
             Phase.PROTECTION ->
-                if (currentStep >= steps.lastIndex) offerPremium() else {
+                if (currentStep >= steps.lastIndex) complete() else {
                     currentStep++
                     showStep(currentStep)
                 }
@@ -228,7 +212,7 @@ class OnboardingActivity : AppCompatActivity() {
             Phase.PERMISSIONS, Phase.PROTECTION -> requestCurrentPermission()
             Phase.REPORT -> {
                 lifecycleScope.launch { prefs.setDailyGoalMinutes(goalMinutes) }
-                enterProtection()
+                afterReport()
             }
         }
     }
@@ -324,10 +308,21 @@ class OnboardingActivity : AppCompatActivity() {
 
     // ---------------------------------------------------------------- phase 3
 
+    private fun afterReport() {
+        if (premium.isPremium.value) enterProtection() else offerPremium()
+    }
+
+    private fun offerPremium() {
+        // Blocks the auto-advance and a Next tap from both launching the paywall.
+        finishing = true
+        pollJob?.cancel()
+        paywall.launch(PaywallActivity.newIntent(this))
+    }
+
     private fun enterProtection() {
         val first = protectionSteps.indexOfFirst { !isStepGranted(it) }
         if (first == -1) {
-            offerPremium()
+            complete()
             return
         }
         phase = Phase.PROTECTION
@@ -336,24 +331,16 @@ class OnboardingActivity : AppCompatActivity() {
         binding.groupReport.visibility = View.GONE
         binding.groupPermission.visibility = View.VISIBLE
         binding.btnNext.visibility = View.VISIBLE
-        binding.btnSkip.visibility = View.GONE
+        binding.btnSkip.visibility = View.VISIBLE
+        // Opened from inside the app it is a single screen, not step 3 of a sequence.
+        binding.progressRow.isVisible = !protectionOnly
+        binding.tvStepIndicator.isVisible = !protectionOnly
         showStep(currentStep)
-    }
-
-    private fun offerPremium() {
-        if (protectionOnly || premium.isPremium.value) {
-            complete()
-            return
-        }
-        // Blocks the auto-advance and a Next tap from both launching the paywall.
-        finishing = true
-        pollJob?.cancel()
-        paywall.launch(PaywallActivity.newIntent(this))
     }
 
     // ---------------------------------------------------------------- progress
 
-    /** One segment per step across all three phases. */
+    /** One segment per phase step: usage access, the report, accessibility. */
     private fun buildProgress() {
         val host = binding.progressRow
         host.removeAllViews()

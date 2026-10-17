@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Rect
 import android.os.PowerManager
-import android.provider.Settings
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
@@ -88,6 +87,8 @@ class StayFreeAccessibilityService : AccessibilityService() {
     companion object {
         private const val TAG = "MoreMoneyA11y"
         private const val CONTENT_DEBOUNCE_MS = 500L
+        // onUnbind runs on the main thread; a stuck DataStore must not wedge the teardown.
+        private const val UNBIND_WRITE_TIMEOUT_MS = 500L
         private const val CACHE_REFRESH_INTERVAL_MS = 30_000L
         private const val INAPP_CHECK_DEBOUNCE_MS = 500L
         // How often to sample the foreground browser's URL bar (website blocking).
@@ -130,6 +131,21 @@ class StayFreeAccessibilityService : AccessibilityService() {
         collectFocusModeState()
         collectContentBlockState()
         serviceScope.launch { prefs.premiumActive.collect { premiumActive = it } }
+        serviceScope.launch { prefs.setAccessibilityState(AppPreferences.A11Y_RUNNING) }
+    }
+
+    /**
+     * Turning the service off in Settings unbinds it while the process lives; a force stop
+     * or an OEM battery killer takes the process down without this call. The dashboard
+     * uses the difference to offer the battery exemption only when the system stopped us.
+     */
+    override fun onUnbind(intent: Intent?): Boolean {
+        runBlocking {
+            withTimeoutOrNull(UNBIND_WRITE_TIMEOUT_MS) {
+                prefs.setAccessibilityState(AppPreferences.A11Y_UNBOUND)
+            }
+        }
+        return super.onUnbind(intent)
     }
 
     private fun collectContentBlockState() {
@@ -339,10 +355,6 @@ class StayFreeAccessibilityService : AccessibilityService() {
         lastContentBlockAt = System.currentTimeMillis()
         Log.d(TAG, "Content surface: ${target.displayName} in ${target.packageName}")
 
-        if (!Settings.canDrawOverlays(this)) {
-            Log.w(TAG, "No overlay permission — cannot show block screen")
-            return
-        }
         // Separate coroutine: the counter write must not delay the Back+block path.
         serviceScope.launch { prefs.incrementContentBlockCount(effectiveDate()) }
         serviceScope.launch(Dispatchers.Main) {
@@ -419,7 +431,7 @@ class StayFreeAccessibilityService : AccessibilityService() {
     }
 
     private fun showBlockOverlay(pkg: String, reason: String) {
-        if (!premiumActive || !Settings.canDrawOverlays(this)) return
+        if (!premiumActive) return
         val intent = Intent(this, BlockOverlayActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or
                     Intent.FLAG_ACTIVITY_CLEAR_TOP or

@@ -62,8 +62,9 @@ disclosure → Accessibility settings flow.
 **Why a persistent FGS is needed (paste):**
 
 > The service tracks on-screen time continuously so per-app daily limits and
-> usage statistics stay accurate even when the app is in the background. A
-> persistent notification is always shown while tracking. This cannot be done
+> usage statistics stay accurate even when the app is in the background. While
+> tracking, a persistent notification is shown (on Android 13+ with notifications
+> off, Android lists the service in its Task Manager instead). This cannot be done
 > with WorkManager/JobScheduler because enforcement must be immediate and
 > continuous, not batched.
 
@@ -75,14 +76,13 @@ disclosure → Accessibility settings flow.
 
 > No account or login exists — the app opens straight to onboarding.
 >
-> Blocking is a paid feature. Onboarding asks for Usage access, then the
-> permissions blocking needs (Accessibility, Display over other apps,
-> Notifications, Battery). Grant them when asked — onboarding walks through each.
-> The subscription screen comes last: tap "Have a promo code?", enter the code
+> Blocking is a paid feature. Onboarding asks only for Usage access, shows a
+> report, then the subscription screen: tap "Have a promo code?", enter the code
 > below and tap "Redeem in Google Play"; confirm in Google Play, then press Back
-> to return. The app unlocks and opens. (The code also works in Play Store →
+> to return. The app unlocks and asks for Accessibility — accept the disclosure
+> and follow the on-screen guide in Settings. (The code also works in Play Store →
 > profile → Payments & subscriptions → Redeem code; redeemed before onboarding,
-> the subscription screen is skipped.)
+> the subscription screen is skipped and Accessibility is asked right away.)
 >
 > Then add an app (e.g. Instagram) or a website to the block list and open it —
 > the block screen appears. Screen-time tracking and statistics work without a

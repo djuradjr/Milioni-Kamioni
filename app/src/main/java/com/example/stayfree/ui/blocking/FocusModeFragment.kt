@@ -13,7 +13,7 @@ import com.example.stayfree.R
 import com.example.stayfree.data.billing.PremiumRepository
 import com.example.stayfree.databinding.FragmentFocusModeBinding
 import com.example.stayfree.ui.common.bindBackHeader
-import com.example.stayfree.ui.premium.requirePremium
+import com.example.stayfree.ui.premium.requireBlocking
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -66,7 +66,7 @@ class FocusModeFragment : Fragment() {
         }
 
         binding.btnStartFocus.setOnClickListener {
-            if (!requirePremium(premium)) return@setOnClickListener
+            if (!requireBlocking(premium)) return@setOnClickListener
             viewModel.startFocusMode()
             findNavController().popBackStack()
         }

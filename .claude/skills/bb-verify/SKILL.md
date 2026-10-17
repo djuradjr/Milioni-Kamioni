@@ -27,8 +27,9 @@ adb lives at `$LOCALAPPDATA/Android/Sdk/platform-tools/adb.exe`.
 ```
 adb shell settings put secure enabled_accessibility_services com.djuki.blockbrainrot.debug/com.example.stayfree.service.StayFreeAccessibilityService
 adb shell settings put secure accessibility_enabled 1
-adb shell appops set com.djuki.blockbrainrot.debug SYSTEM_ALERT_WINDOW allow
 ```
+(No overlay step: the app has no SYSTEM_ALERT_WINDOW since 2026-10-17 — block
+screens launch as `BAL_ALLOW_TOKEN` in `ActivityTaskManager` logcat.)
 Poll `adb shell dumpsys accessibility | grep 'Block Doomscroll Screen Monitor'`
 until bound (a few seconds; re-set `accessibility_enabled 1` while waiting).
 ⚠️ Zombie binding: `Crashed services` non-empty, or "bound" under the app label

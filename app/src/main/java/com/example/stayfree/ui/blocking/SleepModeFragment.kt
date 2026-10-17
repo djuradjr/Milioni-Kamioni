@@ -11,7 +11,7 @@ import androidx.core.content.ContextCompat
 import com.example.stayfree.R
 import com.example.stayfree.data.billing.PremiumRepository
 import com.example.stayfree.databinding.FragmentSleepModeBinding
-import com.example.stayfree.ui.premium.requirePremium
+import com.example.stayfree.ui.premium.requireBlocking
 import com.example.stayfree.util.TimeUtils
 import java.util.Locale
 import com.example.stayfree.ui.common.bindBackHeader
@@ -55,7 +55,7 @@ class SleepModeFragment : Fragment() {
         renderWindow(DEFAULT_START_MINUTES, DEFAULT_END_MINUTES)
 
         binding.btnSave.setOnClickListener {
-            if (!requirePremium(premium)) return@setOnClickListener
+            if (!requireBlocking(premium)) return@setOnClickListener
             val daysSelected = buildSelectedDays()
             val startMinutes = binding.arcNight.startValue
             val endMinutes = binding.arcNight.endValue ?: DEFAULT_END_MINUTES

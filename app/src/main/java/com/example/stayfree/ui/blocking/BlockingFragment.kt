@@ -16,6 +16,7 @@ import com.example.stayfree.data.billing.PremiumRepository
 import com.example.stayfree.databinding.FragmentBlockingBinding
 import com.example.stayfree.ui.common.CountUp
 import com.example.stayfree.ui.onboarding.OnboardingActivity
+import com.example.stayfree.ui.premium.requireBlocking
 import com.example.stayfree.ui.premium.requirePremium
 import com.example.stayfree.util.PermissionUtils
 import com.google.android.material.transition.MaterialFadeThrough
@@ -52,7 +53,7 @@ class BlockingFragment : Fragment() {
 
         adapter = BlockRulesAdapter(
             onToggle = { id, active ->
-                if (!active || requirePremium(premium)) viewModel.toggleRule(id, active)
+                if (!active || requireBlocking(premium)) viewModel.toggleRule(id, active)
                 else adapter.notifyDataSetChanged()
             },
             onDelete = { id -> viewModel.deleteRule(id) },
@@ -96,8 +97,7 @@ class BlockingFragment : Fragment() {
 
     /** A paying user without the blocking permissions gets nothing blocked — say so. */
     private fun bindSetupCard(premiumActive: Boolean) {
-        val ctx = requireContext()
-        val ready = PermissionUtils.hasAccessibilityServiceEnabled(ctx) && PermissionUtils.hasOverlayPermission(ctx)
+        val ready = PermissionUtils.hasAccessibilityServiceEnabled(requireContext())
         binding.cardSetup.visibility = if (premiumActive && !ready) View.VISIBLE else View.GONE
     }
 
