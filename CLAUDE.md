@@ -36,8 +36,8 @@ font Archivo, tamna tema podrazumevana. Pravila i komponente: `bb-ui` skill.
 - **Blocking is the paid feature** (Play Billing, branch `placanje-billing`): without
   premium the a11y service fires nothing, but stored blocks survive and resume.
   Every UI path that turns a block ON calls `requirePremium()`; turning one OFF never
-  does. Onboarding asks only usage access before the paywall — the blocking
-  permissions come after it. Details, debug flags and tests: `bb-billing`.
+  does. Onboarding: usage access → report → blocking permissions → paywall last
+  (skipped with premium); it enables no blocks. Details, debug flags and tests: `bb-billing`.
 - Before release, the `bb-security` payments section is MANDATORY (paywall-bypass +
   data-leak tests, 3/3 each).
 
@@ -84,7 +84,7 @@ keep the app itself networkless unless a future explicit decision changes that.
 - `keystore.properties` (repo root, gitignored) drives release signing; absent →
   release stays unsigned. See `docs/PLAY_RELEASE_CHECKLIST.md` + `docs/PRIVACY_POLICY.md`
   + `docs/MANUAL_TEST_SCRIPT.md`.
-- `versionCode=10`, `versionName=1.1.0` (production candidate; 3–9 were used earlier), `targetSdk=36`; release has R8 minify + shrink — test minified
+- `versionCode=13`, `versionName=1.1.0` (production candidate; 3–12 were used earlier), `targetSdk=36`; release has R8 minify + shrink — test minified
   builds on a real device (R8 bugs only show there).
 - Privacy policy URL is DONE (GitHub Pages, wired in Settings).
 

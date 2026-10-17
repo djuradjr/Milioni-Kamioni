@@ -13,14 +13,11 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.stayfree.R
 import com.example.stayfree.data.billing.PremiumRepository
 import com.example.stayfree.data.local.preferences.AppPreferences
-import com.example.stayfree.domain.content.ContentBlockTarget
-import com.example.stayfree.domain.content.ContentSignatures
 import com.example.stayfree.domain.onboarding.DailyGoal
 import com.example.stayfree.domain.onboarding.UsageHistory
 import com.example.stayfree.ui.premium.PaywallActivity
@@ -47,8 +44,6 @@ class OnboardingActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityOnboardingBinding
 
-    // Tracking is free and needs only usage access. The blocking permissions come after the
-    // paywall, so nobody grants accessibility to an app that then can't use it.
     private val trackingSteps = listOf(OnboardingStep.USAGE_ACCESS)
     private val protectionSteps = listOf(
         OnboardingStep.ACCESSIBILITY,
@@ -57,22 +52,20 @@ class OnboardingActivity : AppCompatActivity() {
         OnboardingStep.BATTERY
     )
     private var steps = trackingSteps
-    /** Tracking permission, report, target picks, then — with premium — the blocking permissions. */
-    private enum class Phase { PERMISSIONS, REPORT, TARGETS, PROTECTION }
+    /** Tracking permission, report, the blocking permissions, then the paywall (skipped with premium). */
+    private enum class Phase { PERMISSIONS, REPORT, PROTECTION }
 
     /** Opened from the app (premium bought later, or a permission revoked): only the protection run. */
     private val protectionOnly by lazy { intent.getBooleanExtra(EXTRA_PROTECTION_ONLY, false) }
 
-    private val paywall = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        // Closing the paywall finishes onboarding as a tracker; the picked blocks stay saved.
-        if (result.resultCode == RESULT_OK || premium.isPremium.value) enterProtection() else complete()
+    // The paywall is the last step: bought or closed, onboarding is over.
+    private val paywall = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        complete()
     }
 
     private var phase = Phase.PERMISSIONS
     private var report: UsageHistory.Report? = null
     private var goalMinutes = AppPreferences.DEFAULT_DAILY_GOAL_MINUTES
-    /** Target id → chosen daily limit in minutes; absent means the switch is off. */
-    private val chosenTargets = linkedMapOf<String, Int>()
 
     private var currentStep = 0
     private var awaitingGrant = false
@@ -120,7 +113,7 @@ class OnboardingActivity : AppCompatActivity() {
         val step = steps[index]
         binding.tvTitle.setText(step.titleRes)
         binding.tvDescription.setText(step.descriptionRes)
-        val position = if (phase == Phase.PROTECTION) trackingSteps.size + 2 + index else index
+        val position = if (phase == Phase.PROTECTION) trackingSteps.size + 1 + index else index
         binding.tvStepIndicator.text = getString(
             R.string.onboarding_step_indicator, position + 1, totalSteps()
         )
@@ -220,10 +213,9 @@ class OnboardingActivity : AppCompatActivity() {
                     currentStep++
                     showStep(currentStep)
                 }
-            Phase.REPORT -> enterTargets()
-            Phase.TARGETS -> complete()
+            Phase.REPORT -> enterProtection()
             Phase.PROTECTION ->
-                if (currentStep >= steps.lastIndex) complete() else {
+                if (currentStep >= steps.lastIndex) offerPremium() else {
                     currentStep++
                     showStep(currentStep)
                 }
@@ -236,9 +228,8 @@ class OnboardingActivity : AppCompatActivity() {
             Phase.PERMISSIONS, Phase.PROTECTION -> requestCurrentPermission()
             Phase.REPORT -> {
                 lifecycleScope.launch { prefs.setDailyGoalMinutes(goalMinutes) }
-                enterTargets()
+                enterProtection()
             }
-            Phase.TARGETS -> saveTargetsAndProtect()
         }
     }
 
@@ -248,7 +239,6 @@ class OnboardingActivity : AppCompatActivity() {
         phase = Phase.REPORT
         pollJob?.cancel()
         binding.groupPermission.visibility = View.GONE
-        binding.groupTargets.visibility = View.GONE
         binding.groupReport.visibility = View.VISIBLE
         binding.btnNext.visibility = View.GONE
         binding.btnSkip.visibility = View.VISIBLE
@@ -334,106 +324,36 @@ class OnboardingActivity : AppCompatActivity() {
 
     // ---------------------------------------------------------------- phase 3
 
-    private fun enterTargets() {
-        phase = Phase.TARGETS
-        binding.groupReport.visibility = View.GONE
-        binding.groupTargets.visibility = View.VISIBLE
-        binding.btnGrant.isEnabled = true
-        binding.btnGrant.setText(R.string.onboarding_turn_on_protection)
-        binding.tvTargetsSub.setText(
-            if (report?.hasData == true) R.string.onboarding_targets_desc
-            else R.string.onboarding_targets_desc_blind
-        )
-        updateProgress(trackingSteps.size + 1)
-        buildTargetRows()
-    }
-
-    /**
-     * One row per detectable surface whose app is actually installed. Rows start
-     * on when the app showed up in the user's own week — confirming a pick beats
-     * configuring from scratch.
-     */
-    private fun buildTargetRows() {
-        val host = binding.targetsList
-        host.removeAllViews()
-        chosenTargets.clear()
-
-        val weekPackages = report?.topApps?.map { it.packageName }?.toSet().orEmpty()
-        val installed = ContentSignatures.ALL.filter {
-            AppInfoUtils.getAppIcon(this, it.packageName) != null
-        }
-
-        installed.forEachIndexed { index, target ->
-            val on = weekPackages.isEmpty() || target.packageName in weekPackages
-            val limit = suggestedLimit(target)
-            if (on) chosenTargets[target.id] = limit
-
-            val row = layoutInflater.inflate(R.layout.item_onboarding_target, host, false)
-            row.findViewById<View>(R.id.divider).visibility =
-                if (index == 0) View.GONE else View.VISIBLE
-            val appName = AppInfoUtils.getAppName(this, target.packageName)
-            row.findViewById<TextView>(R.id.tv_name).text =
-                if (target.matchWholeApp || target.displayName.equals(appName, ignoreCase = true)) {
-                    getString(R.string.onboarding_target_name_whole, appName)
-                } else {
-                    getString(R.string.onboarding_target_name, appName, target.displayName)
-                }
-            row.findViewById<TextView>(R.id.tv_limit).text = limitLabel(limit)
-            AppInfoUtils.getAppIcon(this, target.packageName)?.let {
-                row.findViewById<ImageView>(R.id.iv_icon).setImageDrawable(it)
-            }
-            row.findViewById<SwitchCompat>(R.id.switch_target).apply {
-                isChecked = on
-                setOnCheckedChangeListener { _, checked ->
-                    if (checked) chosenTargets[target.id] = limit else chosenTargets.remove(target.id)
-                }
-            }
-            host.addView(row)
-        }
-    }
-
-    private fun suggestedLimit(target: ContentBlockTarget): Int =
-        if (target.matchWholeApp) WHOLE_APP_LIMIT_MINUTES else SURFACE_LIMIT_MINUTES
-
-    private fun limitLabel(minutes: Int): String =
-        if (minutes <= 0) getString(R.string.onboarding_target_limit_off)
-        else getString(R.string.onboarding_target_limit_minutes, minutes)
-
-    private fun saveTargetsAndProtect() {
-        finishing = true
-        lifecycleScope.launch {
-            chosenTargets.forEach { (id, minutes) ->
-                prefs.setContentBlockEnabled(id, true)
-                prefs.setContentTargetLimitMinutes(id, minutes)
-            }
-            finishing = false
-            if (premium.isPremium.value) enterProtection()
-            else paywall.launch(PaywallActivity.newIntent(this@OnboardingActivity))
-        }
-    }
-
-    // ---------------------------------------------------------------- phase 4
-
     private fun enterProtection() {
         val first = protectionSteps.indexOfFirst { !isStepGranted(it) }
         if (first == -1) {
-            complete()
+            offerPremium()
             return
         }
         phase = Phase.PROTECTION
         steps = protectionSteps
         currentStep = first
         binding.groupReport.visibility = View.GONE
-        binding.groupTargets.visibility = View.GONE
         binding.groupPermission.visibility = View.VISIBLE
         binding.btnNext.visibility = View.VISIBLE
         binding.btnSkip.visibility = View.GONE
         showStep(currentStep)
     }
 
+    private fun offerPremium() {
+        if (protectionOnly || premium.isPremium.value) {
+            complete()
+            return
+        }
+        // Blocks the auto-advance and a Next tap from both launching the paywall.
+        finishing = true
+        pollJob?.cancel()
+        paywall.launch(PaywallActivity.newIntent(this))
+    }
+
     // ---------------------------------------------------------------- progress
 
-    /** One segment per step across all four phases. */
+    /** One segment per step across all three phases. */
     private fun buildProgress() {
         val host = binding.progressRow
         host.removeAllViews()
@@ -457,7 +377,7 @@ class OnboardingActivity : AppCompatActivity() {
         }
     }
 
-    private fun totalSteps() = trackingSteps.size + 2 + protectionSteps.size
+    private fun totalSteps() = trackingSteps.size + 1 + protectionSteps.size
 
     private fun dp(value: Int) = (value * resources.displayMetrics.density).toInt()
 
@@ -491,8 +411,6 @@ class OnboardingActivity : AppCompatActivity() {
 
     companion object {
         private const val TOP_APPS_SHOWN = 3
-        private const val SURFACE_LIMIT_MINUTES = 15
-        private const val WHOLE_APP_LIMIT_MINUTES = 15
         private const val POLL_ATTEMPTS = 12
         private const val POLL_INTERVAL_MS = 500L
         private const val SETTINGS_ARGS_KEY = ":settings:fragment_args_key"

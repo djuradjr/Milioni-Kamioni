@@ -315,15 +315,8 @@
     <string name="onboarding_goal_hint_start">podesićemo ga kad skupimo nedelju</string>
     <string name="onboarding_first_run_title">Merimo od danas</string>
     <string name="onboarding_first_run_desc">Tvoj telefon nije sačuvao raniju istoriju, pa krećemo od nule. Prvi skor stiže večeras, prva prava nedelja za sedam dana.</string>
-    <string name="onboarding_targets_title">Šta te najviše vuče?</string>
-    <string name="onboarding_targets_desc">Izabrali smo ove na osnovu tvoje nedelje. Limit možeš da menjaš kad god.</string>
-    <string name="onboarding_targets_desc_blind">Ovo su površine koje Block Doomscroll ume da prepozna. Uključi one koje te vuku.</string>
     <string name="onboarding_decide_later">Odluči kasnije</string>
     <string name="onboarding_set_goal">Postavi cilj</string>
-    <string name="onboarding_turn_on_protection">Uključi zaštitu</string>
-    <string name="onboarding_target_limit_off">blokira odmah</string>
-    <string name="onboarding_target_limit_minutes">%1$d min dnevno</string>
-    <string name="onboarding_target_name_whole">%1$s · cela aplikacija</string>
     <string name="onboarding_goal_hint_already">Tvoj dnevni prosek već staje u ovaj cilj</string>
     <!-- Paywall -->
     <string name="paywall_close">Zatvori</string>

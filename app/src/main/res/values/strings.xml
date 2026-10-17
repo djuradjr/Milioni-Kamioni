@@ -14,12 +14,10 @@
 
     <!-- Onboarding -->
     <string name="onboarding_step_indicator" translatable="false">%1$d / %2$d</string>
-    <string name="onboarding_target_name_whole">%1$s · whole app</string>
     <string name="onboarding_goal_hint_already">Your daily average already fits this goal</string>
     <string name="duration_hours" translatable="false">%1$dh</string>
     <string name="duration_hours_minutes" translatable="false">%1$dh %2$dm</string>
     <string name="duration_minutes" translatable="false">%1$dm</string>
-    <string name="onboarding_target_name" translatable="false">%1$s · %2$s</string>
     <string name="stepper_minus" translatable="false">−</string>
     <string name="stepper_plus" translatable="false">+</string>
     <string name="onboarding_privacy_note">Nothing leaves your phone. The app has no internet access at all.</string>
@@ -35,14 +33,8 @@
     <string name="onboarding_goal_hint_start">we will tune it once there is a week of data</string>
     <string name="onboarding_first_run_title">We start measuring today</string>
     <string name="onboarding_first_run_desc">Your phone kept no earlier history, so we begin from zero. The first score arrives tonight, the first real week in seven days.</string>
-    <string name="onboarding_targets_title">What pulls you in most?</string>
-    <string name="onboarding_targets_desc">We picked these from your week. You can change any limit later.</string>
-    <string name="onboarding_targets_desc_blind">These are the surfaces Block Doomscroll can detect. Turn on the ones that pull you in.</string>
     <string name="onboarding_decide_later">Decide later</string>
     <string name="onboarding_set_goal">Set goal</string>
-    <string name="onboarding_turn_on_protection">Turn on protection</string>
-    <string name="onboarding_target_limit_off">blocks right away</string>
-    <string name="onboarding_target_limit_minutes">%1$d min a day</string>
     <string name="onboarding_usage_title">Usage Access</string>
     <string name="onboarding_usage_desc">Block Doomscroll needs permission to view your app usage statistics. This lets us show you exactly how much time you spend in each app.</string>
     <string name="onboarding_accessibility_title">Accessibility Service</string>
