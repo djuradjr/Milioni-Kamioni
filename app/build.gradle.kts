@@ -25,8 +25,8 @@ android {
         applicationId = "com.djuki.blockbrainrot"
         minSdk = 23
         targetSdk = 36
-        versionCode = 13
-        versionName = "1.1.0"
+        versionCode = 14
+        versionName = "1.1.1"
     }
 
     signingConfigs {
