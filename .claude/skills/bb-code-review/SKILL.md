@@ -14,8 +14,8 @@ For every change ask: **"how does this crash in production in 6 months?"**
 - `AccessibilityNodeInfo`: nodes can be null, recycled or stale mid-walk; target
   apps change their view trees with every update — never index children blindly,
   always null-guard and bound tree walks.
-- API levels: minSdk 23 / targetSdk 35 — every API ≥24 call needs a
-  `Build.VERSION` guard or an androidx equivalent.
+- API levels: minSdk 24 (Play's installer check rejects lower) / targetSdk 36 —
+  every API ≥25 call needs a `Build.VERSION` guard or an androidx equivalent.
 - Process death: services and activities restart cold — durable state belongs in
   DataStore/Room, never in instance fields that "should" survive.
 - R8/minify (release only): reflection, Hilt entry points, enums via `values()`

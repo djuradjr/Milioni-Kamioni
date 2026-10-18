@@ -23,7 +23,7 @@ android {
 
     defaultConfig {
         applicationId = "com.djuki.blockbrainrot"
-        minSdk = 23
+        minSdk = 24
         targetSdk = 36
         versionCode = 15
         versionName = "1.1.1"
