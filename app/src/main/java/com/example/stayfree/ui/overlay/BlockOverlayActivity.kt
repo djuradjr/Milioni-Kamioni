@@ -36,6 +36,7 @@ class BlockOverlayActivity : AppCompatActivity() {
         binding = ActivityBlockOverlayBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setFinishOnTouchOutside(false)
+        if (savedInstanceState == null) lifecycleScope.launch { prefs.incrementBlocksShown() }
 
         packageName_ = intent.getStringExtra(EXTRA_PACKAGE_NAME) ?: ""
         blockReason = intent.getStringExtra(EXTRA_BLOCK_REASON) ?: "BLOCK_NOW"
@@ -70,6 +71,7 @@ class BlockOverlayActivity : AppCompatActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
+        lifecycleScope.launch { prefs.incrementBlocksShown() }
         packageName_ = intent.getStringExtra(EXTRA_PACKAGE_NAME) ?: ""
         blockReason = intent.getStringExtra(EXTRA_BLOCK_REASON) ?: "BLOCK_NOW"
         setupUI()

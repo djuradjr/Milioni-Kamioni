@@ -67,6 +67,10 @@ bug. Check every item before submit.
   (`ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS`), which needs no permission.
 - POST_NOTIFICATIONS is asked from the Settings switch, not onboarding. Without it
   the tracking FGS still runs; Android 13+ shows it in Task Manager instead.
+- **In-App Review** (`com.google.android.play:review`, no permissions of its own):
+  once, on the dashboard, after 5 block screens were shown and while the service
+  runs — never on a block screen, never behind a "do you like us?" pre-question or
+  a reward (Play policy). No Data Safety change: Google handles the review.
 
 ## 8. Pre-submit checklist
 Signed `.aab` (`bundleRelease` + `keystore.properties`), R8-minified build

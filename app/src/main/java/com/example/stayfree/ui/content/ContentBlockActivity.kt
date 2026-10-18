@@ -87,6 +87,7 @@ class ContentBlockActivity : AppCompatActivity() {
         binding = ActivityContentBlockBinding.inflate(layoutInflater)
         setContentView(binding.root)
         goImmersive()
+        if (savedInstanceState == null) lifecycleScope.launch { prefs.incrementBlocksShown() }
 
         val lines = resources.getStringArray(R.array.content_block_motivation)
         pick = savedInstanceState?.getIntArray(STATE_PICK)
@@ -115,6 +116,13 @@ class ContentBlockActivity : AppCompatActivity() {
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() = goHome()
         })
+    }
+
+    // singleTask: a block that fires while this screen is still alive (left with Home, not
+    // Exit) arrives here instead of onCreate.
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        lifecycleScope.launch { prefs.incrementBlocksShown() }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

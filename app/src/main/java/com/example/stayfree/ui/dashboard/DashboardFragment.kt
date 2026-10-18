@@ -32,12 +32,15 @@ import com.example.stayfree.util.PermissionUtils
 import com.example.stayfree.util.TimeUtils
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.transition.MaterialFadeThrough
+import com.google.android.play.core.review.ReviewManagerFactory
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.util.Locale
 import javax.inject.Inject
+
+private const val REVIEW_AFTER_BLOCKS = 5
 
 @AndroidEntryPoint
 class DashboardFragment : Fragment() {
@@ -87,6 +90,26 @@ class DashboardFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         bindProtectionBanner()
+        maybeAskForReview()
+    }
+
+    /**
+     * Play In-App Review, once, after the user has seen blocking work a few times and while it
+     * still works — only here, never on a block screen. Play decides whether the sheet shows.
+     */
+    private fun maybeAskForReview() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            if (prefs.reviewRequested.first()) return@launch
+            if (prefs.blocksShownTotal.first() < REVIEW_AFTER_BLOCKS) return@launch
+            if (!PermissionUtils.isAccessibilityServiceRunning(requireContext())) return@launch
+            val manager = ReviewManagerFactory.create(requireContext())
+            manager.requestReviewFlow().addOnCompleteListener { request ->
+                // Failed (no Play Store, offline Play): stays unasked and retries next visit.
+                if (!request.isSuccessful || !isResumed) return@addOnCompleteListener
+                viewLifecycleOwner.lifecycleScope.launch { prefs.setReviewRequested() }
+                manager.launchReviewFlow(requireActivity(), request.result)
+            }
+        }
     }
 
     /**
