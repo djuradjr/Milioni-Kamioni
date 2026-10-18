@@ -15,6 +15,7 @@ import com.example.stayfree.R
 import com.example.stayfree.data.billing.PremiumRepository
 import com.example.stayfree.databinding.FragmentBlockAppsBinding
 import com.example.stayfree.ui.common.bindBackHeader
+import com.example.stayfree.ui.premium.requireBlocking
 import com.example.stayfree.ui.premium.requirePremium
 import com.example.stayfree.util.PinGate
 import com.example.stayfree.util.PinPrompt
@@ -52,7 +53,7 @@ class BlockAppsFragment : Fragment() {
         adapter = BlockAppsAdapter(
             onToggle = { pkg, blocked ->
                 if (blocked) {
-                    if (requirePremium(premium)) viewModel.setBlocked(pkg, true)
+                    if (requireBlocking(premium)) viewModel.setBlocked(pkg, true)
                     else adapter.notifyDataSetChanged()
                 } else withPinGate(onDenied = { adapter.notifyDataSetChanged() }) {
                     viewModel.setBlocked(pkg, false)
@@ -64,7 +65,7 @@ class BlockAppsFragment : Fragment() {
             },
             onContentToggle = { id, enabled ->
                 if (enabled) {
-                    if (requirePremium(premium)) viewModel.setContentEnabled(id, true)
+                    if (requireBlocking(premium)) viewModel.setContentEnabled(id, true)
                     else adapter.notifyDataSetChanged()
                 } else withPinGate(onDenied = { adapter.notifyDataSetChanged() }) {
                     viewModel.setContentEnabled(id, false)

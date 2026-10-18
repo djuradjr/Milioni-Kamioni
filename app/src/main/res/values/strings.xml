@@ -37,20 +37,14 @@
     <string name="onboarding_set_goal">Set goal</string>
     <string name="onboarding_usage_title">Usage Access</string>
     <string name="onboarding_usage_desc">Block Doomscroll needs permission to view your app usage statistics. This lets us show you exactly how much time you spend in each app.</string>
-    <string name="onboarding_accessibility_title">Accessibility Service</string>
-    <string name="onboarding_accessibility_desc">Enable Block Doomscroll in Accessibility Settings to allow it to detect your active app and enforce blocking rules.</string>
+    <string name="onboarding_accessibility_title">Turn on blocking</string>
+    <string name="onboarding_accessibility_desc">Blocking runs through Android\'s accessibility service, which you switch on in Settings. Tap the button below, then follow these three steps.</string>
 
     <!-- Prominent disclosure (Play policy) -->
     <string name="disclosure_title">Accessibility access</string>
     <string name="disclosure_message">This app uses Android\'s Accessibility Service to read which app is currently on screen, and — only when you block specific websites — the browser address bar.\n\nWhy: this is the only way to show the block screen the moment you open a blocked app or site.\n\nWhere the data goes: nowhere. Everything is processed and stored only on this device. The app has no internet access and never collects, shares, or sells this data.</string>
     <string name="disclosure_accept">Accept and continue</string>
     <string name="disclosure_decline">Not now</string>
-    <string name="onboarding_overlay_title">Display Over Other Apps</string>
-    <string name="onboarding_overlay_desc">Block Doomscroll needs to draw over other apps to show the block screen when you try to open a blocked app.</string>
-    <string name="onboarding_notifications_title">Notifications</string>
-    <string name="onboarding_notifications_desc">Allow notifications so Block Doomscroll can alert you when you are approaching your daily limits.</string>
-    <string name="onboarding_battery_title">Battery Optimization</string>
-    <string name="onboarding_battery_desc">Exclude Block Doomscroll from battery optimization so it keeps tracking even when your screen is off.</string>
 
     <!-- Content descriptions -->
     <string name="cd_delete_rule">Delete rule</string>
@@ -395,6 +389,25 @@
     <string name="blocking_premium_desc">Your blocks are saved. They turn on as soon as you activate Premium.</string>
     <string name="blocking_premium_cta">Get Premium</string>
     <string name="blocking_setup_title">Protection needs one more step</string>
-    <string name="blocking_setup_desc">Premium is on, but blocking needs a couple of permissions. Until you allow them, nothing gets blocked.</string>
+    <string name="blocking_setup_desc">Premium is on, but blocking still needs the accessibility service. Until you turn it on, nothing gets blocked.</string>
     <string name="blocking_setup_cta">Set up protection</string>
+
+    <!-- Accessibility setup guide (onboarding, a miniature of system settings) -->
+    <string name="a11y_guide_label">In the settings that open</string>
+    <string name="a11y_guide_num_1" translatable="false">1</string>
+    <string name="a11y_guide_num_2" translatable="false">2</string>
+    <string name="a11y_guide_num_3" translatable="false">3</string>
+    <string name="a11y_guide_step1">Downloaded apps</string>
+    <string name="a11y_guide_step1_hint">Installed apps or Installed services on some phones</string>
+    <string name="a11y_guide_step3">Use Block Doomscroll Screen Monitor</string>
+    <string name="a11y_guide_step3_hint">Turn it on, then tap Allow</string>
+
+    <!-- Dashboard banner: the system stopped the accessibility service -->
+    <string name="protection_stopped_title">Blocking stopped</string>
+    <string name="protection_stopped_desc">Android closed Block Doomscroll in the background, so nothing is being blocked right now. Battery savers usually do this.</string>
+    <string name="protection_stopped_cta">Turn blocking back on</string>
+    <string name="protection_battery_cta">Stop the battery saver from closing it</string>
+    <string name="battery_dialog_title">Keep blocking running</string>
+    <string name="battery_dialog_message">In the list that opens, show all apps, find Block Doomscroll and choose Don\'t optimize (Unrestricted on some phones).</string>
+    <string name="battery_dialog_open">Open settings</string>
 </resources>

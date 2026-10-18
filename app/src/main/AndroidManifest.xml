@@ -14,8 +14,6 @@
     <uses-permission
         android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <!-- Package visibility (API 30+): launchable apps for the picker and launcher detection -->
@@ -64,7 +62,9 @@
             android:name=".ui.onboarding.OnboardingActivity"
             android:exported="false" />
 
-        <!-- Block Overlay — must show over other apps -->
+        <!-- Whole-app block screen. Like ContentBlockActivity it is started by the
+             accessibility service, whose system binding exempts it from the
+             background-launch limits — no SYSTEM_ALERT_WINDOW needed. -->
         <activity
             android:name=".ui.overlay.BlockOverlayActivity"
             android:exported="false"

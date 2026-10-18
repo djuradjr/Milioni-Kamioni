@@ -13,7 +13,7 @@ import com.example.stayfree.R
 import com.example.stayfree.data.billing.PremiumRepository
 import com.example.stayfree.databinding.FragmentAddBlockRuleBinding
 import com.example.stayfree.ui.common.bindBackHeader
-import com.example.stayfree.ui.premium.requirePremium
+import com.example.stayfree.ui.premium.requireBlocking
 import com.example.stayfree.util.AppInfoUtils
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -67,7 +67,7 @@ class AddBlockRuleFragment : Fragment() {
         setupTimeField(binding.etSessionMinutes, maxValue = 59)
         setupTimeField(binding.etBreakMinutes, maxValue = 59)
 
-        binding.btnSave.setOnClickListener { if (requirePremium(premium)) saveRule() }
+        binding.btnSave.setOnClickListener { if (requireBlocking(premium)) saveRule() }
         binding.btnCancel.setOnClickListener { findNavController().popBackStack() }
     }
 

@@ -115,6 +115,7 @@ dependencies {
 
     // Billing
     implementation(libs.billing)
+    implementation(libs.play.review)
 
     // Coroutines
     implementation(libs.coroutines.core)

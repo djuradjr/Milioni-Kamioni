@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Three phases in one activity: the permission steps, then the week-before
-     report, then target selection. Phases share the progress bar and the
-     bottom buttons so the flow reads as one sequence, not three screens. -->
+<!-- Three phases in one activity: usage access, the week-before report, then
+     (premium only) accessibility. Phases share the progress bar and the bottom
+     buttons so the flow reads as one sequence, not three screens. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -37,7 +37,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:gravity="center_vertical"
-                android:minHeight="420dp">
+                android:minHeight="420dp"
+                android:paddingTop="@dimen/spacing_lg">
 
                 <TextView
                     android:id="@+id/tv_step_indicator"
@@ -62,6 +63,15 @@
                     android:textSize="15sp"
                     android:textColor="@color/skor_text_dim"
                     android:lineSpacingMultiplier="1.5" />
+
+                <com.example.stayfree.ui.onboarding.AccessibilityGuideView
+                    android:id="@+id/a11y_guide"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_md"
+                    android:padding="@dimen/spacing_md"
+                    android:background="@drawable/bg_skor_card"
+                    android:visibility="gone" />
 
                 <LinearLayout
                     android:id="@+id/card_privacy"

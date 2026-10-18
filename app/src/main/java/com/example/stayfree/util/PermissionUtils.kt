@@ -20,13 +20,11 @@ object PermissionUtils {
         return mode == AppOpsManager.MODE_ALLOWED
     }
 
-    fun hasOverlayPermission(context: Context): Boolean =
-        Settings.canDrawOverlays(context)
-
     fun hasAccessibilityServiceEnabled(context: Context): Boolean =
-        isAccessibilityServiceBound(context) || isAccessibilityServiceOnInSettings(context)
+        isAccessibilityServiceRunning(context) || isAccessibilityServiceOnInSettings(context)
 
-    private fun isAccessibilityServiceBound(context: Context): Boolean {
+    /** Bound by the system right now, i.e. actually able to block. */
+    fun isAccessibilityServiceRunning(context: Context): Boolean {
         val am = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
         val enabledServices = am.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK)
         return enabledServices.any {

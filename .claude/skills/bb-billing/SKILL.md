@@ -45,7 +45,8 @@ never fire if the app died mid-purchase).
 ## 4. UX (per bb-ui)
 Built: `ui/premium/PaywallActivity` (plans shortest-first, monthly pre-selected, terms under
 the CTA), hub cards in `BlockingFragment` (premium card; "set up protection" card when
-premium lacks a11y/overlay → `OnboardingActivity.protectionIntent`).
+premium lacks a11y → `OnboardingActivity.protectionIntent`). A purchase made inside the app
+opens that same a11y step right after the paywall closes.
 Paywall branded, immersive, professional — clear price from `ProductDetails`,
 what's included, restore-purchases action. No dark patterns: no fake urgency,
 no pre-selected upsells, cancel path obvious.

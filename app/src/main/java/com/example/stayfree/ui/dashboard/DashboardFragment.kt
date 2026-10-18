@@ -1,7 +1,11 @@
 package com.example.stayfree.ui.dashboard
 
 import android.animation.ObjectAnimator
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
@@ -10,25 +14,39 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.stayfree.R
+import com.example.stayfree.data.billing.PremiumRepository
+import com.example.stayfree.data.local.preferences.AppPreferences
 import com.example.stayfree.databinding.FragmentDashboardBinding
 import com.example.stayfree.domain.model.AppUsage
 import com.example.stayfree.domain.score.FocusScore
 import com.example.stayfree.ui.common.CountUp
+import com.example.stayfree.ui.onboarding.OnboardingActivity
+import com.example.stayfree.util.PermissionUtils
 import com.example.stayfree.util.TimeUtils
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.transition.MaterialFadeThrough
+import com.google.android.play.core.review.ReviewManagerFactory
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.util.Locale
+import javax.inject.Inject
+
+private const val REVIEW_AFTER_BLOCKS = 5
 
 @AndroidEntryPoint
 class DashboardFragment : Fragment() {
+
+    @Inject lateinit var premium: PremiumRepository
+    @Inject lateinit var prefs: AppPreferences
 
     private var _binding: FragmentDashboardBinding? = null
     private val binding get() = _binding!!
@@ -63,6 +81,77 @@ class DashboardFragment : Fragment() {
         setupDateNav()
         setupCharts()
         observeData()
+        binding.btnProtectionRestart.setOnClickListener {
+            startActivity(OnboardingActivity.protectionIntent(requireContext()))
+        }
+        binding.btnProtectionBattery.setOnClickListener { showBatteryDialog() }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        bindProtectionBanner()
+        maybeAskForReview()
+    }
+
+    /**
+     * Play In-App Review, once, after the user has seen blocking work a few times and while it
+     * still works — only here, never on a block screen. Play decides whether the sheet shows.
+     */
+    private fun maybeAskForReview() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            if (prefs.reviewRequested.first()) return@launch
+            if (prefs.blocksShownTotal.first() < REVIEW_AFTER_BLOCKS) return@launch
+            if (!PermissionUtils.isAccessibilityServiceRunning(requireContext())) return@launch
+            val manager = ReviewManagerFactory.create(requireContext())
+            manager.requestReviewFlow().addOnCompleteListener { request ->
+                // Failed (no Play Store, offline Play): stays unasked and retries next visit.
+                if (!request.isSuccessful || !isResumed) return@addOnCompleteListener
+                viewLifecycleOwner.lifecycleScope.launch { prefs.setReviewRequested() }
+                manager.launchReviewFlow(requireActivity(), request.result)
+            }
+        }
+    }
+
+    /**
+     * Premium, the service was running, nobody turned it off, and now it is off: the system
+     * killed it. Play allows detecting this and nudging; re-enabling it ourselves is not.
+     */
+    private fun bindProtectionBanner() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val ctx = requireContext()
+            val killed = premium.isPremium.value &&
+                prefs.accessibilityState.first() == AppPreferences.A11Y_RUNNING &&
+                !PermissionUtils.hasAccessibilityServiceEnabled(ctx)
+            binding.cardProtectionStopped.isVisible = killed
+            binding.btnProtectionBattery.isVisible =
+                killed && !PermissionUtils.isIgnoringBatteryOptimizations(ctx)
+        }
+    }
+
+    private fun showBatteryDialog() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.battery_dialog_title)
+            .setMessage(R.string.battery_dialog_message)
+            .setPositiveButton(R.string.battery_dialog_open) { _, _ -> openBatterySettings() }
+            .setNegativeButton(R.string.btn_cancel, null)
+            .show()
+    }
+
+    // The user picks us in the system list: the direct REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+    // prompt is Play-restricted. App info is the fallback where the list is missing.
+    private fun openBatterySettings() {
+        try {
+            startActivity(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))
+        } catch (e: ActivityNotFoundException) {
+            try {
+                startActivity(
+                    Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                        .setData(Uri.parse("package:${requireContext().packageName}"))
+                )
+            } catch (e: ActivityNotFoundException) {
+                // No settings app to open — nothing more to offer.
+            }
+        }
     }
 
     private fun segmentViews(): Map<StatsPeriod, TextView> = mapOf(

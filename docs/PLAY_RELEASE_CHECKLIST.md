@@ -79,8 +79,8 @@
       on-device screen-time tracking that powers user-configured app blocking;
       a video showing the persistent notification helps
 - [ ] App access → provide instructions for reviewers: which permissions to
-      grant (usage access, accessibility, overlay) and how (onboarding walks
-      through each), note that no account/login exists
+      grant (usage access at first launch, accessibility after the purchase) and
+      how (onboarding walks through each), note that no account/login exists
 - [ ] Store listing assets: 512×512 icon, 1024×500 feature graphic, ≥2 phone
       screenshots (dashboard, blocking screen, block overlay)
 

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A miniature of Android's accessibility settings: the three taps the user
+     makes after we open them. AccessibilityGuideView walks the highlight down
+     the rows and flips the switch, so it reads as a short animation. -->
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:orientation="vertical"
+    tools:parentTag="android.widget.LinearLayout">
+
+    <TextView
+        style="@style/Skor.Label"
+        android:layout_marginBottom="@dimen/spacing_sm"
+        android:text="@string/a11y_guide_label" />
+
+    <LinearLayout
+        android:id="@+id/row_1"
+        style="@style/Skor.GuideRow">
+
+        <TextView
+            android:id="@+id/num_1"
+            style="@style/Skor.GuideNumber"
+            android:text="@string/a11y_guide_num_1" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/Skor.Body"
+                android:layout_width="match_parent"
+                android:text="@string/a11y_guide_step1" />
+
+            <TextView
+                style="@style/Skor.Caption"
+                android:layout_width="match_parent"
+                android:layout_marginTop="2dp"
+                android:text="@string/a11y_guide_step1_hint" />
+        </LinearLayout>
+
+        <ImageView
+            style="@style/Settings.RowChevron"
+            android:src="@drawable/ic_chevron_right" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/row_2"
+        style="@style/Skor.GuideRow">
+
+        <TextView
+            android:id="@+id/num_2"
+            style="@style/Skor.GuideNumber"
+            android:text="@string/a11y_guide_num_2" />
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="10dp"
+            android:importantForAccessibility="no"
+            android:src="@mipmap/ic_launcher_round" />
+
+        <TextView
+            style="@style/Skor.Body"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="@string/accessibility_service_label" />
+
+        <ImageView
+            style="@style/Settings.RowChevron"
+            android:src="@drawable/ic_chevron_right" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/row_3"
+        style="@style/Skor.GuideRow">
+
+        <TextView
+            android:id="@+id/num_3"
+            style="@style/Skor.GuideNumber"
+            android:text="@string/a11y_guide_num_3" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/Skor.Body"
+                android:layout_width="match_parent"
+                android:text="@string/a11y_guide_step3" />
+
+            <TextView
+                style="@style/Skor.Caption"
+                android:layout_width="match_parent"
+                android:layout_marginTop="2dp"
+                android:text="@string/a11y_guide_step3_hint" />
+        </LinearLayout>
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/guide_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:thumbTint="@color/skor_switch_thumb"
+            app:trackDecorationTint="@android:color/transparent"
+            app:trackTint="@color/skor_switch_track"
+            android:clickable="false"
+            android:focusable="false"
+            android:importantForAccessibility="no" />
+    </LinearLayout>
+</merge>

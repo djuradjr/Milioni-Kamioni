@@ -53,7 +53,26 @@ bug. Check every item before submit.
   blocking access to Settings, hiding from recents to resist disabling.
   Force-stop killing the service is an accepted, documented limitation.
 
-## 7. Pre-submit checklist
+## 7. Permissions asked, and when (decided 2026-10-17)
+- First launch asks ONLY for usage access. Accessibility comes after a purchase or
+  when a block is first turned on — always behind the disclosure (§3).
+- **No `SYSTEM_ALERT_WINDOW`**: both block screens are activities started by the
+  a11y service, which the system binding exempts from background-launch limits
+  (verified 3/3 on the emulator with the op denied). Unverified on MIUI, whose own
+  "background pop-ups" switch may still block them — check on a real Xiaomi before
+  calling it done there; the fallback is a TYPE_ACCESSIBILITY_OVERLAY window.
+- **No `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS`**: Play allows the direct exemption
+  prompt only for narrow use cases. The dashboard banner (shown when the system
+  killed the service) opens the system list instead
+  (`ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS`), which needs no permission.
+- POST_NOTIFICATIONS is asked from the Settings switch, not onboarding. Without it
+  the tracking FGS still runs; Android 13+ shows it in Task Manager instead.
+- **In-App Review** (`com.google.android.play:review`, no permissions of its own):
+  once, on the dashboard, after 5 block screens were shown and while the service
+  runs — never on a block screen, never behind a "do you like us?" pre-question or
+  a reward (Play policy). No Data Safety change: Google handles the review.
+
+## 8. Pre-submit checklist
 Signed `.aab` (`bundleRelease` + `keystore.properties`), R8-minified build
 tested on a real device, `versionCode` bumped, privacy policy URL live
 (`https://djuradjr.github.io/Milioni-Kamioni/privacy.html`), PACKAGE_USAGE_STATS

@@ -229,4 +229,29 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
+
+    <!-- One row of the accessibility-settings miniature (onboarding guide). -->
+    <style name="Skor.GuideRow" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/spacing_xs</item>
+        <item name="android:minHeight">56dp</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingHorizontal">12dp</item>
+        <item name="android:paddingVertical">@dimen/spacing_sm</item>
+        <item name="android:background">@drawable/bg_skor_card_raised</item>
+    </style>
+
+    <style name="Skor.GuideNumber" parent="Skor.Text">
+        <item name="android:layout_width">22dp</item>
+        <item name="android:layout_height">22dp</item>
+        <item name="android:layout_marginEnd">12dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:textFontWeight">700</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:background">@drawable/bg_skor_dot</item>
+        <item name="android:importantForAccessibility">no</item>
+    </style>
 </resources>

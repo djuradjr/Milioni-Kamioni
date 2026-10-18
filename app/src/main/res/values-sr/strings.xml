@@ -12,20 +12,14 @@
     <!-- Onboarding -->
     <string name="onboarding_usage_title">Pristup korišćenju</string>
     <string name="onboarding_usage_desc">Block Doomscroll treba dozvolu da vidi statistiku korišćenja aplikacija. Tako ti pokazujemo tačno koliko vremena provodiš u svakoj aplikaciji.</string>
-    <string name="onboarding_accessibility_title">Usluga pristupačnosti</string>
-    <string name="onboarding_accessibility_desc">Uključi Block Doomscroll u podešavanjima pristupačnosti da bi prepoznao aktivnu aplikaciju i primenio pravila blokiranja.</string>
+    <string name="onboarding_accessibility_title">Uključi blokiranje</string>
+    <string name="onboarding_accessibility_desc">Blokiranje radi preko Androidove usluge pristupačnosti, koju uključuješ u podešavanjima. Dodirni dugme ispod, pa prati ova tri koraka.</string>
 
     <!-- Prominent disclosure (Play policy) -->
     <string name="disclosure_title">Dozvola za pristupačnost</string>
     <string name="disclosure_message">Ova aplikacija koristi Androidovu uslugu pristupačnosti da očita koja je aplikacija trenutno na ekranu, i — samo kada blokiraš određene sajtove — adresnu traku pregledača.\n\nZašto: to je jedini način da se ekran blokade prikaže čim otvoriš blokiranu aplikaciju ili sajt.\n\nGde idu podaci: nigde. Sve se obrađuje i čuva samo na ovom uređaju. Aplikacija nema pristup internetu i nikada ne prikuplja, ne deli niti prodaje ove podatke.</string>
     <string name="disclosure_accept">Prihvati i nastavi</string>
     <string name="disclosure_decline">Ne sada</string>
-    <string name="onboarding_overlay_title">Prikaz preko drugih aplikacija</string>
-    <string name="onboarding_overlay_desc">Block Doomscroll mora da crta preko drugih aplikacija da bi prikazao ekran blokade kad pokušaš da otvoriš blokiranu aplikaciju.</string>
-    <string name="onboarding_notifications_title">Obaveštenja</string>
-    <string name="onboarding_notifications_desc">Dozvoli obaveštenja da te Block Doomscroll upozori kada se približavaš dnevnim limitima.</string>
-    <string name="onboarding_battery_title">Optimizacija baterije</string>
-    <string name="onboarding_battery_desc">Izuzmi Block Doomscroll iz optimizacije baterije da bi pratio vreme i kad je ekran ugašen.</string>
 
     <!-- Content descriptions -->
     <string name="cd_delete_rule">Obriši pravilo</string>
@@ -367,6 +361,22 @@
     <string name="blocking_premium_desc">Tvoje blokade su sačuvane. Uključuju se čim aktiviraš Premium.</string>
     <string name="blocking_premium_cta">Aktiviraj Premium</string>
     <string name="blocking_setup_title">Zaštiti treba još jedan korak</string>
-    <string name="blocking_setup_desc">Premium je uključen, ali blokiranju treba par dozvola. Dok ih ne dozvoliš, ništa se ne blokira.</string>
+    <string name="blocking_setup_desc">Premium je uključen, ali blokiranje još čeka uslugu pristupačnosti. Dok je ne uključiš, ništa se ne blokira.</string>
     <string name="blocking_setup_cta">Podesi zaštitu</string>
+
+    <!-- Uputstvo za pristupačnost (onboarding, umanjena sistemska podešavanja) -->
+    <string name="a11y_guide_label">U podešavanjima koja se otvore</string>
+    <string name="a11y_guide_step1">Preuzete aplikacije</string>
+    <string name="a11y_guide_step1_hint">Na nekim telefonima: Instalirane aplikacije ili Instalirane usluge</string>
+    <string name="a11y_guide_step3">Koristi Block Doomscroll Screen Monitor</string>
+    <string name="a11y_guide_step3_hint">Uključi, pa dodirni Dozvoli</string>
+
+    <!-- Baner na kontrolnoj tabli: sistem je ugasio uslugu pristupačnosti -->
+    <string name="protection_stopped_title">Blokiranje je stalo</string>
+    <string name="protection_stopped_desc">Android je ugasio Block Doomscroll u pozadini, pa se trenutno ništa ne blokira. To obično uradi štednja baterije.</string>
+    <string name="protection_stopped_cta">Ponovo uključi blokiranje</string>
+    <string name="protection_battery_cta">Ne daj štednji baterije da ga gasi</string>
+    <string name="battery_dialog_title">Neka blokiranje radi bez prekida</string>
+    <string name="battery_dialog_message">Na listi koja se otvori prikaži sve aplikacije, nađi Block Doomscroll i izaberi Ne optimizuj (na nekim telefonima: Bez ograničenja).</string>
+    <string name="battery_dialog_open">Otvori podešavanja</string>
 </resources>

@@ -35,9 +35,11 @@ font Archivo, tamna tema podrazumevana. Pravila i komponente: `bb-ui` skill.
   hard block fires.
 - **Blocking is the paid feature** (Play Billing, branch `placanje-billing`): without
   premium the a11y service fires nothing, but stored blocks survive and resume.
-  Every UI path that turns a block ON calls `requirePremium()`; turning one OFF never
-  does. Onboarding: usage access → report → blocking permissions → paywall last
-  (skipped with premium); it enables no blocks. Details, debug flags and tests: `bb-billing`.
+  Every UI path that turns a block ON calls `requireBlocking()` (premium, then the a11y
+  setup screen if access is missing); turning one OFF never does. Onboarding asks ONLY
+  for usage access: usage → report → paywall (skipped with premium) → a11y step for
+  premium only; it enables no blocks. No overlay, battery or notification step — see
+  `bb-play-policy` §7. Details, debug flags and tests: `bb-billing`.
 - Before release, the `bb-security` payments section is MANDATORY (paywall-bypass +
   data-leak tests, 3/3 each).
 

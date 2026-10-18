@@ -7,12 +7,14 @@ Recommended devices: API 34/35 emulator + at least one API 31-33 device.
 
 - [ ] Launch → splash (white, orange glyph) → onboarding opens
 - [ ] Usage Access step: Grant opens system settings; back → Next enabled
-- [ ] **Accessibility step: prominent-disclosure dialog appears BEFORE system
-      settings open**; "Not now" keeps you on the step; "Accept and continue"
-      opens Accessibility settings
-- [ ] Overlay, Notifications, Battery steps complete
-- [ ] After last step → dashboard opens, **persistent "MoreMoney" notification
-      appears immediately (no reboot needed)**
+- [ ] Report → paywall. No other permission is asked before the paywall.
+- [ ] After a purchase (or turning a block on with premium) → **Accessibility
+      step with the animated guide; the prominent-disclosure dialog appears
+      BEFORE system settings open**; "Not now" keeps you on the step; "Accept and
+      continue" opens Accessibility settings
+- [ ] No Overlay, Notifications or Battery step anywhere in onboarding
+- [ ] Settings → Notifications switch shows OFF until the permission is granted;
+      turning it on asks for it
 
 ## 2. Tracking
 

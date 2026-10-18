@@ -47,6 +47,14 @@ class AppPreferences @Inject constructor(
         val FOCUS_END_TIME = longPreferencesKey("focus_end_time")
         val FOCUS_IS_WHITELIST = booleanPreferencesKey("focus_is_whitelist")
         val ACCESSIBILITY_DISCLOSURE_ACCEPTED = booleanPreferencesKey("accessibility_disclosure_accepted")
+        // Last lifecycle report of the a11y service: RUNNING on connect, UNBOUND when it is
+        // turned off normally. Still RUNNING while the service is down = the system killed it.
+        val ACCESSIBILITY_STATE = stringPreferencesKey("accessibility_state")
+        const val A11Y_RUNNING = "running"
+        const val A11Y_UNBOUND = "unbound"
+        // Block screens actually shown, lifetime; gates the one-time Play review prompt.
+        val BLOCKS_SHOWN_TOTAL = intPreferencesKey("blocks_shown_total")
+        val REVIEW_REQUESTED = booleanPreferencesKey("review_requested")
         val CONTENT_BLOCK_ENABLED = stringSetPreferencesKey("content_block_enabled_ids")
         // Whole-app block toggles (Block Apps screen). Stores package names whose
         // slider is ON. Enforcement is added later; for now this only persists UI state.
@@ -97,6 +105,9 @@ class AppPreferences @Inject constructor(
     val focusIsWhitelist: Flow<Boolean> = dataStore.data.map { it[FOCUS_IS_WHITELIST] ?: true }
     val accessibilityDisclosureAccepted: Flow<Boolean> =
         dataStore.data.map { it[ACCESSIBILITY_DISCLOSURE_ACCEPTED] ?: false }
+    val accessibilityState: Flow<String?> = dataStore.data.map { it[ACCESSIBILITY_STATE] }
+    val blocksShownTotal: Flow<Int> = dataStore.data.map { it[BLOCKS_SHOWN_TOTAL] ?: 0 }
+    val reviewRequested: Flow<Boolean> = dataStore.data.map { it[REVIEW_REQUESTED] ?: false }
     val contentBlockEnabledIds: Flow<Set<String>> =
         dataStore.data.map { it[CONTENT_BLOCK_ENABLED] ?: emptySet() }
     /** Package names whose whole-app block slider is ON (Block Apps screen). */
@@ -232,6 +243,18 @@ class AppPreferences @Inject constructor(
 
     suspend fun setAccessibilityDisclosureAccepted(accepted: Boolean) {
         dataStore.edit { it[ACCESSIBILITY_DISCLOSURE_ACCEPTED] = accepted }
+    }
+
+    suspend fun setAccessibilityState(state: String) {
+        dataStore.edit { it[ACCESSIBILITY_STATE] = state }
+    }
+
+    suspend fun incrementBlocksShown() {
+        dataStore.edit { it[BLOCKS_SHOWN_TOTAL] = (it[BLOCKS_SHOWN_TOTAL] ?: 0) + 1 }
+    }
+
+    suspend fun setReviewRequested() {
+        dataStore.edit { it[REVIEW_REQUESTED] = true }
     }
 
     suspend fun setContentBlockEnabled(id: String, enabled: Boolean) {

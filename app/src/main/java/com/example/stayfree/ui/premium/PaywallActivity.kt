@@ -27,6 +27,8 @@ import com.example.stayfree.data.billing.PremiumPlan
 import com.example.stayfree.data.billing.PremiumRepository
 import com.example.stayfree.databinding.ActivityPaywallBinding
 import com.example.stayfree.databinding.ItemPaywallPlanBinding
+import com.example.stayfree.ui.onboarding.OnboardingActivity
+import com.example.stayfree.util.PermissionUtils
 import com.example.stayfree.util.TimeUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.combine
@@ -84,6 +86,13 @@ class PaywallActivity : AppCompatActivity() {
                     viewModel.premiumActive.first { it }
                     Toast.makeText(this@PaywallActivity, R.string.paywall_welcome, Toast.LENGTH_SHORT).show()
                     setResult(RESULT_OK)
+                    // Bought from inside the app: blocking still needs accessibility, so that
+                    // step comes next. Onboarding starts us for a result and runs it itself.
+                    if (callingActivity == null &&
+                        !PermissionUtils.hasAccessibilityServiceEnabled(this@PaywallActivity)
+                    ) {
+                        startActivity(OnboardingActivity.protectionIntent(this@PaywallActivity))
+                    }
                     finish()
                 }
             }

@@ -13,6 +13,8 @@ import com.example.stayfree.data.billing.PremiumRepository
 import com.example.stayfree.databinding.DialogAddWebsiteBinding
 import com.example.stayfree.databinding.FragmentWebsiteBlockBinding
 import com.example.stayfree.ui.common.bindBackHeader
+import com.example.stayfree.ui.premium.ensureProtection
+import com.example.stayfree.ui.premium.requireBlocking
 import com.example.stayfree.ui.premium.requirePremium
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
@@ -42,7 +44,7 @@ class WebsiteBlockFragment : Fragment() {
 
         adapter = WebsiteBlockAdapter(
             onToggle = { entity ->
-                if (entity.isActive || requirePremium(premium)) viewModel.toggleWebsite(entity)
+                if (entity.isActive || requireBlocking(premium)) viewModel.toggleWebsite(entity)
                 else adapter.notifyDataSetChanged()
             },
             onDelete = { id -> viewModel.deleteWebsite(id) }
@@ -75,6 +77,7 @@ class WebsiteBlockFragment : Fragment() {
                 if (domain.isNotEmpty()) {
                     val capMs = if (capMinutes <= 0) null else capMinutes * 60_000L
                     viewModel.addWebsite(domain, capMs)
+                    ensureProtection()
                 }
             }
             .setNegativeButton(R.string.btn_cancel, null)
