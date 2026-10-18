@@ -83,6 +83,7 @@ dependencies {
     implementation(libs.recyclerview)
     implementation(libs.viewpager2)
     implementation(libs.fragment.ktx)
+    implementation(libs.transition)
     implementation(libs.activity.ktx)
     implementation(libs.splashscreen)
 
