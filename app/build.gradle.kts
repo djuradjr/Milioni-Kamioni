@@ -25,7 +25,7 @@ android {
         applicationId = "com.djuki.blockbrainrot"
         minSdk = 23
         targetSdk = 36
-        versionCode = 14
+        versionCode = 15
         versionName = "1.1.1"
     }
 
